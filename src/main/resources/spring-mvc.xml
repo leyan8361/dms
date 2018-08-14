@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-3.2.xsd
+    http://www.springframework.org/schema/mvc
+    http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
+
+	<!-- 开启aspect 注解支持 -->
+	<aop:aspectj-autoproxy />
+
+	<!-- 扫描controller（controller层注入） -->
+	<context:component-scan
+		base-package="dms.controller" use-default-filters="false">
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+
+
+	<!-- 会自动注册DefaultAnnotationHandlerMapping与AnnotationMethodHandlerAdapter 
+		两个bean,是spring MVC为@Controllers分发请求所必须的。 -->
+	<mvc:annotation-driven />
+
+	<!-- 内容协商管理器 -->
+	<!--1、首先检查路径扩展名（如my.pdf）；2、其次检查Parameter（如my?format=pdf）；3、检查Accept Header -->
+	<bean id="contentNegotiationManager"
+		class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+
+		<!-- 扩展名至mimeType的映射,即 /user.json => application/json -->
+		<property name="favorPathExtension" value="true" />
+		<!-- 用于开启 /userinfo/123?format=json 的支持 -->
+		<property name="favorParameter" value="true" />
+		<property name="parameterName" value="format" />
+		<!-- 是否忽略Accept Header -->
+		<property name="ignoreAcceptHeader" value="false" />
+
+		<property name="mediaTypes"> <!--扩展名到MIME的映射；favorPathExtension, favorParameter是true时起作用 -->
+			<value>
+				json=application/json
+				xml=application/xml
+				html=text/html
+			</value>
+		</property>
+		<!-- 默认的content type -->
+		<property name="defaultContentType" value="text/html" />
+	</bean>
+
+	<!-- 当在web.xml 中 DispatcherServlet使用 <url-pattern>/</url-pattern> 映射时，能映射静态资源 -->
+	<mvc:default-servlet-handler />
+	<!-- 静态资源映射 -->
+	<!-- file:是针对非项目工程中的文件访问，本项目工程中的文件路径不要加file: -->
+	<!-- <mvc:resources mapping="/views/**" location="/WEB-INF/views/" /> -->
+	<!-- 生成的icg归纳表 -->
+	<!-- <mvc:resources mapping="/icg/**" location="file:/application/shxinzhili/data/mms/icgPointList/" 
+		/> -->
+
+	<!-- springmvc 拦截器 -->
+	<!-- <mvc:interceptors> <mvc:interceptor> <mvc:mapping path="/**" /> <mvc:exclude-mapping 
+		path="/js/**" /> <mvc:exclude-mapping path="/login/webLogin" /> <bean class="mms.interceptor.CommInterceptor" 
+		/> </mvc:interceptor> </mvc:interceptors> -->
+
+	<!-- 避免IE执行AJAX时，返回JSON出现下载文件 -->
+	<bean id="mappingJacksonHttpMessageConverter"
+		class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+		<property name="supportedMediaTypes">
+			<list>
+				<value>text/html;charset=UTF-8</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 配置文件上传，如果没有使用文件上传可以不用配置，当然如果不配，那么配置文件中也不必引入上传组件包 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- 默认编码 -->
+		<property name="defaultEncoding" value="utf-8" />
+		<!-- 上传文件最大值 -->
+		<property name="maxUploadSize" value="10485760000" />
+		<!-- 内存中的最大值 -->
+		<property name="maxInMemorySize" value="40960" />
+		<!-- 启用是为了推迟文件解析，以便捕获文件大小异常 -->
+		<property name="resolveLazily" value="true" />
+	</bean>
+
+	<!-- 对模型视图添加前后缀 -->
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+		p:prefix="/WEB-INF/" p:suffix=".jsp" />
+
+	<!-- 强制使用cglib代理，如果不设置，将默认使用jdk的代理，但是jdk的代理是基于接口的 -->
+	<aop:config proxy-target-class="true" />
+
+
+	<!-- <aop:config> 定义切面 <aop:aspect id="logAspect" ref="logInterceptor"> 
+		定义切入点 (配置在ems.controller下所有的类在调用之前都会被拦截) <aop:pointcut expression="execution(* 
+		ems.controller.*.*(..))" id="logPointCut" /> 方法执行之前被调用执行的 <aop:before method="before" 
+		pointcut-ref="logPointCut" arg-names="req" /> 一个切入点的引用 <aop:after method="after" 
+		pointcut-ref="logPointCut" /> 一个切入点的引用 <aop:after-returning method="afterReturn" 
+		pointcut-ref="logPointCut" /> <aop:after-throwing method="doAfterThrowing" 
+		throwing="e" pointcut-ref="logPointCut" /> </aop:aspect> </aop:config> -->
+
+</beans>
