@@ -63,9 +63,14 @@
 		/> -->
 
 	<!-- springmvc 拦截器 -->
-	<!-- <mvc:interceptors> <mvc:interceptor> <mvc:mapping path="/**" /> <mvc:exclude-mapping 
-		path="/js/**" /> <mvc:exclude-mapping path="/login/webLogin" /> <bean class="mms.interceptor.CommInterceptor" 
-		/> </mvc:interceptor> </mvc:interceptors> -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**"/>
+			<mvc:exclude-mapping path="/user/checkLogin" />
+			<mvc:exclude-mapping path="/error/**" />
+			<bean class="dms.interceptor.RouteInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>
 
 	<!-- 避免IE执行AJAX时，返回JSON出现下载文件 -->
 	<bean id="mappingJacksonHttpMessageConverter"
