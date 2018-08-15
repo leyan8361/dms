@@ -65,7 +65,7 @@
 	<!-- springmvc 拦截器 -->
 	<mvc:interceptors>
 		<mvc:interceptor>
-			<mvc:mapping path="/**"/>
+			<mvc:mapping path="/**" />
 			<mvc:exclude-mapping path="/user/checkLogin" />
 			<mvc:exclude-mapping path="/error/**" />
 			<bean class="dms.interceptor.RouteInterceptor" />

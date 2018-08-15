@@ -4,8 +4,7 @@
 <mapper namespace="dms.dao.UserDao">
 
 	<!-- 通过用户名&密码获取用户信息 -->
-	<select id="getUserInfo" parameterType="userInfo"
-		resultType="dms.entity.UserInfo">
+	<select id="getUserInfo" parameterType="userInfo" resultType="userInfo">
 		select
 		*
 		from t_userinfo

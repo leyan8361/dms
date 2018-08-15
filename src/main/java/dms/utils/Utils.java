@@ -6,13 +6,13 @@ import java.util.Date;
 public class Utils {
 
 	/**
-	 * 获取yyyy-MM-dd hh:mm:ss格式的时间
+	 * 获取指定格式的时间
 	 * 
 	 * @return
 	 */
-	public static String getNowDate() {
+	public static String getNowDate(String pattern) {
 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat(pattern);
 		return sdf.format(new Date());
 	}
 }

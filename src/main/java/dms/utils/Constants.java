@@ -10,4 +10,7 @@ public class Constants {
 	public static final String apiErrorStatus = "1";
 	public static final String tokenErrorStatus = "2";
 	public static final String tokenOverTimeStatus = "3";
+
+	// 页面中表格的数据行数
+	public static final int pageSize = 10;
 }

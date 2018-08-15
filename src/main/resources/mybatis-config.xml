@@ -8,6 +8,12 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 
 	<typeAliases>
 		<typeAlias type="dms.entity.UserInfo" alias="userInfo" />
+		<typeAlias type="dms.entity.Role" alias="role" />
+		<typeAlias type="dms.entity.UserGroup" alias="userGroup" />
+		<typeAlias type="dms.entity.Line" alias="line" />
+		<typeAlias type="dms.entity.LineStation" alias="lineStation" />
+		<typeAlias type="dms.entity.Plan" alias="plan" />
+		<typeAlias type="dms.entity.PlanAttach" alias="planAttach" />
 	</typeAliases>
 
 	<plugins>

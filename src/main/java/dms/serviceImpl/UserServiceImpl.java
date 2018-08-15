@@ -21,6 +21,6 @@ public class UserServiceImpl implements UserService {
 
 	public int updateUserLastLoginTime(int userId) {
 
-		return userDao.updateUserLastLoginTime(userId, Utils.getNowDate());
+		return userDao.updateUserLastLoginTime(userId, Utils.getNowDate("yyyy-MM-dd hh:mm:ss"));
 	}
 }

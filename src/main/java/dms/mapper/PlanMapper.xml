@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="dms.dao.PlanDao">
+
+	<!-- 获取线路列表 -->
+	<select id="getLineList" resultType="line">
+		select id,lineNo
+		from t_line
+		where isShow = 'show'
+	</select>
+
+	<!-- 获取线路下车站列表 -->
+	<select id="getLineStationList" parameterType="String" resultType="lineStation">
+		select id,lineId,station
+		from t_line_station
+		where isShow = 'show' and lineId = #{lineId}
+	</select>
+	
+	<!-- 添加预案 -->
+	<insert id="addPlan" parameterType="plan" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into
+		t_plan
+		(name,lineId,lineNo,stationId,stationName)
+		values
+		(#{name},#{lineId},#{lineNo},#{stationId},#{stationName})
+	</insert>
+</mapper>

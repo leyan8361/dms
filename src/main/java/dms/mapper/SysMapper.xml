@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="dms.dao.SysDao">
+
+	<!-- 校验角色名 -->
+	<select id="checkRoleName" parameterType="String" resultType="role">
+		select *
+		from t_role
+		where isShow = 'show' and name = #{name}
+	</select>
+
+	<!-- 新增角色 -->
+	<insert id="addRole" parameterType="role">
+		insert into
+		t_role
+		(name,description,creator,createDate)
+		values
+		(#{name},#{description},#{creator},#{createDate})
+	</insert>
+
+	<!-- 获得角色列表 -->
+	<select id="getRoleList" parameterType="String" resultType="role">
+		select id, name,description
+		from t_role
+		where isShow = 'show'
+		<if test="name!=''">
+			and name = #{name}
+		</if>
+		order by createDate desc
+	</select>
+
+	<!-- 编辑角色信息 -->
+	<update id="updateRoleInfo">
+		update t_role
+		set
+		name = #{name},description = #{description}
+		where id = #{id}
+	</update>
+
+	<!-- 删除角色信息 -->
+	<update id="delRoleInfo" parameterType="int">
+		update t_role
+		set
+		isShow = 'notShow'
+		where id = #{id}
+	</update>
+	
+	<!-- 校验群组名 -->
+	<select id="checkUserGroupName" parameterType="String" resultType="userGroup">
+		select * 
+		from t_usergroup
+		where isShow = 'show' and name = #{name}
+	</select>
+	
+	<!-- 添加用户群组信息 -->
+	<insert id="addUserGroup" parameterType="userGroup">
+		insert into
+		t_usergroup
+		(name,description,creator,createDate)
+		values
+		(#{name},#{description},#{creator},#{createDate})
+	</insert>
+	
+	<!-- 查询用户群组列表 -->
+	<select id="getUserGroupList" parameterType="String" resultType="userGroup">
+		select id,name,description
+		from t_usergroup
+		where isShow = 'show'
+		<if test="name!=''">
+			and name = #{name}
+		</if>
+		order by createDate desc
+	</select>
+	
+	<!-- 编辑用户群组信息 -->
+	<update id="updateUserGroupInfo">
+		update t_usergroup
+		set name = #{name},description = #{description}
+		where id = #{id}
+	</update>
+	
+	<!-- 删除用户群组信息 -->
+	<update id="delUserGroupInfo" parameterType="int">
+		update t_usergroup
+		set isShow = 'notShow'
+		where id = #{id}
+	</update>
+	
+	<!-- 获取角色下拉列表内容 -->
+	<select id="getAllRoleInfo" resultType="role">
+		select id,name 
+		from t_role
+		where isShow = 'show'
+		order by createDate desc
+	</select>
+	
+	<!-- 获取用户群组下拉列表内容 -->
+	<select id="getAllUserGroupInfo" resultType="userGroup">
+		select id,name
+		from t_usergroup
+		where isShow = 'show'
+		order by createDate desc
+	</select>
+</mapper>
