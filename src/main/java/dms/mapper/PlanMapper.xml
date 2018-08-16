@@ -17,6 +17,13 @@
 		where isShow = 'show' and lineId = #{lineId}
 	</select>
 	
+	<!-- 校验预案名称是否重复 -->
+	<select id="checkPlanName" parameterType="String" resultType="plan">
+		select *
+		from t_plan
+		where isShow = 'show' and name = #{name}
+	</select>
+	
 	<!-- 添加预案 -->
 	<insert id="addPlan" parameterType="plan" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
 		insert into
@@ -25,4 +32,74 @@
 		values
 		(#{name},#{lineId},#{lineNo},#{stationId},#{stationName})
 	</insert>
+	
+	<!-- 添加预案附件 -->
+	<insert id="addPlanAttach" parameterType="List">
+		insert into
+		t_planattach
+		(planId,path)
+		values
+		<foreach collection="list" item="pa" separator=",">
+			(#{pa.planId},#{pa.path})
+		</foreach>
+	</insert>
+	
+	<!-- 查询预案列表 -->
+	<select id="getPlanList" resultType="plan">
+		select id,name,lineId,lineNo,stationId,stationName
+		from t_plan
+		where isShow = 'show'
+		<if test="lineId!=''">
+			and lineId = #{lineId}
+		</if>
+		<if test="stationId!=''">
+			and stationId = #{stationId}
+		</if>
+		<if test="name!=''">
+			and name = #{name}
+		</if>
+		order by id desc
+	</select>
+	
+	<!-- 查询预案详情 -->
+    <select id="getPlanInfo" parameterType="int" resultMap="planAttachMap">
+		select 
+		t1.id,t1.name,t1.lineId,t1.lineNo,t1.stationId,t1.stationName,t2.id as attachId,t2.path
+		from t_plan t1,t_planattach t2
+		where t1.isShow = 'show' and t1.id = #{id} and t1.id = t2.planId and t2.isShow = 'show'
+	</select>
+	
+	<resultMap type="plan" id="planAttachMap">
+		 <id column="id" property="id" />
+		 <result column="name" property="name" />
+		 <result column="lineId" property="lineId" />
+		 <result column="lineNo" property="lineNo" />
+		 <result column="stationId" property="stationId" />
+		 <result column="stationName" property="stationName" />
+		 <collection property="lpa" ofType="planAttach" column="id">
+		 	<id column="attachId" property="id" />
+		 	<result column="path" property="path" />
+		 </collection>
+	</resultMap>
+	
+	<!-- 删除预案的附件 -->
+	<update id="delPlanAttach" parameterType="String">
+		update t_planattach
+		set isShow = 'notShow'
+		where id ${str}
+	</update>
+	
+	<!-- 编辑预案信息 -->
+	<update id="updatePlanInfo">
+		update t_plan
+		set name = #{name},lineId = #{lineId},lineNo = #{lineNo},stationId = #{stationId},stationName = #{stationName}
+		where id = #{id}
+	</update>
+	
+	<!-- 删除预案 -->
+	<update id="delPlan" parameterType="int">
+		update t_plan
+		set isShow = 'notShow'
+		where id = #{id}
+	</update>
 </mapper>

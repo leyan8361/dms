@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.alibaba.fastjson.JSONObject;
+
 import dms.utils.Constants;
 import dms.utils.JwtManager;
 import io.jsonwebtoken.Claims;
@@ -27,6 +29,10 @@ public class RouteInterceptor implements HandlerInterceptor {
 		try {
 			String token = request.getParameter("token");
 			Claims claims = JwtManager.parseToken(token);
+			JSONObject user = new JSONObject();
+			user.put("userId", claims.get("userId"));
+			user.put("userName", claims.get("userName"));
+			request.setAttribute("user", user);
 			System.out.println(claims);
 			return true;
 		} catch (InvalidClaimException e) {

@@ -9,6 +9,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
 import dms.dao.SysDao;
+import dms.entity.Log;
 import dms.entity.Role;
 import dms.entity.UserGroup;
 import dms.service.SysService;
@@ -20,6 +21,11 @@ public class SysServiceImpl implements SysService {
 	@Autowired
 	private SysDao sysDao;
 
+	public int addLog(Log log) {
+		
+		return sysDao.addLog(log);
+	}
+	
 	public Role checkRoleName(String name) {
 
 		return sysDao.checkRoleName(name);

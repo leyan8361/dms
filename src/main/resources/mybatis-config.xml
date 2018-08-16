@@ -14,6 +14,8 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		<typeAlias type="dms.entity.LineStation" alias="lineStation" />
 		<typeAlias type="dms.entity.Plan" alias="plan" />
 		<typeAlias type="dms.entity.PlanAttach" alias="planAttach" />
+		<typeAlias type="dms.entity.Log" alias="log" />
+		<typeAlias type="dms.entity.Process" alias="process" />
 	</typeAliases>
 
 	<plugins>

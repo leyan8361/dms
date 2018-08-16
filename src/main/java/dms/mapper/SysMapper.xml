@@ -3,6 +3,15 @@
 
 <mapper namespace="dms.dao.SysDao">
 
+	<!-- 添加系统日志 -->
+	<insert id="addLog" parameterType="log">
+		insert into
+		t_log
+		(occurDate,userId,userName,operation)
+		values
+		(#{occurDate},#{userId},#{userName},#{operation})
+	</insert>
+
 	<!-- 校验角色名 -->
 	<select id="checkRoleName" parameterType="String" resultType="role">
 		select *

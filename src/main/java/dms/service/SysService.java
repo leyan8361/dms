@@ -4,10 +4,13 @@ import java.util.List;
 
 import com.github.pagehelper.PageInfo;
 
+import dms.entity.Log;
 import dms.entity.Role;
 import dms.entity.UserGroup;
 
 public interface SysService {
+	
+	public int addLog(Log log);
 	
 	public Role checkRoleName(String name);
 

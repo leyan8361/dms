@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 
+import dms.entity.Log;
 import dms.entity.Role;
 import dms.entity.UserGroup;
 import dms.service.SysService;
@@ -65,11 +68,14 @@ public class SysController {
 	 */
 	@RequestMapping(value = "addRole", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String addRole(@RequestParam("name") String name, @RequestParam("description") String description,
-			@RequestParam("userId") int userId) {
+			@RequestParam("userId") int userId, HttpServletRequest req) {
 
 		Map<String, String> resMap = new HashMap<String, String>();
 		sysService.addRole(new Role(name, description, userId, Utils.getNowDate("yyyy-MM-dd")));
 		resMap.put("status", Constants.successStatus);
+		JSONObject jo = (JSONObject) req.getAttribute("user");
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+				String.valueOf(jo.get("userName")), "创建角色:" + name));
 		return JSON.toJSONString(resMap);
 	}
 
@@ -108,11 +114,14 @@ public class SysController {
 	 */
 	@RequestMapping(value = "updateRoleInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String updateRoleInfo(@RequestParam("id") int id, @RequestParam("name") String name,
-			@RequestParam("description") String description) {
+			@RequestParam("description") String description, HttpServletRequest req) {
 
 		Map<String, String> resMap = new HashMap<String, String>();
 		sysService.updateRoleInfo(id, name, description);
 		resMap.put("status", Constants.successStatus);
+		JSONObject jo = (JSONObject) req.getAttribute("user");
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+				String.valueOf(jo.get("userName")), "编辑角色:" + name));
 		return JSON.toJSONString(resMap);
 	}
 
@@ -121,15 +130,20 @@ public class SysController {
 	 * 
 	 * @param id
 	 *            角色Id
+	 * @param name
+	 *            角色名
 	 * @param token
 	 * @return
 	 */
 	@RequestMapping(value = "delRoleInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
-	public String delRoleInfo(@RequestParam("id") int id) {
+	public String delRoleInfo(@RequestParam("id") int id, @RequestParam("name") String name, HttpServletRequest req) {
 
 		Map<String, String> resMap = new HashMap<String, String>();
 		sysService.delRoleInfo(id);
 		resMap.put("status", Constants.successStatus);
+		JSONObject jo = (JSONObject) req.getAttribute("user");
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+				String.valueOf(jo.get("userName")), "删除角色:" + name));
 		return JSON.toJSONString(resMap);
 	}
 
@@ -169,11 +183,14 @@ public class SysController {
 	 */
 	@RequestMapping(value = "addUserGroup", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String addUserGroup(@RequestParam("name") String name, @RequestParam("description") String description,
-			@RequestParam("userId") int userId) {
+			@RequestParam("userId") int userId, HttpServletRequest req) {
 
 		Map<String, String> resMap = new HashMap<String, String>();
 		sysService.addUserGroup(new UserGroup(name, description, userId, Utils.getNowDate("yyyy-MM-dd")));
 		resMap.put("status", Constants.successStatus);
+		JSONObject jo = (JSONObject) req.getAttribute("user");
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+				String.valueOf(jo.get("userName")), "创建用户群组:" + name));
 		return JSON.toJSONString(resMap);
 	}
 
@@ -212,11 +229,14 @@ public class SysController {
 	 */
 	@RequestMapping(value = "updateUserGroupInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String updateUserGroupInfo(@RequestParam("id") int id, @RequestParam("name") String name,
-			@RequestParam("description") String description) {
+			@RequestParam("description") String description, HttpServletRequest req) {
 
 		Map<String, String> resMap = new HashMap<String, String>();
 		sysService.updateUserGroupInfo(id, name, description);
 		resMap.put("status", Constants.successStatus);
+		JSONObject jo = (JSONObject) req.getAttribute("user");
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+				String.valueOf(jo.get("userName")), "编辑用户群组:" + name));
 		return JSON.toJSONString(resMap);
 	}
 
@@ -225,15 +245,21 @@ public class SysController {
 	 * 
 	 * @param id
 	 *            用户群组Id
+	 * @param name
+	 *            群组名
 	 * @param token
 	 * @return
 	 */
 	@RequestMapping(value = "delUserGroupInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
-	public String delUserGroupInfo(@RequestParam("id") int id) {
+	public String delUserGroupInfo(@RequestParam("id") int id, @RequestParam("name") String name,
+			HttpServletRequest req) {
 
 		Map<String, String> resMap = new HashMap<String, String>();
 		sysService.delUserGroupInfo(id);
 		resMap.put("status", Constants.successStatus);
+		JSONObject jo = (JSONObject) req.getAttribute("user");
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+				String.valueOf(jo.get("userName")), "删除用户群组:" + name));
 		return JSON.toJSONString(resMap);
 	}
 
