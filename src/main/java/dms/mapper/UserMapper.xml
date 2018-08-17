@@ -9,9 +9,7 @@
 		*
 		from t_userinfo
 		where
-		userName= #{userName} and
-		password = #{password}
-		and isShow = 'show' and status = 0
+		userName= #{userName} and password = #{password} and isShow = 'show' and status = 0
 	</select>
 
 	<!-- 更新用户的最近登录时间 -->

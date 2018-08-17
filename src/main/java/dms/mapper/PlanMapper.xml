@@ -102,4 +102,77 @@
 		set isShow = 'notShow'
 		where id = #{id}
 	</update>
+	
+	<!-- 新增流程库表 -->
+	<insert id="addProcess" parameterType="process" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		insert into 
+		t_process
+		(name,creator,createDate)
+		values
+		(#{name},#{creator},#{createDate})
+	</insert>
+	
+	<!-- 新增流程库表列信息 -->
+	<insert id="addProcessColumn" parameterType="processColumn">
+		insert into
+		t_process_column
+		(processId,name,type)
+		values
+		<foreach collection="list" item="pc" separator=",">
+			(#{pc.processId},#{pc.name},#{pc.type})
+		</foreach>
+	</insert>
+	
+	<!-- 查询流程库表列表 -->
+	<select id="getProcessList" resultType="process">
+		select t1.id,t1.name,count(t2.id) as columnNum
+		from t_process t1,t_process_column t2
+		where t1.id = t2.processId and t1.isShow = 'show'
+		group by t1.id
+	</select>
+	
+	<!-- 查询流程库表详情 -->
+	<select id="getProcessInfo" parameterType="int" resultMap="getProcessMap">
+		select t1.id,t1.name,t2.id as cid,t2.name as cname,t2.type
+		from t_process t1,t_process_column t2
+		where t1.isShow = 'show' and t2.isShow = 'show' and t1.id = t2.processId and t1.id = #{id}
+	</select>
+	
+	<resultMap type="process" id="getProcessMap">
+		<id column="id" property="id" />
+		<result column="name" property="name" />
+		<collection property="lpc" ofType="processColumn">
+			<id column="cid" property="id" />
+			<result column="cname" property="name" />
+			<result column="type" property="type" />
+		</collection>
+	</resultMap>
+	
+	<!-- 修改流程库表信息 -->
+	<update id="updateProcessInfo">
+		update t_process
+		set name = #{name}
+		where id = #{id}
+	</update>
+	
+	<!-- 修改流程库表列信息 -->
+	<update id="updateProcessColumnInfo">
+		update t_process_column
+		set name = #{name}
+		where id = #{id}
+	</update>
+	
+	<!-- 删除流程库表信息 -->
+	<update id="delProcess" parameterType="int">
+		update t_process
+		set isShow = 'notShow'
+		where id = #{id}
+	</update>
+	
+	<!-- 获取指定流程库表列名信息 -->
+	<select id="getProcessColumnNameInfo" parameterType="String" resultType="processColumn">
+		select name,type
+		from t_process_column
+		where isShow = 'show' and processId = #{id}
+	</select>
 </mapper>

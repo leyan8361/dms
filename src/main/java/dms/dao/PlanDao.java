@@ -8,6 +8,8 @@ import dms.entity.Line;
 import dms.entity.LineStation;
 import dms.entity.Plan;
 import dms.entity.PlanAttach;
+import dms.entity.Process;
+import dms.entity.ProcessColumn;
 
 public interface PlanDao {
 
@@ -32,4 +34,20 @@ public interface PlanDao {
 			@Param("stationId") int stationId, @Param("stationName") String stationName, @Param("name") String name);
 
 	public int delPlan(int id);
+
+	public int addProcess(Process process);
+
+	public int addProcessColumn(List<ProcessColumn> lpc);
+
+	public List<Process> getProcessList();
+
+	public Process getProcessInfo(int id);
+
+	public int updateProcessInfo(@Param("id") int id, @Param("name") String name);
+
+	public int updateProcessColumnInfo(@Param("id") int id, @Param("name") String name);
+
+	public int delProcess(int id);
+
+	public List<ProcessColumn> getProcessColumnNameInfo(int id);
 }

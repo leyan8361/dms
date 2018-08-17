@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
@@ -17,9 +19,12 @@ import dms.entity.Line;
 import dms.entity.LineStation;
 import dms.entity.Plan;
 import dms.entity.PlanAttach;
+import dms.entity.Process;
+import dms.entity.ProcessColumn;
 import dms.service.PlanService;
 import dms.utils.Constants;
 import dms.utils.FilePath;
+import dms.utils.Utils;
 
 @Service("planService")
 public class PlanServiceImpl implements PlanService {
@@ -54,7 +59,7 @@ public class PlanServiceImpl implements PlanService {
 				mf.transferTo(new File(FilePath.planAttachPath + name));
 				lpa.add(new PlanAttach(id, name));
 			}
-			if(lpa.size()!=0) {
+			if (lpa.size() != 0) {
 				planDao.addPlanAttach(lpa);
 			}
 			return true;
@@ -105,8 +110,8 @@ public class PlanServiceImpl implements PlanService {
 				mf.transferTo(new File(FilePath.planAttachPath + fileName));
 				lpa.add(new PlanAttach(id, fileName));
 			}
-			if(lpa.size()!=0) {
-				planDao.addPlanAttach(lpa);	
+			if (lpa.size() != 0) {
+				planDao.addPlanAttach(lpa);
 			}
 			return true;
 		} catch (IOException e) {
@@ -116,7 +121,61 @@ public class PlanServiceImpl implements PlanService {
 	}
 
 	public int delPlan(int id) {
-		
+
 		return planDao.delPlan(id);
+	}
+
+	public int addProcess(String name, int userId, JSONArray columnArr) {
+
+		Process process = new Process(name, userId, Utils.getNowDate("yyyy-MM-dd"));
+		planDao.addProcess(process);
+		int processId = process.getId();
+		List<ProcessColumn> lpc = new ArrayList<ProcessColumn>();
+		for (Object object : columnArr) {
+			JSONObject jo = (JSONObject) object;
+			lpc.add(new ProcessColumn(processId, jo.getString("name"), jo.getString("type")));
+		}
+		planDao.addProcessColumn(lpc);
+		return 1;
+	}
+
+	public List<Process> getProcessList() {
+
+		return planDao.getProcessList();
+	}
+
+	public Process getProcessInfo(int id) {
+
+		return planDao.getProcessInfo(id);
+	}
+
+	public int updateProcessInfo(int id, String name, JSONArray updateArr, JSONArray addArr) {
+
+		planDao.updateProcessInfo(id, name);
+		if (updateArr != null) {
+			for (Object o : updateArr) {
+				JSONObject jo = (JSONObject) o;
+				planDao.updateProcessColumnInfo(Integer.valueOf(jo.getString("id")), jo.getString("name"));
+			}
+		}
+		if (addArr != null) {
+			List<ProcessColumn> lpc = new ArrayList<ProcessColumn>();
+			for (Object o : addArr) {
+				JSONObject jo = (JSONObject) o;
+				lpc.add(new ProcessColumn(id, jo.getString("name"), jo.getString("type")));
+			}
+			planDao.addProcessColumn(lpc);
+		}
+		return 1;
+	}
+	
+	public int delProcess(int id) {
+		
+		return planDao.delProcess(id);
+	}
+	
+	public List<ProcessColumn> getProcessColumnNameInfo(int id){
+		
+		return planDao.getProcessColumnNameInfo(id);
 	}
 }

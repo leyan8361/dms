@@ -1,12 +1,15 @@
 package dms.entity;
 
+import java.util.List;
+
 public class Process {
 
 	private int id;
 	private String name;
 	private int creator;
 	private String createDate;
-	// »±…ŸList<ProcessDetail>
+	private int columnNum;
+	private List<ProcessColumn> lpc;
 	private String isShow;
 
 	public Process() {
@@ -49,6 +52,22 @@ public class Process {
 
 	public void setCreateDate(String createDate) {
 		this.createDate = createDate;
+	}
+
+	public int getColumnNum() {
+		return columnNum;
+	}
+
+	public void setColumnNum(int columnNum) {
+		this.columnNum = columnNum;
+	}
+
+	public List<ProcessColumn> getLpc() {
+		return lpc;
+	}
+
+	public void setLpc(List<ProcessColumn> lpc) {
+		this.lpc = lpc;
 	}
 
 	public String getIsShow() {
