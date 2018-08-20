@@ -10,6 +10,7 @@ import dms.entity.Plan;
 import dms.entity.PlanAttach;
 import dms.entity.Process;
 import dms.entity.ProcessColumn;
+import dms.entity.ProcessContent;
 
 public interface PlanDao {
 
@@ -50,4 +51,11 @@ public interface PlanDao {
 	public int delProcess(int id);
 
 	public List<ProcessColumn> getProcessColumnNameInfo(int id);
+
+	public int addProcessContent(List<ProcessContent> lpc);
+
+	public int updateProcessContent(@Param("processId") int processId, @Param("columnId") int columnId,
+			@Param("flag") String flag, @Param("content") String content);
+
+	public int delProcessContent(@Param("processId") int processId, @Param("flag") String flag);
 }

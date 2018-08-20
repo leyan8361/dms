@@ -171,8 +171,33 @@
 	
 	<!-- 获取指定流程库表列名信息 -->
 	<select id="getProcessColumnNameInfo" parameterType="String" resultType="processColumn">
-		select name,type
+		select id,name,type
 		from t_process_column
 		where isShow = 'show' and processId = #{id}
 	</select>
+	
+	<!-- 添加流程库表内容 -->
+	<insert id="addProcessContent" parameterType="processContent">
+		insert into
+		t_process_content
+		(processId,columnId,flag,content)
+		values
+		<foreach collection="list" item="pc" separator=",">
+			(#{pc.processId},#{pc.columnId},#{pc.flag},#{pc.content})
+		</foreach>
+	</insert>
+	
+	<!-- 修改流程库表内容 -->
+	<update id="updateProcessContent">
+		update t_process_content
+		set content = #{content}
+		where processId = #{processId} and columnId = #{columnId} and flag = #{flag}
+	</update>
+	
+	<!-- 删除流程库表内容 -->
+	<update id="delProcessContent">
+		update t_process_content
+		set isShow = 'notShow'
+		where processId = #{processId} and flag = #{flag}
+	</update>
 </mapper>

@@ -8,4 +8,7 @@ public class FilePath {
 	public static String planAttachPath = File.separator + "application" + File.separator + "shxinzhili"
 			+ File.separator + "data" + File.separator + "dms" + File.separator + "planAttach" + File.separator;
 
+	// 流程库表附件
+		public static String processAttachPath = File.separator + "application" + File.separator + "shxinzhili"
+				+ File.separator + "data" + File.separator + "dms" + File.separator + "processAttach" + File.separator;
 }

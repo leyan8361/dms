@@ -4,7 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +25,7 @@ import dms.entity.Plan;
 import dms.entity.PlanAttach;
 import dms.entity.Process;
 import dms.entity.ProcessColumn;
+import dms.entity.ProcessContent;
 import dms.service.PlanService;
 import dms.utils.Constants;
 import dms.utils.FilePath;
@@ -31,6 +36,8 @@ public class PlanServiceImpl implements PlanService {
 
 	@Autowired
 	private PlanDao planDao;
+
+	private static Logger logger = LoggerFactory.getLogger(PlanServiceImpl.class);
 
 	public List<Line> getLineList() {
 
@@ -64,7 +71,7 @@ public class PlanServiceImpl implements PlanService {
 			}
 			return true;
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			return false;
 		}
 	}
@@ -115,7 +122,7 @@ public class PlanServiceImpl implements PlanService {
 			}
 			return true;
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			return false;
 		}
 	}
@@ -168,14 +175,74 @@ public class PlanServiceImpl implements PlanService {
 		}
 		return 1;
 	}
-	
+
 	public int delProcess(int id) {
-		
+
 		return planDao.delProcess(id);
 	}
-	
-	public List<ProcessColumn> getProcessColumnNameInfo(int id){
-		
+
+	public List<ProcessColumn> getProcessColumnNameInfo(int id) {
+
 		return planDao.getProcessColumnNameInfo(id);
+	}
+
+	public boolean addProcessContent(int processId, String processName, JSONObject contentStr,
+			Map<String, MultipartFile> attachMap) {
+
+		try {
+			Set<String> keySet = contentStr.keySet();
+			String flag = String.valueOf(System.currentTimeMillis());
+			List<ProcessContent> lpc = new ArrayList<ProcessContent>();
+			for (String key : keySet) {
+				String columnId = key.split("_")[1];
+				String content = contentStr.getString(key);
+				lpc.add(new ProcessContent(processId, Integer.valueOf(columnId), flag, content));
+			}
+			Set<String> keySet2 = attachMap.keySet();
+			for (String key : keySet2) {
+				String columnId = key.split("_")[1];
+				MultipartFile mf = attachMap.get(key);
+				String content = System.currentTimeMillis() + "_" + mf.getOriginalFilename();
+				lpc.add(new ProcessContent(processId, Integer.valueOf(columnId), flag, content));
+				mf.transferTo(new File(FilePath.processAttachPath + content));
+			}
+			if (lpc.size() != 0) {
+				planDao.addProcessContent(lpc);
+			}
+			return true;
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+			return false;
+		}
+	}
+
+	public boolean updateProcessContent(int processId, String flag, JSONObject contentStr,
+			Map<String, MultipartFile> attachMap) {
+
+		try {
+			Set<String> keySet = contentStr.keySet();
+			for (String key : keySet) {
+				String columnId = key.split("_")[1];
+				String content = contentStr.getString(key);
+				planDao.updateProcessContent(processId, Integer.valueOf(columnId), flag, content);
+			}
+			Set<String> keySet2 = attachMap.keySet();
+			for (String key : keySet2) {
+				String columnId = key.split("_")[1];
+				MultipartFile mf = attachMap.get(key);
+				String content = System.currentTimeMillis() + "_" + mf.getOriginalFilename();
+				mf.transferTo(new File(FilePath.processAttachPath + content));
+				planDao.updateProcessContent(processId, Integer.valueOf(columnId), flag, content);
+			}
+			return true;
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+			return false;
+		}
+	}
+
+	public int delProcessContent(int processId, String flag) {
+
+		return planDao.delProcessContent(processId, flag);
 	}
 }

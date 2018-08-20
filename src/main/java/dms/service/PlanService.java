@@ -1,10 +1,12 @@
 package dms.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 
 import dms.entity.Line;
@@ -38,9 +40,16 @@ public interface PlanService {
 
 	public Process getProcessInfo(int id);
 
-	public int updateProcessInfo(int id, String name,JSONArray updateArr,JSONArray addArr);
-	
+	public int updateProcessInfo(int id, String name, JSONArray updateArr, JSONArray addArr);
+
 	public int delProcess(int id);
-	
+
 	public List<ProcessColumn> getProcessColumnNameInfo(int id);
+
+	public boolean addProcessContent(int processId, String processName, JSONObject contentStr,
+			Map<String, MultipartFile> attachMap);
+	
+	public boolean updateProcessContent(int processId,String flag,JSONObject contentStr,Map<String, MultipartFile> attachMap);
+	
+	public int delProcessContent(int processId,String flag);
 }

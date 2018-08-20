@@ -138,5 +138,12 @@
 		<appender-ref ref="warn" />
 		<appender-ref ref="error" />
 	</logger>
+	
+	<logger name="dms.serviceImpl" level="DEBUG">
+		<appender-ref ref="debug" />
+		<appender-ref ref="info" />
+		<appender-ref ref="warn" />
+		<appender-ref ref="error" />
+	</logger>
 
 </configuration>

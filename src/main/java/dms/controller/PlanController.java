@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -376,6 +377,106 @@ public class PlanController {
 		List<ProcessColumn> list = planService.getProcessColumnNameInfo(id);
 		resMap.put("status", Constants.successStatus);
 		resMap.put("info", JSON.toJSONString(list));
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 添加流程库表的内容
+	 * 
+	 * @param processId
+	 *            流程库表Id
+	 * @param processName
+	 *            流程库表名
+	 * @param contentStr
+	 *            字符串型的内容 {"col_1":"","col_3":"",..} 格式:col_加上该列的Id
+	 * @param 上传的附件内容
+	 *            格式: 文件名 col_+列Id 如col_X
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "addProcessContent", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String addProcessContent(@RequestParam("processId") int processId,
+			@RequestParam("processName") String processName, @RequestParam("contentStr") String contentStr,
+			MultipartHttpServletRequest multiReq, HttpServletRequest req) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		boolean res = planService.addProcessContent(processId, processName, JSONObject.parseObject(contentStr),
+				multiReq.getFileMap());
+		if (res == true) {
+			resMap.put("status", Constants.successStatus);
+			resMap.put("info", "添加成功");
+		} else {
+			resMap.put("status", Constants.apiErrorStatus);
+			resMap.put("info", "添加失败");
+		}
+		JSONObject jo = (JSONObject) req.getAttribute("user");
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+				String.valueOf(jo.get("userName")), "添加流程库表:" + processName + "内容"));
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 修改流程库表的内容
+	 * 
+	 * @param processId
+	 *            流程库表Id
+	 * @param processName
+	 *            流程库表名
+	 * @param flag
+	 *            行标识
+	 * @param contentStr
+	 *            字符串型的内容 {"col_1":"","col_3":"",..} 格式:col_加上该列的Id
+	 * @param 上传的附件内容
+	 *            格式: 文件名 col_+列Id 如col_X
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "updateProcessContent", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String updateProcessContent(@RequestParam("processId") int processId,
+			@RequestParam("processName") String processName, @RequestParam("flag") String flag,
+			@RequestParam("contentStr") String contentStr, MultipartHttpServletRequest multiReq,
+			HttpServletRequest req) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		boolean res = planService.updateProcessContent(processId, flag, JSONObject.parseObject(contentStr),
+				multiReq.getFileMap());
+		if (res == true) {
+			resMap.put("status", Constants.successStatus);
+			resMap.put("info", "修改成功");
+		} else {
+			resMap.put("status", Constants.apiErrorStatus);
+			resMap.put("info", "修改失败");
+		}
+		JSONObject jo = (JSONObject) req.getAttribute("user");
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+				String.valueOf(jo.get("userName")), "修改流程库表:" + processName + "内容"));
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 删除流程库表的内容
+	 * 
+	 * @param processId
+	 *            流程库表Id
+	 * @param processName
+	 *            流程库表名
+	 * @param flag
+	 *            行标识
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "delProcessContent", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String delProcessContent(@RequestParam("processId") int processId,
+			@RequestParam("processName") String processName, @RequestParam("flag") String flag,
+			HttpServletRequest req) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		resMap.put("status", Constants.successStatus);
+		planService.delProcessContent(processId, flag);
+		resMap.put("info", "删除成功");
+		JSONObject jo = (JSONObject) req.getAttribute("user");
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+				String.valueOf(jo.get("userName")), "删除流程库表:" + processName + "内容"));
 		return JSON.toJSONString(resMap);
 	}
 }
