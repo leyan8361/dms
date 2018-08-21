@@ -9,6 +9,10 @@ public class FilePath {
 			+ File.separator + "data" + File.separator + "dms" + File.separator + "planAttach" + File.separator;
 
 	// 流程库表附件
-		public static String processAttachPath = File.separator + "application" + File.separator + "shxinzhili"
-				+ File.separator + "data" + File.separator + "dms" + File.separator + "processAttach" + File.separator;
+	public static String processAttachPath = File.separator + "application" + File.separator + "shxinzhili"
+			+ File.separator + "data" + File.separator + "dms" + File.separator + "processAttach" + File.separator;
+
+	// 资料库附件
+	public static String infoAttachPath = File.separator + "application" + File.separator + "shxinzhili"
+			+ File.separator + "data" + File.separator + "dms" + File.separator + "infoAttach" + File.separator;
 }

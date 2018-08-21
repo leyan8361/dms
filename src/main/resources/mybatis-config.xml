@@ -18,6 +18,9 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		<typeAlias type="dms.entity.Process" alias="process" />
 		<typeAlias type="dms.entity.ProcessColumn" alias="processColumn" />
 		<typeAlias type="dms.entity.ProcessContent" alias="processContent" />
+		<typeAlias type="dms.entity.Info" alias="info" />
+		<typeAlias type="dms.entity.InfoColumn" alias="infoColumn" />
+		<typeAlias type="dms.entity.InfoContent" alias="infoContent" />
 	</typeAliases>
 
 	<plugins>

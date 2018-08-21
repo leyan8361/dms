@@ -1,21 +1,19 @@
 package dms;
 
-import java.util.Set;
+import javax.annotation.Resource;
 
 import org.junit.Test;
 
-import com.alibaba.fastjson.JSONObject;
+import dms.service.PlanService;
 
 public class PlanTest extends BaseJunit4Test {
 
-	@Test
-	public void test() {
+	@Resource(name = "planService")
+	private PlanService planService;
 
-		String str = "{\"userId\":\"s\",\"sd\":\"ccc\",\"vfe\":\"ss\"}";
-		JSONObject jo = JSONObject.parseObject(str);
-		Set<String> keySet = jo.keySet();
-		for (String string : keySet) {
-			System.out.println(string + ":" + jo.getString(string));
-		}
+	@Test
+	public void getProcessContent() {
+
+		planService.getProcessContent(1,"1","1");
 	}
 }

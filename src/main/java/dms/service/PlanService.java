@@ -9,6 +9,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 
+import dms.entity.Info;
+import dms.entity.InfoColumn;
 import dms.entity.Line;
 import dms.entity.LineStation;
 import dms.entity.Plan;
@@ -48,8 +50,32 @@ public interface PlanService {
 
 	public boolean addProcessContent(int processId, String processName, JSONObject contentStr,
 			Map<String, MultipartFile> attachMap);
+
+	public boolean updateProcessContent(int processId, String flag, JSONObject contentStr,
+			Map<String, MultipartFile> attachMap);
+
+	public int delProcessContent(int processId, String flag);
+
+	public JSONObject getProcessContent(int processId, String columnId, String content);
+
+	public int addInfo(String name, int userId, JSONArray columnArr);
 	
-	public boolean updateProcessContent(int processId,String flag,JSONObject contentStr,Map<String, MultipartFile> attachMap);
+	public List<Info> getInfoList();
 	
-	public int delProcessContent(int processId,String flag);
+	public Info getInfoInfo(int id);
+	
+	public int updateInfoInfo(int id, String name, JSONArray updateArr, JSONArray addArr);
+	
+	public int delInfo(int id);
+	
+	public List<InfoColumn> getInfoColumnNameInfo(int id);
+	
+	public boolean addInfoContent(int infoId, String InfoName, JSONObject contentStr,
+			Map<String, MultipartFile> attachMap);
+	
+	public boolean updateInfoContent(int infoId,String flag,JSONObject contentStr,Map<String, MultipartFile> attachMap);
+	
+	public int delInfoContent(int infoId,String flag);
+	
+	public JSONObject getInfoContent(int infoId,String columnId,String content);
 }

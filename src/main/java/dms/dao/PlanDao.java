@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import dms.entity.Info;
+import dms.entity.InfoColumn;
+import dms.entity.InfoContent;
 import dms.entity.Line;
 import dms.entity.LineStation;
 import dms.entity.Plan;
@@ -58,4 +61,31 @@ public interface PlanDao {
 			@Param("flag") String flag, @Param("content") String content);
 
 	public int delProcessContent(@Param("processId") int processId, @Param("flag") String flag);
+
+	public List<ProcessContent> getProcessContentList(int processId);
+
+	public int addInfo(Info info);
+
+	public int addInfoColumn(List<InfoColumn> lic);
+
+	public List<Info> getInfoList();
+
+	public Info getInfoInfo(int id);
+
+	public int updateInfoInfo(@Param("id") int id, @Param("name") String name);
+
+	public int updateInfoColumnInfo(@Param("id") int id, @Param("name") String name);
+
+	public int delInfo(int id);
+
+	public List<InfoColumn> getInfoColumnNameInfo(int id);
+
+	public int addInfoContent(List<InfoContent> lic);
+	
+	public int updateInfoContent(@Param("infoId") int processId, @Param("columnId") int columnId,
+			@Param("flag") String flag, @Param("content") String content);
+	
+	public int delInfoContent(@Param("infoId") int infoId, @Param("flag") String flag);
+	
+	public List<InfoContent> getInfoContentList(int infoId);
 }

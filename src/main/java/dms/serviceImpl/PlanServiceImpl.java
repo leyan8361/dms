@@ -19,6 +19,9 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
 import dms.dao.PlanDao;
+import dms.entity.Info;
+import dms.entity.InfoColumn;
+import dms.entity.InfoContent;
 import dms.entity.Line;
 import dms.entity.LineStation;
 import dms.entity.Plan;
@@ -244,5 +247,171 @@ public class PlanServiceImpl implements PlanService {
 	public int delProcessContent(int processId, String flag) {
 
 		return planDao.delProcessContent(processId, flag);
+	}
+
+	public JSONObject getProcessContent(int processId, String columnId, String content) {
+
+		List<ProcessContent> lpc = planDao.getProcessContentList(processId);
+		JSONObject jo = new JSONObject();
+		for (ProcessContent pc : lpc) {
+			if (!"".equals(columnId)) {
+				if (pc.getColumnId() == Integer.valueOf(columnId) && pc.getContent().indexOf(content) != -1) {
+					jo.put(pc.getFlag(), new JSONArray());
+				}
+			} else {
+				jo.put(pc.getFlag(), new JSONArray());
+			}
+		}
+		// System.out.println(jo);
+		for (ProcessContent pc : lpc) {
+			JSONArray ja = (JSONArray) jo.get(pc.getFlag());
+			if (ja != null) {
+				JSONObject jo2 = new JSONObject();
+				jo2.put("columnId", pc.getColumnId());
+				jo2.put("content", pc.getContent() == null ? "" : pc.getContent());
+				ja.add(jo2);
+			}
+		}
+		return jo;
+	}
+
+	public int addInfo(String name, int userId, JSONArray columnArr) {
+
+		Info info = new Info(name, userId, Utils.getNowDate("yyyy-MM-dd"));
+		planDao.addInfo(info);
+		int infoId = info.getId(); // 获取新添加的资料库的Id
+		List<InfoColumn> lic = new ArrayList<InfoColumn>();
+		for (Object o : columnArr) {
+			JSONObject jo = (JSONObject) o;
+			lic.add(new InfoColumn(infoId, jo.getString("name"), jo.getString("type")));
+		}
+		planDao.addInfoColumn(lic);
+		return 1;
+	}
+
+	public List<Info> getInfoList() {
+
+		return planDao.getInfoList();
+	}
+
+	public Info getInfoInfo(int id) {
+
+		return planDao.getInfoInfo(id);
+	}
+
+	public int updateInfoInfo(int id, String name, JSONArray updateArr, JSONArray addArr) {
+
+		planDao.updateInfoInfo(id, name);
+		if (updateArr != null) {
+			for (Object o : updateArr) {
+				JSONObject jo = (JSONObject) o;
+				planDao.updateInfoColumnInfo(Integer.valueOf(jo.getString("id")), jo.getString("name"));
+			}
+		}
+		if (addArr != null) {
+			List<InfoColumn> lic = new ArrayList<InfoColumn>();
+			for (Object o : addArr) {
+				JSONObject jo = (JSONObject) o;
+				lic.add(new InfoColumn(id, jo.getString("name"), jo.getString("type")));
+			}
+			planDao.addInfoColumn(lic);
+		}
+		return 1;
+	}
+	
+	public int delInfo(int id) {
+
+		return planDao.delInfo(id);
+	}
+	
+	public List<InfoColumn> getInfoColumnNameInfo(int id) {
+
+		return planDao.getInfoColumnNameInfo(id);
+	}
+	
+	public boolean addInfoContent(int infoId, String infoName, JSONObject contentStr,
+			Map<String, MultipartFile> attachMap) {
+
+		try {
+			Set<String> keySet = contentStr.keySet();
+			String flag = String.valueOf(System.currentTimeMillis());
+			List<InfoContent> lic = new ArrayList<InfoContent>();
+			for (String key : keySet) {
+				String columnId = key.split("_")[1];
+				String content = contentStr.getString(key);
+				lic.add(new InfoContent(infoId, Integer.valueOf(columnId), flag, content));
+			}
+			Set<String> keySet2 = attachMap.keySet();
+			for (String key : keySet2) {
+				String columnId = key.split("_")[1];
+				MultipartFile mf = attachMap.get(key);
+				String content = System.currentTimeMillis() + "_" + mf.getOriginalFilename();
+				lic.add(new InfoContent(infoId, Integer.valueOf(columnId), flag, content));
+				mf.transferTo(new File(FilePath.infoAttachPath + content));
+			}
+			if (lic.size() != 0) {
+				planDao.addInfoContent(lic);
+			}
+			return true;
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+			return false;
+		}
+	}
+	
+	public boolean updateInfoContent(int infoId, String flag, JSONObject contentStr,
+			Map<String, MultipartFile> attachMap) {
+
+		try {
+			Set<String> keySet = contentStr.keySet();
+			for (String key : keySet) {
+				String columnId = key.split("_")[1];
+				String content = contentStr.getString(key);
+				planDao.updateInfoContent(infoId, Integer.valueOf(columnId), flag, content);
+			}
+			Set<String> keySet2 = attachMap.keySet();
+			for (String key : keySet2) {
+				String columnId = key.split("_")[1];
+				MultipartFile mf = attachMap.get(key);
+				String content = System.currentTimeMillis() + "_" + mf.getOriginalFilename();
+				mf.transferTo(new File(FilePath.infoAttachPath + content));
+				planDao.updateInfoContent(infoId, Integer.valueOf(columnId), flag, content);
+			}
+			return true;
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+			return false;
+		}
+	}
+	
+	public int delInfoContent(int infoId,String flag) {
+		
+		return planDao.delInfoContent(infoId, flag);
+	}
+	
+	public JSONObject getInfoContent(int infoId, String columnId, String content) {
+
+		List<InfoContent> lic = planDao.getInfoContentList(infoId);
+		JSONObject jo = new JSONObject();
+		for (InfoContent ic : lic) {
+			if (!"".equals(columnId)) {
+				if (ic.getColumnId() == Integer.valueOf(columnId) && ic.getContent().indexOf(content) != -1) {
+					jo.put(ic.getFlag(), new JSONArray());
+				}
+			} else {
+				jo.put(ic.getFlag(), new JSONArray());
+			}
+		}
+		// System.out.println(jo);
+		for (InfoContent ic : lic) {
+			JSONArray ja = (JSONArray) jo.get(ic.getFlag());
+			if (ja != null) {
+				JSONObject jo2 = new JSONObject();
+				jo2.put("columnId", ic.getColumnId());
+				jo2.put("content", ic.getContent() == null ? "" : ic.getContent());
+				ja.add(jo2);
+			}
+		}
+		return jo;
 	}
 }
