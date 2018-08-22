@@ -14,6 +14,8 @@ public class PlanTest extends BaseJunit4Test {
 	@Test
 	public void getProcessContent() {
 
-		planService.getProcessContent(1,"1","1");
+//		planService.getProcessContent(1,"1","1");
+		String s = "";
+		String[] s1 = s.split(",");
 	}
 }

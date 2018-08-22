@@ -21,6 +21,13 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		<typeAlias type="dms.entity.Info" alias="info" />
 		<typeAlias type="dms.entity.InfoColumn" alias="infoColumn" />
 		<typeAlias type="dms.entity.InfoContent" alias="infoContent" />
+		<typeAlias type="dms.entity.Task" alias="task" />
+		<typeAlias type="dms.entity.TaskAttach" alias="taskAttach" />
+		<typeAlias type="dms.entity.TaskUser" alias="taskUser" />
+		<typeAlias type="dms.entity.TaskSaveStatus" alias="taskSaveStatus" />
+		<typeAlias type="dms.entity.TaskSave" alias="taskSave" />
+		<typeAlias type="dms.entity.TaskSaveAttach" alias="taskSaveAttach" />
+		<typeAlias type="dms.entity.TaskSaveUser" alias="taskSaveUser" />
 	</typeAliases>
 
 	<plugins>

@@ -87,6 +87,8 @@
 				propagation="REQUIRED" read-only="false" rollback-for="Exception" />
 			<tx:method name="del*" isolation="DEFAULT"
 				propagation="REQUIRED" read-only="false" rollback-for="Exception" />
+			<tx:method name="save*" isolation="DEFAULT"
+				propagation="REQUIRED" read-only="false" rollback-for="Exception" />
 		</tx:attributes>
 	</tx:advice>
 
