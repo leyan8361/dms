@@ -15,6 +15,7 @@ public class Task {
 	private String createDate;
 	private List<TaskAttach> lta;
 	private List<TaskUser> ltu;
+	private String isTransfer; // 是否移交
 	private String isDone; // 是否完成
 	private String isShow;
 
@@ -136,6 +137,14 @@ public class Task {
 
 	public void setIsDone(String isDone) {
 		this.isDone = isDone;
+	}
+
+	public String getIsTransfer() {
+		return isTransfer;
+	}
+
+	public void setIsTransfer(String isTransfer) {
+		this.isTransfer = isTransfer;
 	}
 
 }

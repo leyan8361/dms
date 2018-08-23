@@ -8,7 +8,7 @@
 		select 
 		id,userName
 		from t_userinfo
-		where isShow = 'show'
+		where isShow = 'show' and status = 0
 		order by id asc
 	</select>
 	
@@ -51,10 +51,108 @@
 	</update>
 	
 	<!-- 检查用户是否有保存的发布任务信息 -->
-	<select id="checkTaskSave" parameterType="int" resultType="int">
+	<select id="checkTaskSave" parameterType="int" resultType="String">
 		select
 		addId
 		from t_task_save_status
-		where userId = #{userId}
+		where userId = #{userId} and addStatus = 1
 	</select>
+	
+	<!-- 获取保存的任务发布信息 -->
+	<select id="getSaveTaskInfo" parameterType="int" resultMap="getSaveTaskInfoMap">
+		select 
+		t1.content,t1.deadLine,t1.attention,t1.remark,t2.path,t3.userId,t3.userName
+		from 
+		(select * from t_task_save where id = #{taskSaveId}) t1 
+		LEFT JOIN t_task_save_attach t2 on t2.taskSaveId = t1.id and t1.id = #{taskSaveId} 
+		LEFT JOIN t_task_save_user t3 on t3.taskSaveId = t1.id and t1.id = #{taskSaveId}
+	</select>
+	
+	<resultMap type="taskSave" id="getSaveTaskInfoMap">
+		<result column="content" property="content" />
+		<result column="deadLine" property="deadLine" />
+		<result column="attention" property="attention" />
+		<result column="remark" property="remark" />
+		<collection property="ltsa" ofType="taskSaveAttach" column="id">
+			<result column="path" property="path" />
+		</collection>
+		<collection property="ltsu" ofType="taskSaveUser" column="id" >
+			<result column="userId" property="userId" />
+			<result column="userName" property="userName" />
+		</collection>
+	</resultMap>
+	
+	<!-- 发布任务信息 -->
+	<insert id="addTaskInfo" parameterType="task" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		insert into
+		t_task
+		(content,deadLine,level,parentId,attention,remark,creator,createDate)
+		values
+		(#{content},#{deadLine},#{level},#{parentId},#{attention},#{remark},#{creator},#{createDate})
+	</insert>
+	
+	<!-- 添加任务附件信息 -->
+	<insert id="addTaskAttachInfo" parameterType="taskAttach">
+		insert into
+		t_task_attach
+		(taskId,path)
+		values
+		<foreach collection="list" item="ta" separator=",">
+			(#{ta.taskId},#{ta.path})
+		</foreach>
+	</insert>
+	
+	<!-- 添加任务人员信息 -->
+	<insert id="addTaskUserInfo" parameterType="taskUser">
+		insert into
+		t_task_user
+		(taskId,userId,userName)
+		values
+		<foreach collection="list" item="tu" separator=",">
+			(#{tu.taskId},#{tu.userId},#{tu.userName})
+		</foreach>
+	</insert>
+	
+	<!-- 发布任务后修改保存信息的状态 -->
+	<update id="updateSaveAddStatusAfterPublishTask" parameterType="int">
+		update t_task_save_status
+		set addStatus = 0
+		where userId = #{userId}
+	</update>
+	
+	<!-- 获取当前用户尚未完成的任务列表(任务状态在自己身上) -->
+	<select id="getMyUnDoTaskList" parameterType="int" resultType="map">
+		select 
+		t1.id,t1.content
+		from 
+		t_task t1,t_task_user t2
+		where t1.isShow = 'show' and isDone = 'no' and isTransfer = 'no'
+		and t2.taskId = t1.id and t2.userId = 1
+		order by t1.id
+	</select>
+	
+	<!-- 获取任务的详细信息 -->
+	<select id="getTaskInfo" parameterType="int" resultMap="getTaskInfoMap">
+		select 
+		t1.id,t1.content,t1.deadLine,t1.attention,t1.remark,t2.path,t3.userId,t3.userName
+		from 
+		(select * from t_task where id = #{taskId}) t1 
+		LEFT JOIN t_task_attach t2 on t2.taskId = t1.id and t1.id = #{taskId}
+		LEFT JOIN t_task_user t3 on t3.taskId = t1.id and t1.id = #{taskId}
+	</select>
+	
+	<resultMap type="task" id="getTaskInfoMap">
+		<id column="id" property="id" />
+		<result column="content" property="content" />
+		<result column="deadLine" property="deadLine" />
+		<result column="attention" property="attention" />
+		<result column="remark" property="remark" />
+		<collection property="lta" ofType="taskAttach" column="id">
+			<result column="path" property="path" />
+		</collection>
+		<collection property="ltu" ofType="taskUser" column="id" >
+			<result column="userId" property="userId" />
+			<result column="userName" property="userName" />
+		</collection>
+	</resultMap>
 </mapper>
