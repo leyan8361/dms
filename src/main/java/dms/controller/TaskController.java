@@ -172,7 +172,7 @@ public class TaskController {
 			resMap.put("status", Constants.apiErrorStatus);
 			resMap.put("info", "发布失败");
 		}
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
 				String.valueOf(jo.get("userName")), "发布了条新任务"));
 		return JSON.toJSONString(resMap);
 	}

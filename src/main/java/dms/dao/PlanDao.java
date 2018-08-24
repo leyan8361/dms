@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import dms.entity.AccidentReport;
+import dms.entity.AccidentReportAttach;
 import dms.entity.Info;
 import dms.entity.InfoColumn;
 import dms.entity.InfoContent;
@@ -88,4 +90,8 @@ public interface PlanDao {
 	public int delInfoContent(@Param("infoId") int infoId, @Param("flag") String flag);
 	
 	public List<InfoContent> getInfoContentList(int infoId);
+	
+	public int addAccidentReport(AccidentReport ar);
+	
+	public int addAccidentReportAttach(List<AccidentReportAttach> lara);
 }

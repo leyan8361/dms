@@ -314,4 +314,26 @@
 		from t_info_content 
 		where infoId = #{infoId} and isShow = 'show' order by columnId
 	</select>
+	
+	<!-- 新增运营事故报告 -->
+	<insert id="addAccidentReport" parameterType="accidentReport" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		insert into
+		t_accident_report
+		(eventName,eventAddress,occurDate,relatedPerson,rank,eventSummary,affect,analysisAndReform,opinion,analysisMember
+		otherExplain,fillDepart,fillDate,fillPerson,responsiblePerson)
+		values
+		(#{eventName},#{eventAddress},#{occurDate},#{relatedPerson},#{rank},#{eventSummary},#{affect},#{analysisAndReform},#{opinion},#{analysisMember}
+		#{otherExplain},#{fillDepart},#{fillDate},#{fillPerson},#{responsiblePerson})
+	</insert>
+	
+	<!-- 新增运营事故报告附件 -->
+	<insert id="addAccidentReportAttach" parameterType="accidentReportAttach">
+		insert into
+		t_accident_report_attach
+		(reportId,path)
+		values
+		<foreach collection="list" item="ara" separator=",">
+			(#{ara.reportId},#{ara.path})
+		</foreach>
+	</insert>
 </mapper>

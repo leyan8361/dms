@@ -19,6 +19,8 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
 import dms.dao.PlanDao;
+import dms.entity.AccidentReport;
+import dms.entity.AccidentReportAttach;
 import dms.entity.Info;
 import dms.entity.InfoColumn;
 import dms.entity.InfoContent;
@@ -318,17 +320,17 @@ public class PlanServiceImpl implements PlanService {
 		}
 		return 1;
 	}
-	
+
 	public int delInfo(int id) {
 
 		return planDao.delInfo(id);
 	}
-	
+
 	public List<InfoColumn> getInfoColumnNameInfo(int id) {
 
 		return planDao.getInfoColumnNameInfo(id);
 	}
-	
+
 	public boolean addInfoContent(int infoId, String infoName, JSONObject contentStr,
 			Map<String, MultipartFile> attachMap) {
 
@@ -358,7 +360,7 @@ public class PlanServiceImpl implements PlanService {
 			return false;
 		}
 	}
-	
+
 	public boolean updateInfoContent(int infoId, String flag, JSONObject contentStr,
 			Map<String, MultipartFile> attachMap) {
 
@@ -383,12 +385,12 @@ public class PlanServiceImpl implements PlanService {
 			return false;
 		}
 	}
-	
-	public int delInfoContent(int infoId,String flag) {
-		
+
+	public int delInfoContent(int infoId, String flag) {
+
 		return planDao.delInfoContent(infoId, flag);
 	}
-	
+
 	public JSONObject getInfoContent(int infoId, String columnId, String content) {
 
 		List<InfoContent> lic = planDao.getInfoContentList(infoId);
@@ -413,5 +415,26 @@ public class PlanServiceImpl implements PlanService {
 			}
 		}
 		return jo;
+	}
+
+	public boolean addAccidentReport(AccidentReport ar, MultipartFile[] attachArr) {
+
+		try {
+			planDao.addAccidentReport(ar);
+			int reportId = ar.getId();
+			List<AccidentReportAttach> lara = new ArrayList<AccidentReportAttach>();
+			for (MultipartFile mf : attachArr) {
+				String name = System.currentTimeMillis() + "_" + mf.getOriginalFilename();
+				mf.transferTo(new File(FilePath.accidentReportAttachPath + name));
+				lara.add(new AccidentReportAttach(reportId, name));
+			}
+			if (lara.size() != 0) {
+				planDao.addAccidentReportAttach(lara);
+			}
+			return true;
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+			return false;
+		}
 	}
 }

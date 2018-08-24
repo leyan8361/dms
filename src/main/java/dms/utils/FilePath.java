@@ -19,4 +19,9 @@ public class FilePath {
 	// 任务附件
 	public static String taskAttachPath = File.separator + "application" + File.separator + "shxinzhili"
 			+ File.separator + "data" + File.separator + "dms" + File.separator + "taskAttach" + File.separator;
+
+	// 运营事故报告附件
+	public static String accidentReportAttachPath = File.separator + "application" + File.separator + "shxinzhili"
+			+ File.separator + "data" + File.separator + "dms" + File.separator + "accidentReportAttach"
+			+ File.separator;
 }

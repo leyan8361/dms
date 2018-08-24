@@ -705,7 +705,7 @@ public class PlanController {
 				String.valueOf(jo.get("userName")), "修改资料库:" + infoName + "内容"));
 		return JSON.toJSONString(resMap);
 	}
-	
+
 	/**
 	 * 删除资料库的内容
 	 * 
@@ -719,9 +719,8 @@ public class PlanController {
 	 * @return
 	 */
 	@RequestMapping(value = "delInfoContent", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
-	public String delInfoContent(@RequestParam("infoId") int infoId,
-			@RequestParam("infoName") String infoName, @RequestParam("flag") String flag,
-			HttpServletRequest req) {
+	public String delInfoContent(@RequestParam("infoId") int infoId, @RequestParam("infoName") String infoName,
+			@RequestParam("flag") String flag, HttpServletRequest req) {
 
 		Map<String, String> resMap = new HashMap<String, String>();
 		resMap.put("status", Constants.successStatus);
@@ -732,7 +731,7 @@ public class PlanController {
 				String.valueOf(jo.get("userName")), "删除流程库表:" + infoName + "内容"));
 		return JSON.toJSONString(resMap);
 	}
-	
+
 	/**
 	 * 查询流程库表内容
 	 * 
@@ -754,6 +753,15 @@ public class PlanController {
 		JSONObject jo = planService.getInfoContent(infoId, columnId, content);
 		resMap.put("status", Constants.successStatus);
 		resMap.put("info", JSON.toJSONString(jo));
+		return JSON.toJSONString(resMap);
+	}
+
+	public String addAccidentReport(@RequestParam("reportInfo") String reportInfo,
+			@RequestParam("attachArr") MultipartFile[] attachArr, HttpServletRequest req) {
+
+		// TODO 需要添加关联报告编号
+		Map<String, String> resMap = new HashMap<String, String>();
+		
 		return JSON.toJSONString(resMap);
 	}
 }
