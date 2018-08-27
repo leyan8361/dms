@@ -5,6 +5,7 @@ import java.util.List;
 public class AccidentReport {
 
 	private int id;
+	private String no;
 	private String eventName;
 	private String eventAddress;
 	private String occurDate;
@@ -27,9 +28,11 @@ public class AccidentReport {
 
 	}
 
-	public AccidentReport(String eventName, String eventAddress, String occurDate, String relatedPerson, String rank,
-			String eventSummary, String affect, String analysisAndReform, String opinion, String analysisMember,
-			String otherExplain, String fillDepart, String fillDate, String fillPerson, String responsiblePerson) {
+	public AccidentReport(String no, String eventName, String eventAddress, String occurDate, String relatedPerson,
+			String rank, String eventSummary, String affect, String analysisAndReform, String opinion,
+			String analysisMember, String otherExplain, String fillDepart, String fillDate, String fillPerson,
+			String responsiblePerson) {
+		this.no = no;
 		this.eventName = eventName;
 		this.eventAddress = eventAddress;
 		this.occurDate = occurDate;
@@ -53,6 +56,14 @@ public class AccidentReport {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getNo() {
+		return no;
+	}
+
+	public void setNo(String no) {
+		this.no = no;
 	}
 
 	public String getEventName() {

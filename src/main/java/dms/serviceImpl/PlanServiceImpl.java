@@ -417,6 +417,16 @@ public class PlanServiceImpl implements PlanService {
 		return jo;
 	}
 
+	public String getAccidentReportNo() {
+
+		return planDao.getAccidentReportNo();
+	}
+
+	public int updateAccidentReportNo(String no) {
+
+		return planDao.updateAccidentReportNo(no);
+	}
+
 	public boolean addAccidentReport(AccidentReport ar, MultipartFile[] attachArr) {
 
 		try {
@@ -436,5 +446,68 @@ public class PlanServiceImpl implements PlanService {
 			logger.error(e.getMessage());
 			return false;
 		}
+	}
+
+	public List<Map<String, String>> getAccidentReportList(String eventName, String eventAddress, String rank,
+			String occurDate) {
+
+		return planDao.getAccidentReportList(eventName, eventAddress, rank, occurDate);
+	}
+
+	public List<String> getAccidentReportAttachList(int id) {
+
+		return planDao.getAccidentReportAttachList(id);
+	}
+
+	public AccidentReport getAccidentReportInfo(int id) {
+
+		return planDao.getAccidentReportInfo(id);
+	}
+
+	public boolean updateAccidentReportInfo(int id, String eventName, String eventAddress, String occurDate,
+			String relatedPerson, String rank, String eventSummary, String affect, String analysisAndReform,
+			String opinion, String analysisMember, String otherExplain, String fillDepart, String fillDate,
+			String fillPerson, String responsiblePerson, int[] delArr, MultipartFile[] attachArr) {
+
+		try {
+			String delStr = "";
+			if (delArr.length == 0) {
+				delStr = " < 0";
+			} else {
+				StringBuilder sb = new StringBuilder();
+				sb.append(" in (");
+				for (int i = 0; i < delArr.length; i++) {
+					if (i == 0) {
+						sb.append(delArr[i]);
+					} else {
+						sb.append("," + delArr[i]);
+					}
+				}
+				sb.append(")");
+				delStr = sb.toString();
+			}
+			planDao.delAccidentReportAttachInfo(delStr);
+			planDao.updateAccidentReportInfo(id, eventName, eventAddress, occurDate, relatedPerson, rank, eventSummary,
+					affect, analysisAndReform, opinion, analysisMember, otherExplain, fillDepart, fillDate, fillPerson,
+					responsiblePerson);
+			List<AccidentReportAttach> lara = new ArrayList<AccidentReportAttach>();
+			for (MultipartFile mf : attachArr) {
+				String name = System.currentTimeMillis() + "_" + mf.getOriginalFilename();
+				lara.add(new AccidentReportAttach(id, name));
+				mf.transferTo(new File(FilePath.accidentReportAttachPath + name));
+			}
+			if (lara.size() != 0) {
+				planDao.addAccidentReportAttach(lara);
+			}
+			return true;
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+			return false;
+		}
+	}
+	
+	public int delAccidentReportInfo(int id) {
+		
+		return planDao.delAccidentReportInfo(id);
 	}
 }

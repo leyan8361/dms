@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,6 +21,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 
+import dms.entity.AccidentReport;
 import dms.entity.Info;
 import dms.entity.InfoColumn;
 import dms.entity.Line;
@@ -756,12 +758,265 @@ public class PlanController {
 		return JSON.toJSONString(resMap);
 	}
 
-	public String addAccidentReport(@RequestParam("reportInfo") String reportInfo,
+	/**
+	 * 获取运营报告编号
+	 * 
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "getAccidentReportNo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String getAccidentReportNo() {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		String no = planService.getAccidentReportNo();
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", no);
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 修改运营报告编号
+	 * 
+	 * @param no
+	 *            编号
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "updateAccidentReportNo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String updateAccidentReportNo(@RequestParam("no") String no, HttpServletRequest req) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		planService.updateAccidentReportNo(no);
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", "修改成功");
+		JSONObject jo = (JSONObject) req.getAttribute("user");
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+				String.valueOf(jo.get("userName")), "修改了运营报告编号:" + no));
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 新增运营事故报告
+	 * 
+	 * @param no
+	 *            报告编号
+	 * @param eventName
+	 *            事件名称
+	 * @param eventAddress
+	 *            时间地址
+	 * @param occurDate
+	 *            发生时间(yyyy-MM-dd hh:mm)
+	 * @param relatedPerson
+	 *            相关人员
+	 * @param rank
+	 *            初判等级
+	 * @param eventSummary
+	 *            事件概况
+	 * @param affect
+	 *            影响情况
+	 * @param analysisAndReform
+	 *            过程分析及整改要求
+	 * @param opinion
+	 *            处理意见
+	 * @param analysisMember
+	 *            专题分析会成员用单
+	 * @param otherExplain
+	 *            其他需要说明
+	 * @param fillDepart
+	 *            填报部门
+	 * @param fillDate
+	 *            填报日期(yyyy-MM-dd)
+	 * @param fillPerson
+	 *            填报人
+	 * @param responsiblePerson
+	 *            负责人
+	 * @param attachArr
+	 *            附件数组
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "addAccidentReport", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String addAccidentReport(@RequestParam("no") String no, @RequestParam("eventName") String eventName,
+			@RequestParam("eventAddress") String eventAddress, @RequestParam("occurDate") String occurDate,
+			@RequestParam("relatedPerson") String relatedPerson, @RequestParam("rank") String rank,
+			@RequestParam("eventSummary") String eventSummary, @RequestParam("affect") String affect,
+			@RequestParam("analysisAndReform") String analysisAndReform, @RequestParam("opinion") String opinion,
+			@RequestParam("analysisMember") String analysisMember, @RequestParam("otherExplain") String otherExplain,
+			@RequestParam("fillDepart") String fillDepart, @RequestParam("fillDate") String fillDate,
+			@RequestParam("fillPerson") String fillPerson, @RequestParam("responsiblePerson") String responsiblePerson,
 			@RequestParam("attachArr") MultipartFile[] attachArr, HttpServletRequest req) {
 
-		// TODO 需要添加关联报告编号
 		Map<String, String> resMap = new HashMap<String, String>();
-		
+		boolean res = planService.addAccidentReport(new AccidentReport(no, eventName, eventAddress, occurDate,
+				relatedPerson, rank, eventSummary, affect, analysisAndReform, opinion, analysisMember, otherExplain,
+				fillDepart, fillDate, fillPerson, responsiblePerson), attachArr);
+		if (res == true) {
+			resMap.put("status", Constants.successStatus);
+			resMap.put("info", "新增成功");
+		} else {
+			resMap.put("status", Constants.apiErrorStatus);
+			resMap.put("info", "新增失败");
+		}
+		JSONObject jo = (JSONObject) req.getAttribute("user");
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+				String.valueOf(jo.get("userName")), "运营事故报告:" + eventName));
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 获取运营报告列表
+	 * 
+	 * @param eventName
+	 *            事件名称
+	 * @param eventAddress
+	 *            事件地址
+	 * @param rank
+	 *            初判等级
+	 * @param occurDate
+	 *            发生时间(yyyy-MM-dd hh:mm)
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "getAccidentReportList", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String getAccidentReportList(@RequestParam("eventName") String eventName,
+			@RequestParam("eventAddress") String eventAddress, @RequestParam("rank") String rank,
+			@RequestParam("occurDate") String occurDate) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		List<Map<String, String>> list = planService.getAccidentReportList(eventName, eventAddress, rank, occurDate);
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", JSON.toJSONString(list));
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 获取事故报告的附件列表
+	 * 
+	 * @param id
+	 *            事故报告Id
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "getAccidentReportAttachList", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String getAccidentReportAttachList(@RequestParam("id") int id) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		List<String> list = planService.getAccidentReportAttachList(id);
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", JSON.toJSONString(list));
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 获取事故报告详细信息
+	 * 
+	 * @param id
+	 *            事故报告Id
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "getAccidentReportInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String getAccidentReportInfo(@RequestParam("id") int id) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		AccidentReport ar = planService.getAccidentReportInfo(id);
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", JSON.toJSONString(ar));
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 修改事故报告的内容
+	 * 
+	 * @param id
+	 *            事故报告的Id
+	 * @param eventName
+	 *            事件名称
+	 * @param eventAddress
+	 *            时间地址
+	 * @param occurDate
+	 *            发生时间(yyyy-MM-dd hh:mm)
+	 * @param relatedPerson
+	 *            相关人员
+	 * @param rank
+	 *            初判等级
+	 * @param eventSummary
+	 *            事件概况
+	 * @param affect
+	 *            影响情况
+	 * @param analysisAndReform
+	 *            过程分析及整改要求
+	 * @param opinion
+	 *            处理意见
+	 * @param analysisMember
+	 *            专题分析会成员用单
+	 * @param otherExplain
+	 *            其他需要说明
+	 * @param fillDepart
+	 *            填报部门
+	 * @param fillDate
+	 *            填报日期(yyyy-MM-dd)
+	 * @param fillPerson
+	 *            填报人
+	 * @param responsiblePerson
+	 *            负责人
+	 * @param delArr
+	 *            删除的附件id信息 如"1,2,3,4,5"
+	 * @param attachArr
+	 *            上传的附件数组
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "updateAccidentReportInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String updateAccidentReportInfo(@RequestParam("id") int id, @RequestParam("eventName") String eventName,
+			@RequestParam("eventAddress") String eventAddress, @RequestParam("occurDate") String occurDate,
+			@RequestParam("relatedPerson") String relatedPerson, @RequestParam("rank") String rank,
+			@RequestParam("eventSummary") String eventSummary, @RequestParam("affect") String affect,
+			@RequestParam("analysisAndReform") String analysisAndReform, @RequestParam("opinion") String opinion,
+			@RequestParam("analysisMember") String analysisMember, @RequestParam("otherExplain") String otherExplain,
+			@RequestParam("fillDepart") String fillDepart, @RequestParam("fillDate") String fillDate,
+			@RequestParam("fillPerson") String fillPerson, @RequestParam("responsiblePerson") String responsiblePerson,
+			@RequestParam("delArr") String delArr, @RequestParam("attachArr") MultipartFile[] attachArr,
+			HttpServletRequest req) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		boolean res = planService.updateAccidentReportInfo(id, eventName, eventAddress, occurDate, relatedPerson, rank,
+				eventSummary, affect, analysisAndReform, opinion, analysisMember, otherExplain, fillDepart, fillDate,
+				fillPerson, responsiblePerson, Utils.transStrToIntArr(delArr), attachArr);
+		if (res == true) {
+			resMap.put("status", Constants.successStatus);
+			resMap.put("info", "修改成功");
+		} else {
+			resMap.put("status", Constants.apiErrorStatus);
+			resMap.put("info", "修改失败");
+		}
+		JSONObject jo = (JSONObject) req.getAttribute("user");
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+				String.valueOf(jo.get("userName")), "修改事故报告" + eventName + "的内容"));
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 删除运营事故报告
+	 * 
+	 * @param id
+	 *            报告Id
+	 * @param eventName
+	 *            事件名称
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "delAccidentReportInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String delAccidentReportInfo(@RequestParam("id") int id, @RequestParam("eventName") String eventName,
+			HttpServletRequest req) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		planService.delAccidentReportInfo(id);
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", "删除成功");
+		JSONObject jo = (JSONObject) req.getAttribute("user");
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+				String.valueOf(jo.get("userName")), "删除事故报告" + eventName));
 		return JSON.toJSONString(resMap);
 	}
 }

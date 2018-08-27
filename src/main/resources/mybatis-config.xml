@@ -30,6 +30,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		<typeAlias type="dms.entity.TaskSaveUser" alias="taskSaveUser" />
 		<typeAlias type="dms.entity.AccidentReport" alias="accidentReport" />
 		<typeAlias type="dms.entity.AccidentReportAttach" alias="accidentReportAttach" />
+		<typeAlias type="dms.entity.AccidentReportNo" alias="accidentReportNo" />
 	</typeAliases>
 
 	<plugins>

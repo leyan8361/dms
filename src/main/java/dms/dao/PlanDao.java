@@ -1,6 +1,7 @@
 package dms.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -83,15 +84,40 @@ public interface PlanDao {
 	public List<InfoColumn> getInfoColumnNameInfo(int id);
 
 	public int addInfoContent(List<InfoContent> lic);
-	
+
 	public int updateInfoContent(@Param("infoId") int processId, @Param("columnId") int columnId,
 			@Param("flag") String flag, @Param("content") String content);
-	
+
 	public int delInfoContent(@Param("infoId") int infoId, @Param("flag") String flag);
-	
+
 	public List<InfoContent> getInfoContentList(int infoId);
-	
+
+	public String getAccidentReportNo();
+
+	public int updateAccidentReportNo(String no);
+
 	public int addAccidentReport(AccidentReport ar);
-	
+
 	public int addAccidentReportAttach(List<AccidentReportAttach> lara);
+
+	public List<Map<String, String>> getAccidentReportList(@Param("eventName") String eventName,
+			@Param("eventAddress") String eventAddress, @Param("rank") String rank,
+			@Param("occurDate") String occurDate);
+
+	public List<String> getAccidentReportAttachList(int id);
+
+	public AccidentReport getAccidentReportInfo(int id);
+
+	public int updateAccidentReportInfo(@Param("id") int id, @Param("eventName") String eventName,
+			@Param("eventAddress") String eventAddress, @Param("occurDate") String occurDate,
+			@Param("relatedPerson") String relatedPerson, @Param("rank") String rank,
+			@Param("eventSummary") String eventSummary, @Param("affect") String affect,
+			@Param("analysisAndReform") String analysisAndReform, @Param("opinion") String opinion,
+			@Param("analysisMember") String analysisMember, @Param("otherExplain") String otherExplain,
+			@Param("fillDepart") String fillDepart, @Param("fillDate") String fillDate,
+			@Param("fillPerson") String fillPerson, @Param("responsiblePerson") String responsiblePerson);
+
+	public int delAccidentReportAttachInfo(@Param("id") String id);
+
+	public int delAccidentReportInfo(int id);
 }

@@ -315,14 +315,29 @@
 		where infoId = #{infoId} and isShow = 'show' order by columnId
 	</select>
 	
+	<!-- 获取运营报告编号 -->
+	<select id="getAccidentReportNo" resultType="String">
+		select 
+		no 
+		from t_accident_report_no 
+		where id = 1
+	</select>
+	
+	<!-- 修改运营报告编号 -->
+	<update id="updateAccidentReportNo" parameterType="String">
+		update t_accident_report_no
+		set no = #{no}
+		where id = 1
+	</update>
+	
 	<!-- 新增运营事故报告 -->
 	<insert id="addAccidentReport" parameterType="accidentReport" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
 		insert into
 		t_accident_report
-		(eventName,eventAddress,occurDate,relatedPerson,rank,eventSummary,affect,analysisAndReform,opinion,analysisMember
+		(no,eventName,eventAddress,occurDate,relatedPerson,rank,eventSummary,affect,analysisAndReform,opinion,analysisMember,
 		otherExplain,fillDepart,fillDate,fillPerson,responsiblePerson)
 		values
-		(#{eventName},#{eventAddress},#{occurDate},#{relatedPerson},#{rank},#{eventSummary},#{affect},#{analysisAndReform},#{opinion},#{analysisMember}
+		(#{no},#{eventName},#{eventAddress},#{occurDate},#{relatedPerson},#{rank},#{eventSummary},#{affect},#{analysisAndReform},#{opinion},#{analysisMember},
 		#{otherExplain},#{fillDepart},#{fillDate},#{fillPerson},#{responsiblePerson})
 	</insert>
 	
@@ -336,4 +351,92 @@
 			(#{ara.reportId},#{ara.path})
 		</foreach>
 	</insert>
+	
+	<!-- 获取运营事故报告列表 -->
+	<select id="getAccidentReportList" parameterType="String" resultType="map">
+		select
+		id,eventName
+		from t_accident_report
+		where isShow = 'show'
+		<if test="eventName!=''">
+			and eventName = #{eventName}
+		</if>
+		<if test="eventAddress!=''">
+			and eventAddress = #{eventAddress}
+		</if>
+		<if test="rank!=''">
+			and rank = #{rank}
+		</if>
+		<if test="occurDate!=''">
+			and occurDate = #{occurDate}
+		</if>
+	</select>
+	
+	<!-- 获取运营报告附件列表 -->
+	<select id="getAccidentReportAttachList" parameterType="int" resultType="String">
+		select 
+		path
+		from t_accident_report_attach
+		where reportId = #{id} and isShow = 'show'
+	</select>
+	
+	<!-- 获取运营报告详情 -->
+	<select id="getAccidentReportInfo" parameterType="int" resultMap="getAccidentReportInfoMap">
+		select 
+		t1.*,t2.id as sid,t2.path
+		from 
+		(select * from t_accident_report where id = #{id} and isShow = 'show') t1
+		LEFT JOIN
+		t_accident_report_attach t2
+		on t1.id = t2.reportId and t2.isShow = 'show'
+	</select>
+	
+	<resultMap type="accidentReport" id="getAccidentReportInfoMap">
+		<id column="id" property="id" />
+		<result column="no" property="no" />
+		<result column="eventName" property="eventName" />
+		<result column="eventAddress" property="eventAddress" />
+		<result column="occurDate" property="occurDate" />
+		<result column="relatedPerson" property="relatedPerson" />
+		<result column="rank" property="rank" />
+		<result column="eventSummary" property="eventSummary" />
+		<result column="affect" property="affect" />
+		<result column="analysisAndReform" property="analysisAndReform" />
+		<result column="opinion" property="opinion" />
+		<result column="analysisMember" property="analysisMember" />
+		<result column="otherExplain" property="otherExplain" />
+		<result column="fillDepart" property="fillDepart" />
+		<result column="fillDate" property="fillDate" />
+		<result column="fillPerson" property="fillPerson" />
+		<result column="responsiblePerson" property="responsiblePerson" /> 
+		<collection property="lara" ofType="accidentReportAttach">
+			<id column="sid" property="id" />
+			<result column="path" property="path" />
+		</collection>
+	</resultMap>
+	
+	<!-- 修改事故报告内容 -->
+	<update id="updateAccidentReportInfo">
+		update t_accident_report
+		set 
+		eventName = #{eventName},eventAddress = #{eventAddress},occurDate = #{occurDate},relatedPerson=#{relatedPerson},
+		rank = #{rank},eventSummary = #{eventSummary},affect = #{affect},analysisAndReform = #{analysisAndReform},
+		opinion = #{opinion},analysisMember = #{analysisMember},otherExplain = #{otherExplain},fillDepart = #{fillDepart},
+		fillDate = #{fillDate},fillPerson = #{fillPerson},responsiblePerson = #{responsiblePerson}
+		where id = #{id}
+	</update>
+	
+	<!-- 删除事故报告的附件 -->
+	<update id="delAccidentReportAttachInfo">
+		update t_accident_report_attach
+		set isShow = 'notShow'
+		where id ${id}
+	</update>
+	
+	<!-- 删除事故报告 -->
+	<update id="delAccidentReportInfo" parameterType="int">
+		update t_accident_report
+		set isShow = 'notShow'
+		where id = #{id}
+	</update>
 </mapper>

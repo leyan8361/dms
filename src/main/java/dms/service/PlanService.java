@@ -81,5 +81,23 @@ public interface PlanService {
 
 	public JSONObject getInfoContent(int infoId, String columnId, String content);
 
+	public String getAccidentReportNo();
+
+	public int updateAccidentReportNo(String no);
+
 	public boolean addAccidentReport(AccidentReport ar, MultipartFile[] attachArr);
+
+	public List<Map<String, String>> getAccidentReportList(String eventName, String eventAddress, String rank,
+			String occurDate);
+
+	public List<String> getAccidentReportAttachList(int id);
+
+	public AccidentReport getAccidentReportInfo(int id);
+
+	public boolean updateAccidentReportInfo(int id, String eventName, String eventAddress, String occurDate,
+			String relatedPerson, String rank, String eventSummary, String affect, String analysisAndReform,
+			String opinion, String analysisMember, String otherExplain, String fillDepart, String fillDate,
+			String fillPerson, String responsiblePerson, int[] delArr, MultipartFile[] attachArr);
+	
+	public int delAccidentReportInfo(int id);
 }

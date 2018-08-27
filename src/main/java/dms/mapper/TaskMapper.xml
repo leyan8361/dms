@@ -136,9 +136,9 @@
 		select 
 		t1.id,t1.content,t1.deadLine,t1.attention,t1.remark,t2.path,t3.userId,t3.userName
 		from 
-		(select * from t_task where id = #{taskId}) t1 
-		LEFT JOIN t_task_attach t2 on t2.taskId = t1.id and t1.id = #{taskId}
-		LEFT JOIN t_task_user t3 on t3.taskId = t1.id and t1.id = #{taskId}
+		(select * from t_task where id = #{taskId} and isShow = 'show') t1 
+		LEFT JOIN t_task_attach t2 on t2.taskId = t1.id and t1.id = #{taskId} and t2.isShow = 'show'
+		LEFT JOIN t_task_user t3 on t3.taskId = t1.id and t1.id = #{taskId} and t3.isShow = 'show'
 	</select>
 	
 	<resultMap type="task" id="getTaskInfoMap">
