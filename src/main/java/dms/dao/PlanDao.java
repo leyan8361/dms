@@ -42,6 +42,8 @@ public interface PlanDao {
 
 	public int delPlan(int id);
 
+	public List<String> getPlanAttach(int id);
+	
 	public int addProcess(Process process);
 
 	public int addProcessColumn(List<ProcessColumn> lpc);

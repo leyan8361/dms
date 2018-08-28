@@ -50,6 +50,7 @@ public class UserController {
 			resMap.put("status", Constants.successStatus);
 			resMap.put("info", "µÇÂ½³É¹¦");
 			resMap.put("token", token);
+			resMap.put("userId", String.valueOf(ui.getId()));
 		}
 		return JSON.toJSONString(resMap);
 	}

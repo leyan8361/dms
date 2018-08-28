@@ -58,9 +58,9 @@
 	<!-- 静态资源映射 -->
 	<!-- file:是针对非项目工程中的文件访问，本项目工程中的文件路径不要加file: -->
 	<!-- <mvc:resources mapping="/views/**" location="/WEB-INF/views/" /> -->
-	<!-- 生成的icg归纳表 -->
-	<!-- <mvc:resources mapping="/icg/**" location="file:/application/shxinzhili/data/mms/icgPointList/" 
-		/> -->
+	<!-- 上传的预案附件 -->
+	<mvc:resources mapping="/attach/planAttach/**"
+		location="file:/application/shxinzhili/data/dms/planAttach/" />
 
 	<!-- springmvc 拦截器 -->
 	<mvc:interceptors>
@@ -68,6 +68,7 @@
 			<mvc:mapping path="/**" />
 			<mvc:exclude-mapping path="/user/checkLogin" />
 			<mvc:exclude-mapping path="/error/**" />
+			<mvc:exclude-mapping path="/attach/**" />
 			<bean class="dms.interceptor.RouteInterceptor" />
 		</mvc:interceptor>
 	</mvc:interceptors>

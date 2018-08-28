@@ -65,8 +65,11 @@
     <select id="getPlanInfo" parameterType="int" resultMap="planAttachMap">
 		select 
 		t1.id,t1.name,t1.lineId,t1.lineNo,t1.stationId,t1.stationName,t2.id as attachId,t2.path
-		from t_plan t1,t_planattach t2
-		where t1.isShow = 'show' and t1.id = #{id} and t1.id = t2.planId and t2.isShow = 'show'
+		from 
+		(select * from t_plan where isShow = 'show' and id = #{id}) t1
+		left join
+		t_planattach t2
+		on t2.isShow = 'show' and t2.planId = t1.id
 	</select>
 	
 	<resultMap type="plan" id="planAttachMap">
@@ -102,6 +105,14 @@
 		set isShow = 'notShow'
 		where id = #{id}
 	</update>
+	
+	<!-- 获取预案的.pdf附件信息 -->
+	<select id="getPlanAttach" parameterType="int" resultType="String">
+		select
+		path
+		from t_planattach
+		where planId = #{id} and isShow = 'show' and path like '%.pdf'
+	</select>
 	
 	<!-- 新增流程库表 -->
 	<insert id="addProcess" parameterType="process" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
@@ -377,7 +388,7 @@
 		select 
 		path
 		from t_accident_report_attach
-		where reportId = #{id} and isShow = 'show'
+		where reportId = #{id} and isShow = 'show' and path like '%.pdf'
 	</select>
 	
 	<!-- 获取运营报告详情 -->

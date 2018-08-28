@@ -32,7 +32,6 @@ import dms.entity.Process;
 import dms.entity.ProcessColumn;
 import dms.entity.ProcessContent;
 import dms.service.PlanService;
-import dms.utils.Constants;
 import dms.utils.FilePath;
 import dms.utils.Utils;
 
@@ -83,7 +82,7 @@ public class PlanServiceImpl implements PlanService {
 
 	public PageInfo<Plan> getPlanList(int currentPage, int lineId, int stationId, String name) {
 
-		PageHelper.startPage(currentPage, Constants.pageSize);
+		PageHelper.startPage(currentPage, 10000);
 		List<Plan> list = planDao.getPlanList(lineId, stationId, name);
 		PageInfo<Plan> planList = new PageInfo<>(list);
 		return planList;
@@ -135,6 +134,11 @@ public class PlanServiceImpl implements PlanService {
 	public int delPlan(int id) {
 
 		return planDao.delPlan(id);
+	}
+	
+	public List<String> getPlanAttach(int id){
+		
+		return planDao.getPlanAttach(id);
 	}
 
 	public int addProcess(String name, int userId, JSONArray columnArr) {

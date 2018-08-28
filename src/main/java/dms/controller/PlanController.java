@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -218,7 +217,10 @@ public class PlanController {
 			HttpServletRequest req) {
 
 		Map<String, String> resMap = new HashMap<String, String>();
-		int[] delArr = Utils.transStrToIntArr(delStr);
+		int[] delArr = {};
+		if (!"".equals(delStr)) {
+			delArr = Utils.transStrToIntArr(delStr);
+		}
 		boolean res = planService.updatePlanInfo(id, name, lineId, lineNo, stationId, stationName, delArr, addAttach);
 		resMap.put("status", Constants.successStatus);
 		if (res == true) {
@@ -363,6 +365,24 @@ public class PlanController {
 				String.valueOf(jo.get("userName")), "删除流程库表:" + name));
 		resMap.put("status", Constants.successStatus);
 		resMap.put("info", "删除成功");
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 获取预案的.pdf附件信息
+	 * 
+	 * @param id
+	 *            预案Id
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "getPlanAttach", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String getPlanAttach(@RequestParam("id") int id) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		List<String> list = planService.getPlanAttach(id);
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", JSON.toJSONString(list));
 		return JSON.toJSONString(resMap);
 	}
 
@@ -980,9 +1000,13 @@ public class PlanController {
 			HttpServletRequest req) {
 
 		Map<String, String> resMap = new HashMap<String, String>();
+		int[] delArr1 = {};
+		if (!"".equals(delArr)) {
+			delArr1 = Utils.transStrToIntArr(delArr);
+		}
 		boolean res = planService.updateAccidentReportInfo(id, eventName, eventAddress, occurDate, relatedPerson, rank,
 				eventSummary, affect, analysisAndReform, opinion, analysisMember, otherExplain, fillDepart, fillDate,
-				fillPerson, responsiblePerson, Utils.transStrToIntArr(delArr), attachArr);
+				fillPerson, responsiblePerson, delArr1, attachArr);
 		if (res == true) {
 			resMap.put("status", Constants.successStatus);
 			resMap.put("info", "修改成功");

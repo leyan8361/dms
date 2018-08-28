@@ -36,6 +36,8 @@ public interface PlanService {
 			int[] delArr, MultipartFile[] addAttach);
 
 	public int delPlan(int id);
+	
+	public List<String> getPlanAttach(int id);
 
 	public int addProcess(String name, int userId, JSONArray columnArr);
 
