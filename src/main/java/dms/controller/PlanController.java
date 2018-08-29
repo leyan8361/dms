@@ -137,7 +137,7 @@ public class PlanController {
 			resMap.put("info", "添加失败");
 		}
 		JSONObject jo = (JSONObject) req.getAttribute("user");
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
 				String.valueOf(jo.get("userName")), "创建预案:" + name));
 		return JSON.toJSONString(resMap);
 	}
@@ -229,7 +229,7 @@ public class PlanController {
 			resMap.put("info", "编辑失败");
 		}
 		JSONObject jo = (JSONObject) req.getAttribute("user");
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
 				String.valueOf(jo.get("userName")), "编辑预案:" + name));
 		return JSON.toJSONString(resMap);
 	}
@@ -252,7 +252,7 @@ public class PlanController {
 		resMap.put("status", Constants.successStatus);
 		resMap.put("info", "删除成功");
 		JSONObject jo = (JSONObject) req.getAttribute("user");
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
 				String.valueOf(jo.get("userName")), "删除预案:" + name));
 		return JSON.toJSONString(resMap);
 	}
@@ -277,7 +277,7 @@ public class PlanController {
 				JSONArray.parseArray(columnArr));
 		resMap.put("status", Constants.successStatus);
 		resMap.put("info", "新增成功");
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
 				String.valueOf(jo.get("userName")), "新增流程库表:" + name));
 		return JSON.toJSONString(resMap);
 	}
@@ -338,7 +338,7 @@ public class PlanController {
 		Map<String, String> resMap = new HashMap<String, String>();
 		planService.updateProcessInfo(id, name, JSONArray.parseArray(updateArr), JSONArray.parseArray(addArr));
 		JSONObject jo = (JSONObject) req.getAttribute("user");
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
 				String.valueOf(jo.get("userName")), "编辑流程库表:" + name));
 		resMap.put("status", Constants.successStatus);
 		resMap.put("info", "编辑成功");
@@ -361,7 +361,7 @@ public class PlanController {
 		Map<String, String> resMap = new HashMap<String, String>();
 		planService.delProcess(id);
 		JSONObject jo = (JSONObject) req.getAttribute("user");
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
 				String.valueOf(jo.get("userName")), "删除流程库表:" + name));
 		resMap.put("status", Constants.successStatus);
 		resMap.put("info", "删除成功");
@@ -380,9 +380,9 @@ public class PlanController {
 	public String getPlanAttach(@RequestParam("id") int id) {
 
 		Map<String, String> resMap = new HashMap<String, String>();
-		List<String> list = planService.getPlanAttach(id);
+		JSONArray ja = planService.getPlanAttach(id);
 		resMap.put("status", Constants.successStatus);
-		resMap.put("info", JSON.toJSONString(list));
+		resMap.put("info", JSON.toJSONString(ja));
 		return JSON.toJSONString(resMap);
 	}
 
@@ -434,7 +434,7 @@ public class PlanController {
 			resMap.put("info", "添加失败");
 		}
 		JSONObject jo = (JSONObject) req.getAttribute("user");
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
 				String.valueOf(jo.get("userName")), "添加流程库表:" + processName + "内容"));
 		return JSON.toJSONString(resMap);
 	}
@@ -472,7 +472,7 @@ public class PlanController {
 			resMap.put("info", "修改失败");
 		}
 		JSONObject jo = (JSONObject) req.getAttribute("user");
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
 				String.valueOf(jo.get("userName")), "修改流程库表:" + processName + "内容"));
 		return JSON.toJSONString(resMap);
 	}
@@ -499,7 +499,7 @@ public class PlanController {
 		planService.delProcessContent(processId, flag);
 		resMap.put("info", "删除成功");
 		JSONObject jo = (JSONObject) req.getAttribute("user");
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
 				String.valueOf(jo.get("userName")), "删除流程库表:" + processName + "内容"));
 		return JSON.toJSONString(resMap);
 	}
@@ -547,7 +547,7 @@ public class PlanController {
 		planService.addInfo(name, Integer.valueOf(jo.getString("userId")), JSONArray.parseArray(columnArr));
 		resMap.put("status", Constants.successStatus);
 		resMap.put("info", "新增成功");
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
 				String.valueOf(jo.get("userName")), "新增资料库:" + name));
 		return JSON.toJSONString(resMap);
 	}
@@ -608,7 +608,7 @@ public class PlanController {
 		Map<String, String> resMap = new HashMap<String, String>();
 		planService.updateInfoInfo(id, name, JSONArray.parseArray(updateArr), JSONArray.parseArray(addArr));
 		JSONObject jo = (JSONObject) req.getAttribute("user");
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
 				String.valueOf(jo.get("userName")), "编辑资料库:" + name));
 		resMap.put("status", Constants.successStatus);
 		resMap.put("info", "编辑成功");
@@ -631,7 +631,7 @@ public class PlanController {
 		Map<String, String> resMap = new HashMap<String, String>();
 		planService.delInfo(id);
 		JSONObject jo = (JSONObject) req.getAttribute("user");
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
 				String.valueOf(jo.get("userName")), "删除资料库:" + name));
 		resMap.put("status", Constants.successStatus);
 		resMap.put("info", "删除成功");
@@ -686,7 +686,7 @@ public class PlanController {
 			resMap.put("info", "添加失败");
 		}
 		JSONObject jo = (JSONObject) req.getAttribute("user");
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
 				String.valueOf(jo.get("userName")), "添加资料库:" + infoName + "内容"));
 		return JSON.toJSONString(resMap);
 	}
@@ -723,7 +723,7 @@ public class PlanController {
 			resMap.put("info", "修改失败");
 		}
 		JSONObject jo = (JSONObject) req.getAttribute("user");
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
 				String.valueOf(jo.get("userName")), "修改资料库:" + infoName + "内容"));
 		return JSON.toJSONString(resMap);
 	}
@@ -749,7 +749,7 @@ public class PlanController {
 		planService.delInfoContent(infoId, flag);
 		resMap.put("info", "删除成功");
 		JSONObject jo = (JSONObject) req.getAttribute("user");
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
 				String.valueOf(jo.get("userName")), "删除流程库表:" + infoName + "内容"));
 		return JSON.toJSONString(resMap);
 	}
@@ -810,7 +810,7 @@ public class PlanController {
 		resMap.put("status", Constants.successStatus);
 		resMap.put("info", "修改成功");
 		JSONObject jo = (JSONObject) req.getAttribute("user");
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
 				String.valueOf(jo.get("userName")), "修改了运营报告编号:" + no));
 		return JSON.toJSONString(resMap);
 	}
@@ -878,7 +878,7 @@ public class PlanController {
 			resMap.put("info", "新增失败");
 		}
 		JSONObject jo = (JSONObject) req.getAttribute("user");
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
 				String.valueOf(jo.get("userName")), "运营事故报告:" + eventName));
 		return JSON.toJSONString(resMap);
 	}
@@ -921,9 +921,9 @@ public class PlanController {
 	public String getAccidentReportAttachList(@RequestParam("id") int id) {
 
 		Map<String, String> resMap = new HashMap<String, String>();
-		List<String> list = planService.getAccidentReportAttachList(id);
+		JSONArray ja = planService.getAccidentReportAttachList(id);
 		resMap.put("status", Constants.successStatus);
-		resMap.put("info", JSON.toJSONString(list));
+		resMap.put("info", JSON.toJSONString(ja));
 		return JSON.toJSONString(resMap);
 	}
 
@@ -1015,7 +1015,7 @@ public class PlanController {
 			resMap.put("info", "修改失败");
 		}
 		JSONObject jo = (JSONObject) req.getAttribute("user");
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
 				String.valueOf(jo.get("userName")), "修改事故报告" + eventName + "的内容"));
 		return JSON.toJSONString(resMap);
 	}
@@ -1039,7 +1039,7 @@ public class PlanController {
 		resMap.put("status", Constants.successStatus);
 		resMap.put("info", "删除成功");
 		JSONObject jo = (JSONObject) req.getAttribute("user");
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
 				String.valueOf(jo.get("userName")), "删除事故报告" + eventName));
 		return JSON.toJSONString(resMap);
 	}

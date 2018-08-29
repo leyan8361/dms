@@ -22,10 +22,25 @@ public class SysServiceImpl implements SysService {
 	private SysDao sysDao;
 
 	public int addLog(Log log) {
-		
+
 		return sysDao.addLog(log);
 	}
-	
+
+	public PageInfo<Log> getLogList(int currentPage, String startDate, String endDate, String userName,
+			String content) {
+
+		PageHelper.startPage(currentPage, Constants.pageSize);
+		List<Log> list = sysDao.getLogList(startDate, endDate, userName, content);
+		PageInfo<Log> planList = new PageInfo<>(list);
+		return planList;
+	}
+
+	public int batchDelLog(String delStr) {
+
+		String str = " in (" + delStr + ")";
+		return sysDao.batchDelLog(str);
+	}
+
 	public Role checkRoleName(String name) {
 
 		return sysDao.checkRoleName(name);

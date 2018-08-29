@@ -15,7 +15,7 @@
 	<!-- 更新用户的最近登录时间 -->
 	<update id="updateUserLastLoginTime">
 		update
-		t_userInfo
+		t_userinfo
 		set lastLoginTime = #{nowDate}
 		where
 		id = #{userId}

@@ -55,6 +55,58 @@ public class SysController {
 	}
 
 	/**
+	 * 获取系统日志列表
+	 * 
+	 * @param currentPage
+	 *            当前页码(最小为1)
+	 * @param startDate
+	 *            开始时间(yyyy-MM-dd)
+	 * @param endDate
+	 *            结束时间(yyyy-MM-dd)
+	 * @param userName
+	 *            用户名
+	 * @param content
+	 *            内容
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "getLogList", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String getLogList(@RequestParam("currentPage") int currentPage, @RequestParam("startDate") String startDate,
+			@RequestParam("endDate") String endDate, @RequestParam("userName") String userName,
+			@RequestParam("content") String content) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		PageInfo<Log> pageInfo = sysService.getLogList(currentPage,
+				"".equals(startDate) ? startDate : startDate + " 00:00",
+				"".equals(endDate) ? endDate : endDate + " 23:59", userName, content);
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", JSON.toJSONString(pageInfo.getList()));
+		resMap.put("totalNum", String.valueOf(pageInfo.getTotal()));
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 批量删除日志
+	 * 
+	 * @param delStr
+	 *            日志id字符串 如 1,2,3,4,5 (不可为空)
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "batchDelLog", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String batchDelLog(@RequestParam("delStr") String delStr, HttpServletRequest req) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		sysService.batchDelLog(delStr);
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", "删除成功");
+		JSONObject jo = (JSONObject) req.getAttribute("user");
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"),
+				Integer.valueOf(String.valueOf(jo.get("userId"))), String.valueOf(jo.get("userName")), "批量删除日志"));
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
 	 * 新增角色
 	 * 
 	 * @param name
@@ -74,8 +126,8 @@ public class SysController {
 		sysService.addRole(new Role(name, description, userId, Utils.getNowDate("yyyy-MM-dd")));
 		resMap.put("status", Constants.successStatus);
 		JSONObject jo = (JSONObject) req.getAttribute("user");
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
-				String.valueOf(jo.get("userName")), "创建角色:" + name));
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"),
+				Integer.valueOf(String.valueOf(jo.get("userId"))), String.valueOf(jo.get("userName")), "创建角色:" + name));
 		return JSON.toJSONString(resMap);
 	}
 
@@ -120,8 +172,8 @@ public class SysController {
 		sysService.updateRoleInfo(id, name, description);
 		resMap.put("status", Constants.successStatus);
 		JSONObject jo = (JSONObject) req.getAttribute("user");
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
-				String.valueOf(jo.get("userName")), "编辑角色:" + name));
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"),
+				Integer.valueOf(String.valueOf(jo.get("userId"))), String.valueOf(jo.get("userName")), "编辑角色:" + name));
 		return JSON.toJSONString(resMap);
 	}
 
@@ -142,8 +194,8 @@ public class SysController {
 		sysService.delRoleInfo(id);
 		resMap.put("status", Constants.successStatus);
 		JSONObject jo = (JSONObject) req.getAttribute("user");
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
-				String.valueOf(jo.get("userName")), "删除角色:" + name));
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"),
+				Integer.valueOf(String.valueOf(jo.get("userId"))), String.valueOf(jo.get("userName")), "删除角色:" + name));
 		return JSON.toJSONString(resMap);
 	}
 
@@ -189,8 +241,9 @@ public class SysController {
 		sysService.addUserGroup(new UserGroup(name, description, userId, Utils.getNowDate("yyyy-MM-dd")));
 		resMap.put("status", Constants.successStatus);
 		JSONObject jo = (JSONObject) req.getAttribute("user");
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
-				String.valueOf(jo.get("userName")), "创建用户群组:" + name));
+		sysService
+				.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+						String.valueOf(jo.get("userName")), "创建用户群组:" + name));
 		return JSON.toJSONString(resMap);
 	}
 
@@ -235,8 +288,9 @@ public class SysController {
 		sysService.updateUserGroupInfo(id, name, description);
 		resMap.put("status", Constants.successStatus);
 		JSONObject jo = (JSONObject) req.getAttribute("user");
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
-				String.valueOf(jo.get("userName")), "编辑用户群组:" + name));
+		sysService
+				.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+						String.valueOf(jo.get("userName")), "编辑用户群组:" + name));
 		return JSON.toJSONString(resMap);
 	}
 
@@ -258,8 +312,9 @@ public class SysController {
 		sysService.delUserGroupInfo(id);
 		resMap.put("status", Constants.successStatus);
 		JSONObject jo = (JSONObject) req.getAttribute("user");
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd"), Integer.valueOf(String.valueOf(jo.get("userId"))),
-				String.valueOf(jo.get("userName")), "删除用户群组:" + name));
+		sysService
+				.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+						String.valueOf(jo.get("userName")), "删除用户群组:" + name));
 		return JSON.toJSONString(resMap);
 	}
 

@@ -37,7 +37,7 @@ public interface PlanService {
 
 	public int delPlan(int id);
 	
-	public List<String> getPlanAttach(int id);
+	public JSONArray getPlanAttach(int id);
 
 	public int addProcess(String name, int userId, JSONArray columnArr);
 
@@ -92,7 +92,7 @@ public interface PlanService {
 	public List<Map<String, String>> getAccidentReportList(String eventName, String eventAddress, String rank,
 			String occurDate);
 
-	public List<String> getAccidentReportAttachList(int id);
+	public JSONArray getAccidentReportAttachList(int id);
 
 	public AccidentReport getAccidentReportInfo(int id);
 

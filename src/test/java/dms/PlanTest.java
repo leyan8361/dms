@@ -5,6 +5,8 @@ import javax.annotation.Resource;
 import org.junit.Test;
 
 import dms.service.PlanService;
+import dms.utils.FilePath;
+import dms.utils.Utils;
 
 public class PlanTest extends BaseJunit4Test {
 
@@ -14,6 +16,7 @@ public class PlanTest extends BaseJunit4Test {
 	@Test
 	public void getProcessContent() {
 
-//		Utils.transStrToIntArr("");
+		String path = FilePath.accidentReportAttachPath + "1535519898571_fontconfig-user.txt";
+		System.out.println(Utils.getCreateTime(path));
 	}
 }

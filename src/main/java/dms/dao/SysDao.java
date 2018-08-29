@@ -11,7 +11,12 @@ import dms.entity.UserGroup;
 public interface SysDao {
 
 	public int addLog(Log log);
-	
+
+	public List<Log> getLogList(@Param("startDate") String startDate, @Param("endDate") String endDate,
+			@Param("userName") String userName, @Param("content") String content);
+
+	public int batchDelLog(@Param("str") String str);
+
 	public Role checkRoleName(String name);
 
 	public int addRole(Role role);

@@ -12,6 +12,32 @@
 		(#{occurDate},#{userId},#{userName},#{operation})
 	</insert>
 
+	<!-- 获取系统日志列表 -->
+	<select id="getLogList" parameterType="String" resultType="log">
+		select 
+		id,occurDate,userName,operation
+		from
+		t_log
+		where isShow = 'show'
+		<if test="startDate!=''">
+			and occurDate &gt;= #{startDate} and occurDate &lt;= #{endDate}
+		</if>
+		<if test="userName!=''">
+			and userName = #{userName}
+		</if>
+		<if test="content!=''">
+			operation = #{content}
+		</if>
+		order by occurDate desc
+	</select>
+	
+	<!-- 批量删除系统日志 -->
+	<update id="batchDelLog" parameterType="String">
+		update t_log
+		set isShow = 'notShow'
+		where id ${str}
+	</update>
+
 	<!-- 校验角色名 -->
 	<select id="checkRoleName" parameterType="String" resultType="role">
 		select *

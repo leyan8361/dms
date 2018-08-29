@@ -2,7 +2,9 @@ package dms.serviceImpl;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -135,10 +137,21 @@ public class PlanServiceImpl implements PlanService {
 
 		return planDao.delPlan(id);
 	}
-	
-	public List<String> getPlanAttach(int id){
-		
-		return planDao.getPlanAttach(id);
+
+	public JSONArray getPlanAttach(int id) {
+
+		List<String> list = planDao.getPlanAttach(id);
+		JSONArray ja = new JSONArray();
+		for (String s : list) {
+			JSONObject jo = new JSONObject();
+			String path = FilePath.planAttachPath + s;
+			jo.put("path", s);
+			jo.put("createTime", Utils.getCreateTime(path));
+			jo.put("modifyTime",
+					new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date(new File(path).lastModified())));
+			ja.add(jo);
+		}
+		return ja;
 	}
 
 	public int addProcess(String name, int userId, JSONArray columnArr) {
@@ -458,9 +471,20 @@ public class PlanServiceImpl implements PlanService {
 		return planDao.getAccidentReportList(eventName, eventAddress, rank, occurDate);
 	}
 
-	public List<String> getAccidentReportAttachList(int id) {
+	public JSONArray getAccidentReportAttachList(int id) {
 
-		return planDao.getAccidentReportAttachList(id);
+		List<String> list = planDao.getAccidentReportAttachList(id);
+		JSONArray ja = new JSONArray();
+		for (String s : list) {
+			JSONObject jo = new JSONObject();
+			String path = FilePath.accidentReportAttachPath + s;
+			jo.put("path", s);
+			jo.put("createTime", Utils.getCreateTime(path));
+			jo.put("modifyTime",
+					new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date(new File(path).lastModified())));
+			ja.add(jo);
+		}
+		return ja;
 	}
 
 	public AccidentReport getAccidentReportInfo(int id) {
@@ -509,9 +533,9 @@ public class PlanServiceImpl implements PlanService {
 			return false;
 		}
 	}
-	
+
 	public int delAccidentReportInfo(int id) {
-		
+
 		return planDao.delAccidentReportInfo(id);
 	}
 }
