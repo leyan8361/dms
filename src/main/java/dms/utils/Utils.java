@@ -29,7 +29,7 @@ public class Utils {
 	}
 	
 	/**
-	 * 锟斤拷取指锟斤拷锟斤拷式锟斤拷时锟斤拷
+	 * 获取指定格式的时间
 	 * 
 	 * @return
 	 */
@@ -40,7 +40,7 @@ public class Utils {
 	}
 
 	/**
-	 * 锟斤拷String锟街凤拷锟斤拷(锟斤拷"1,2,3,4,5")转锟斤拷锟斤拷int锟斤拷锟斤拷
+	 * 将逗号分隔的数字字符串转换为int数组
 	 * 
 	 * @return
 	 */
@@ -55,10 +55,10 @@ public class Utils {
 	}
 
 	/**
-	 * 锟斤拷取锟侥硷拷锟斤拷锟斤拷时锟斤拷
+	 * 获取文件创建时间
 	 * 
 	 * @param path
-	 *            锟侥硷拷路锟斤拷
+	 *            文件路径
 	 * @return
 	 */
 	public static String getCreateTime(String path) {
