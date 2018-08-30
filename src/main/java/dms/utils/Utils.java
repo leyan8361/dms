@@ -7,11 +7,29 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
+import com.alibaba.fastjson.JSON;
 
 public class Utils {
 
+	public static void returnErrorMessage(String status,String message,HttpServletResponse res) {
+		
+		try {
+			Map<String, String> resMap = new HashMap<String, String>();
+			resMap.put("status", status);
+			resMap.put("info", message);
+			res.getWriter().write(JSON.toJSONString(resMap));
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	/**
-	 * »ñÈ¡Ö¸¶¨¸ñÊ½µÄÊ±¼ä
+	 * ï¿½ï¿½È¡Ö¸ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½Ê±ï¿½ï¿½
 	 * 
 	 * @return
 	 */
@@ -22,7 +40,7 @@ public class Utils {
 	}
 
 	/**
-	 * ½«String×Ö·û´®(Èç"1,2,3,4,5")×ª»»³ÉintÊý×é
+	 * ï¿½ï¿½Stringï¿½Ö·ï¿½ï¿½ï¿½(ï¿½ï¿½"1,2,3,4,5")×ªï¿½ï¿½ï¿½ï¿½intï¿½ï¿½ï¿½ï¿½
 	 * 
 	 * @return
 	 */
@@ -37,10 +55,10 @@ public class Utils {
 	}
 
 	/**
-	 * »ñÈ¡ÎÄ¼þ´´½¨Ê±¼ä
+	 * ï¿½ï¿½È¡ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
 	 * 
 	 * @param path
-	 *            ÎÄ¼þÂ·¾¶
+	 *            ï¿½Ä¼ï¿½Â·ï¿½ï¿½
 	 * @return
 	 */
 	public static String getCreateTime(String path) {
@@ -48,7 +66,7 @@ public class Utils {
 		String createTime = null;
 		try {
 			Path p = Paths.get(path);
-			BasicFileAttributes att = Files.readAttributes(p, BasicFileAttributes.class);// »ñÈ¡ÎÄ¼þµÄÊôÐÔ
+			BasicFileAttributes att = Files.readAttributes(p, BasicFileAttributes.class);// ï¿½ï¿½È¡ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			createTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date(att.creationTime().toMillis()));
 		} catch (IOException e) {
 			e.printStackTrace();

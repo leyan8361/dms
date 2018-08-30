@@ -34,6 +34,7 @@ import dms.entity.Process;
 import dms.entity.ProcessColumn;
 import dms.entity.ProcessContent;
 import dms.service.PlanService;
+import dms.utils.Constants;
 import dms.utils.FilePath;
 import dms.utils.Utils;
 
@@ -64,7 +65,7 @@ public class PlanServiceImpl implements PlanService {
 
 		try {
 			planDao.addPlan(plan);
-			int id = plan.getId(); // »ñÈ¡ÐÂÔöµÄÔ¤°¸µÄid
+			int id = plan.getId(); // ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½id
 			List<PlanAttach> lpa = new ArrayList<PlanAttach>();
 
 			for (MultipartFile mf : attachArr) {
@@ -168,9 +169,12 @@ public class PlanServiceImpl implements PlanService {
 		return 1;
 	}
 
-	public List<Process> getProcessList() {
+	public PageInfo<Process> getProcessList(int currentPage) {
 
-		return planDao.getProcessList();
+		PageHelper.startPage(currentPage, Constants.pageSize);
+		List<Process> list = planDao.getProcessList();
+		PageInfo<Process> pageInfo = new PageInfo<>(list);
+		return pageInfo;
 	}
 
 	public Process getProcessInfo(int id) {
@@ -298,7 +302,7 @@ public class PlanServiceImpl implements PlanService {
 
 		Info info = new Info(name, userId, Utils.getNowDate("yyyy-MM-dd"));
 		planDao.addInfo(info);
-		int infoId = info.getId(); // »ñÈ¡ÐÂÌí¼ÓµÄ×ÊÁÏ¿âµÄId
+		int infoId = info.getId(); // ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½Id
 		List<InfoColumn> lic = new ArrayList<InfoColumn>();
 		for (Object o : columnArr) {
 			JSONObject jo = (JSONObject) o;
@@ -308,9 +312,12 @@ public class PlanServiceImpl implements PlanService {
 		return 1;
 	}
 
-	public List<Info> getInfoList() {
+	public PageInfo<Info> getInfoList(int currentPage) {
 
-		return planDao.getInfoList();
+		PageHelper.startPage(currentPage, Constants.pageSize);
+		List<Info> list = planDao.getInfoList();
+		PageInfo<Info> pageInfo = new PageInfo<>(list);
+		return pageInfo;
 	}
 
 	public Info getInfoInfo(int id) {

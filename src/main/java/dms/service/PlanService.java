@@ -41,7 +41,7 @@ public interface PlanService {
 
 	public int addProcess(String name, int userId, JSONArray columnArr);
 
-	public List<Process> getProcessList();
+	public PageInfo<Process> getProcessList(int currentPage);
 
 	public Process getProcessInfo(int id);
 
@@ -63,7 +63,7 @@ public interface PlanService {
 
 	public int addInfo(String name, int userId, JSONArray columnArr);
 
-	public List<Info> getInfoList();
+	public PageInfo<Info> getInfoList(int currentPage);
 
 	public Info getInfoInfo(int id);
 

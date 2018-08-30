@@ -10,13 +10,14 @@ import com.alibaba.fastjson.JSONObject;
 
 import dms.utils.Constants;
 import dms.utils.JwtManager;
+import dms.utils.Utils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.InvalidClaimException;
 import io.jsonwebtoken.MalformedJwtException;
 
 /**
- * ½âÎöÇ°Ì¨·µ»ØµÄtokenÐÅÏ¢
+ * ï¿½ï¿½ï¿½ï¿½Ç°Ì¨ï¿½ï¿½ï¿½Øµï¿½tokenï¿½ï¿½Ï¢
  * 
  * @author ACER
  *
@@ -36,16 +37,20 @@ public class RouteInterceptor implements HandlerInterceptor {
 			System.out.println(claims);
 			return true;
 		} catch (InvalidClaimException e) {
-			response.sendRedirect("/dms/error/?status=" + Constants.tokenErrorStatus + "&info=" + e.getMessage());
+			Utils.returnErrorMessage(Constants.tokenErrorStatus, e.getMessage(), response);
+//			response.sendRedirect("/dms/error/?status=" + Constants.tokenErrorStatus + "&info=" + e.getMessage());
 			return false;
 		} catch (IllegalArgumentException e) {
-			response.sendRedirect("/dms/error/?status=" + Constants.tokenErrorStatus + "&info=" + e.getMessage());
+			Utils.returnErrorMessage(Constants.tokenErrorStatus, e.getMessage(), response);
+//			response.sendRedirect("/dms/error/?status=" + Constants.tokenErrorStatus + "&info=" + e.getMessage());
 			return false;
 		} catch (MalformedJwtException e) {
-			response.sendRedirect("/dms/error/?status=" + Constants.tokenErrorStatus + "&info=" + e.getMessage());
+			Utils.returnErrorMessage(Constants.tokenErrorStatus, e.getMessage(), response);
+//			response.sendRedirect("/dms/error/?status=" + Constants.tokenErrorStatus + "&info=" + e.getMessage());
 			return false;
 		} catch (ExpiredJwtException e) {
-			response.sendRedirect("/dms/error/?status=" + Constants.tokenOverTimeStatus + "&info=" + e.getMessage());
+			Utils.returnErrorMessage(Constants.tokenOverTimeStatus, e.getMessage(), response);
+//			response.sendRedirect("/dms/error/?status=" + Constants.tokenOverTimeStatus + "&info=" + e.getMessage());
 			return false;
 		}
 	}
