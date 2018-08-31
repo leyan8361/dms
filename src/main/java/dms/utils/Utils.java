@@ -16,18 +16,19 @@ import com.alibaba.fastjson.JSON;
 
 public class Utils {
 
-	public static void returnErrorMessage(String status,String message,HttpServletResponse res) {
-		
+	public static void returnErrorMessage(String status, String message, HttpServletResponse res) {
+
 		try {
 			Map<String, String> resMap = new HashMap<String, String>();
 			resMap.put("status", status);
 			resMap.put("info", message);
+			res.setHeader("Access-Control-Allow-Origin", "*");
 			res.getWriter().write(JSON.toJSONString(resMap));
-		}catch(IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * 获取指定格式的时间
 	 * 
@@ -74,9 +75,10 @@ public class Utils {
 		return createTime;
 	}
 
-//	public static void main(String[] args) {
-//		String path = "C://hiberfil.sys";
-//		// FilePath.accidentReportAttachPath + "1535519898571_fontconfig-user.txt";
-//		System.out.println(Utils.getCreateTime(path));
-//	}
+	// public static void main(String[] args) {
+	// String path = "C://hiberfil.sys";
+	// // FilePath.accidentReportAttachPath +
+	// "1535519898571_fontconfig-user.txt";
+	// System.out.println(Utils.getCreateTime(path));
+	// }
 }
