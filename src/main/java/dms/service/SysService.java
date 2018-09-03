@@ -2,6 +2,7 @@ package dms.service;
 
 import java.util.List;
 
+import com.alibaba.fastjson.JSONArray;
 import com.github.pagehelper.PageInfo;
 
 import dms.entity.Log;
@@ -39,4 +40,6 @@ public interface SysService {
 	public List<Role> getAllRoleInfo();
 
 	public List<UserGroup> getAllUserGroupInfo();
+	
+	public JSONArray getPageFunctionList();
 }

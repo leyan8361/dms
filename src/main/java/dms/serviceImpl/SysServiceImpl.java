@@ -5,11 +5,15 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
 import dms.dao.SysDao;
 import dms.entity.Log;
+import dms.entity.Page;
+import dms.entity.PageFunction;
 import dms.entity.Role;
 import dms.entity.UserGroup;
 import dms.service.SysService;
@@ -105,5 +109,28 @@ public class SysServiceImpl implements SysService {
 	public List<UserGroup> getAllUserGroupInfo() {
 
 		return sysDao.getAllUserGroupInfo();
+	}
+
+	public JSONArray getPageFunctionList() {
+
+		List<Page> list = sysDao.getPageFunctionList();
+		JSONArray ja = new JSONArray();
+		// Set<Integer> set = new HashSet<Integer>();
+		for (Page page : list) {
+			JSONObject jo = new JSONObject();
+			JSONArray ja2 = new JSONArray();
+			List<PageFunction> lpf = page.getLpf();
+			jo.put("pageId", page.getId());
+			for (PageFunction pf : lpf) {
+				JSONObject jo2 = new JSONObject();
+				jo2.put("functionId", pf.getId());
+				jo2.put("fid", pf.getFid());
+				jo2.put("functionName", pf.getFunctionName());
+				ja2.add(jo2);
+			}
+			jo.put("functionInfo", ja2);
+			ja.add(jo);
+		}
+		return ja;
 	}
 }

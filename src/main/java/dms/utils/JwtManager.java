@@ -46,7 +46,7 @@ public class JwtManager {
 		claims.put("userGroupId", userGroupId);
 		claims.put("userGroupName", userGroupName);
 		JwtBuilder builder = Jwts.builder().setClaims(claims).setId("tokenid").setIssuedAt(new Date())
-				.setExpiration(new Date(System.currentTimeMillis() + 37 * 24 * 60 * 60 * 1000))
+				.setExpiration(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000))
 				.signWith(signatureAlgorithm, signingKey);
 		return builder.compact();
 	}

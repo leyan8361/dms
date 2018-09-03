@@ -31,6 +31,9 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		<typeAlias type="dms.entity.AccidentReport" alias="accidentReport" />
 		<typeAlias type="dms.entity.AccidentReportAttach" alias="accidentReportAttach" />
 		<typeAlias type="dms.entity.AccidentReportNo" alias="accidentReportNo" />
+		<typeAlias type="dms.entity.Page" alias="page" />
+		<typeAlias type="dms.entity.PageFunction" alias="pageFunction" />
+		<typeAlias type="dms.entity.UserFunction" alias="userFunction" />
 	</typeAliases>
 
 	<plugins>

@@ -64,6 +64,9 @@
 	<!-- 上传的运营报告附件 -->
 	<mvc:resources mapping="/attach/accidentReportAttach/**"
 		location="file:/application/shxinzhili/data/dms/accidentReportAttach/" />
+		<!-- 上传的流程表库附件 -->
+	<mvc:resources mapping="/attach/processAttach/**"
+		location="file:/application/shxinzhili/data/dms/processAttach/" />
 
 	<!-- springmvc 拦截器 -->
 	<mvc:interceptors>

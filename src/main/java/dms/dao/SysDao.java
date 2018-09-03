@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import dms.entity.Log;
+import dms.entity.Page;
 import dms.entity.Role;
 import dms.entity.UserGroup;
 
@@ -42,4 +43,6 @@ public interface SysDao {
 	public List<Role> getAllRoleInfo();
 
 	public List<UserGroup> getAllUserGroupInfo();
+
+	public List<Page> getPageFunctionList();
 }

@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 
 public class Utils {
 
@@ -75,10 +76,7 @@ public class Utils {
 		return createTime;
 	}
 
-	// public static void main(String[] args) {
-	// String path = "C://hiberfil.sys";
-	// // FilePath.accidentReportAttachPath +
-	// "1535519898571_fontconfig-user.txt";
-	// System.out.println(Utils.getCreateTime(path));
-	// }
+	public static void main(String[] args) {
+		System.out.println(JSONObject.parse(""));
+	}
 }
