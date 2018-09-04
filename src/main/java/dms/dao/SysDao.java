@@ -24,6 +24,8 @@ public interface SysDao {
 
 	public List<Role> getRoleList(@Param("name") String name);
 
+	public Role getRoleInfo(int id);
+	
 	public int updateRoleInfo(@Param("id") int id, @Param("name") String name,
 			@Param("description") String description);
 
@@ -35,6 +37,8 @@ public interface SysDao {
 
 	public List<UserGroup> getUserGroupList(@Param("name") String name);
 
+	public UserGroup getUserGroupInfo(int id);
+	
 	public int updateUserGroupInfo(@Param("id") int id, @Param("name") String name,
 			@Param("description") String description);
 

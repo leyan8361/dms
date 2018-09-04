@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -247,10 +248,15 @@ public class PlanServiceImpl implements PlanService {
 
 		try {
 			Set<String> keySet = contentStr.keySet();
+			List<ProcessContent> lic = new ArrayList<ProcessContent>();
 			for (String key : keySet) {
 				String columnId = key.split("_")[1];
 				String content = contentStr.getString(key);
-				planDao.updateProcessContent(processId, Integer.valueOf(columnId), flag, content);
+				if (planDao.JudgeColumnIdByProcess2IdAndFlag(processId, Integer.valueOf(columnId), flag) == null) {
+					lic.add(new ProcessContent(processId, Integer.valueOf(columnId), flag, content));
+				} else {
+					planDao.updateProcessContent(processId, Integer.valueOf(columnId), flag, content);
+				}
 			}
 			Set<String> keySet2 = attachMap.keySet();
 			for (String key : keySet2) {
@@ -258,7 +264,14 @@ public class PlanServiceImpl implements PlanService {
 				MultipartFile mf = attachMap.get(key);
 				String content = System.currentTimeMillis() + "_" + mf.getOriginalFilename();
 				mf.transferTo(new File(FilePath.processAttachPath + content));
-				planDao.updateProcessContent(processId, Integer.valueOf(columnId), flag, content);
+				if (planDao.JudgeColumnIdByProcess2IdAndFlag(processId, Integer.valueOf(columnId), flag) == null) {
+					lic.add(new ProcessContent(processId, Integer.valueOf(columnId), flag, content));
+				} else {
+					planDao.updateProcessContent(processId, Integer.valueOf(columnId), flag, content);
+				}
+			}
+			if (lic.size() != 0) {
+				planDao.addProcessContent(lic);
 			}
 			return true;
 		} catch (IOException e) {
@@ -275,6 +288,12 @@ public class PlanServiceImpl implements PlanService {
 	public JSONObject getProcessContent(int processId, String columnId, String content) {
 
 		List<ProcessContent> lpc = planDao.getProcessContentList(processId);
+		List<ProcessColumn> lic2 = planDao.getProcessColumnNameInfo(processId);
+		Set<Integer> set = new HashSet<Integer>();
+		Set<Integer> set2 = new HashSet<Integer>();
+		for (ProcessColumn ic : lic2) {
+			set.add(ic.getId());
+		}
 		JSONObject jo = new JSONObject();
 		for (ProcessContent pc : lpc) {
 			if (!"".equals(columnId)) {
@@ -294,6 +313,26 @@ public class PlanServiceImpl implements PlanService {
 				jo2.put("content", pc.getContent() == null ? "" : pc.getContent());
 				ja.add(jo2);
 			}
+		}
+		Set<String> key = jo.keySet();
+		for (String s : key) {
+			JSONArray jsa = jo.getJSONArray(s);
+			for (Object o : jsa) {
+				JSONObject jso = (JSONObject) o;
+				set2.add(Integer.valueOf(String.valueOf(jso.get("columnId"))));
+			}
+		}
+		set.removeAll(set2);
+		for (String s : key) {
+			JSONArray jsa = jo.getJSONArray(s);
+			for (int i : set) {
+				JSONObject jo2 = new JSONObject();
+				jo2.put("columnId", i);
+				jo2.put("content", "");
+				jsa.add(jo2);
+			}
+			jsa = Utils.sortJSONArray(jsa);
+			jo.put(s, jsa);
 		}
 		return jo;
 	}
@@ -390,10 +429,15 @@ public class PlanServiceImpl implements PlanService {
 
 		try {
 			Set<String> keySet = contentStr.keySet();
+			List<InfoContent> lic = new ArrayList<InfoContent>();
 			for (String key : keySet) {
 				String columnId = key.split("_")[1];
 				String content = contentStr.getString(key);
-				planDao.updateInfoContent(infoId, Integer.valueOf(columnId), flag, content);
+				if (planDao.JudgeColumnIdByProcessIdAndFlag(infoId, Integer.valueOf(columnId), flag) == null) {
+					lic.add(new InfoContent(infoId, Integer.valueOf(columnId), flag, content));
+				} else {
+					planDao.updateInfoContent(infoId, Integer.valueOf(columnId), flag, content);
+				}
 			}
 			Set<String> keySet2 = attachMap.keySet();
 			for (String key : keySet2) {
@@ -401,7 +445,14 @@ public class PlanServiceImpl implements PlanService {
 				MultipartFile mf = attachMap.get(key);
 				String content = System.currentTimeMillis() + "_" + mf.getOriginalFilename();
 				mf.transferTo(new File(FilePath.infoAttachPath + content));
-				planDao.updateInfoContent(infoId, Integer.valueOf(columnId), flag, content);
+				if (planDao.JudgeColumnIdByProcessIdAndFlag(infoId, Integer.valueOf(columnId), flag) == null) {
+					lic.add(new InfoContent(infoId, Integer.valueOf(columnId), flag, content));
+				} else {
+					planDao.updateInfoContent(infoId, Integer.valueOf(columnId), flag, content);
+				}
+			}
+			if (lic.size() != 0) {
+				planDao.addInfoContent(lic);
 			}
 			return true;
 		} catch (IOException e) {
@@ -418,6 +469,12 @@ public class PlanServiceImpl implements PlanService {
 	public JSONObject getInfoContent(int infoId, String columnId, String content) {
 
 		List<InfoContent> lic = planDao.getInfoContentList(infoId);
+		List<InfoColumn> lic2 = planDao.getInfoColumnNameInfo(infoId); // 获取资料表所有的列信息
+		Set<Integer> set = new HashSet<Integer>();
+		Set<Integer> set2 = new HashSet<Integer>();
+		for (InfoColumn ic : lic2) {
+			set.add(ic.getId());
+		}
 		JSONObject jo = new JSONObject();
 		for (InfoContent ic : lic) {
 			if (!"".equals(columnId)) {
@@ -428,7 +485,6 @@ public class PlanServiceImpl implements PlanService {
 				jo.put(ic.getFlag(), new JSONArray());
 			}
 		}
-		// System.out.println(jo);
 		for (InfoContent ic : lic) {
 			JSONArray ja = (JSONArray) jo.get(ic.getFlag());
 			if (ja != null) {
@@ -437,6 +493,26 @@ public class PlanServiceImpl implements PlanService {
 				jo2.put("content", ic.getContent() == null ? "" : ic.getContent());
 				ja.add(jo2);
 			}
+		}
+		Set<String> key = jo.keySet();
+		for (String s : key) {
+			JSONArray jsa = jo.getJSONArray(s);
+			for (Object o : jsa) {
+				JSONObject jso = (JSONObject) o;
+				set2.add(Integer.valueOf(String.valueOf(jso.get("columnId"))));
+			}
+		}
+		set.removeAll(set2);
+		for (String s : key) {
+			JSONArray jsa = jo.getJSONArray(s);
+			for (int i : set) {
+				JSONObject jo2 = new JSONObject();
+				jo2.put("columnId", i);
+				jo2.put("content", "");
+				jsa.add(jo2);
+			}
+			jsa = Utils.sortJSONArray(jsa);
+			jo.put(s, jsa);
 		}
 		return jo;
 	}

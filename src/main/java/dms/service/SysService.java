@@ -23,6 +23,8 @@ public interface SysService {
 
 	public PageInfo<Role> getRoleList(int currentPage, String name);
 
+	public Role getRoleInfo(int id);
+	
 	public int updateRoleInfo(int id, String name, String description);
 
 	public int delRoleInfo(int id);
@@ -33,6 +35,8 @@ public interface SysService {
 
 	public PageInfo<UserGroup> getUserGroupList(int currentPage, String name);
 
+	public UserGroup getUserGroupInfo(int id);
+	
 	public int updateUserGroupInfo(int id, String name, String description);
 
 	public int delUserGroupInfo(int id);

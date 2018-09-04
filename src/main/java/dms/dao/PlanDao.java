@@ -43,7 +43,7 @@ public interface PlanDao {
 	public int delPlan(int id);
 
 	public List<String> getPlanAttach(int id);
-	
+
 	public int addProcess(Process process);
 
 	public int addProcessColumn(List<ProcessColumn> lpc);
@@ -62,6 +62,9 @@ public interface PlanDao {
 
 	public int addProcessContent(List<ProcessContent> lpc);
 
+	public String JudgeColumnIdByProcess2IdAndFlag(@Param("processId") int processId, @Param("columnId") int columnId,
+			@Param("flag") String flag);
+	
 	public int updateProcessContent(@Param("processId") int processId, @Param("columnId") int columnId,
 			@Param("flag") String flag, @Param("content") String content);
 
@@ -87,7 +90,10 @@ public interface PlanDao {
 
 	public int addInfoContent(List<InfoContent> lic);
 
-	public int updateInfoContent(@Param("infoId") int processId, @Param("columnId") int columnId,
+	public String JudgeColumnIdByProcessIdAndFlag(@Param("infoId") int infoId, @Param("columnId") int columnId,
+			@Param("flag") String flag);
+
+	public int updateInfoContent(@Param("infoId") int infoId, @Param("columnId") int columnId,
 			@Param("flag") String flag, @Param("content") String content);
 
 	public int delInfoContent(@Param("infoId") int infoId, @Param("flag") String flag);

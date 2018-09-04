@@ -154,6 +154,24 @@ public class SysController {
 	}
 
 	/**
+	 * 获取角色详情
+	 * 
+	 * @param id
+	 *            角色Id
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "getRoleInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String getRoleInfo(@RequestParam("id") int id) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		Role role = sysService.getRoleInfo(id);
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", JSON.toJSONString(role));
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
 	 * 编辑角色信息
 	 * 
 	 * @param id
@@ -266,6 +284,24 @@ public class SysController {
 		resMap.put("status", Constants.successStatus);
 		resMap.put("info", JSON.toJSONString(pageInfo.getList()));
 		resMap.put("totalNum", String.valueOf(pageInfo.getTotal()));
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 获取用户群组详情
+	 * 
+	 * @param id
+	 *            群组Id
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "getUserGroupInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String getUserGroupInfo(@RequestParam("id") int id) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		UserGroup userGroup = sysService.getUserGroupInfo(id);
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", JSON.toJSONString(userGroup));
 		return JSON.toJSONString(resMap);
 	}
 

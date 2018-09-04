@@ -773,10 +773,10 @@ public class PlanController {
 	}
 
 	/**
-	 * 查询流程库表内容
+	 * 查询资料库内容
 	 * 
 	 * @param infoId
-	 *            流程库表Id
+	 *            资料库Id
 	 * @param columnId
 	 *            列Id
 	 * @param content

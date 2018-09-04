@@ -198,6 +198,14 @@
 		</foreach>
 	</insert>
 	
+	<!-- 查询流程表库某一行是否有某列的信息 -->
+	<select id="JudgeColumnIdByProcess2IdAndFlag" resultType="String">
+		select
+		columnId 
+		from t_process_content
+		where isShow = 'show' and processId = #{processId} and flag = #{flag} and columnId = #{columnId}
+	</select>
+	
 	<!-- 修改流程库表内容 -->
 	<update id="updateProcessContent">
 		update t_process_content
@@ -265,7 +273,7 @@
 		</collection>
 	</resultMap>
 	
-		<!-- 修改资料库信息 -->
+	<!-- 修改资料库信息 -->
 	<update id="updateInfoInfo">
 		update t_info
 		set name = #{name}
@@ -287,7 +295,7 @@
 	</update>
 	
 	<!-- 获取指定流程库列名信息 -->
-	<select id="getInfoColumnNameInfo" parameterType="String" resultType="processColumn">
+	<select id="getInfoColumnNameInfo" parameterType="String" resultType="infoColumn">
 		select id,name,type
 		from t_info_column
 		where isShow = 'show' and infoId = #{id} order by id asc
@@ -303,6 +311,14 @@
 			(#{ic.infoId},#{ic.columnId},#{ic.flag},#{ic.content})
 		</foreach>
 	</insert>
+	
+	<!-- 判断某一行中是否有这列数据 -->
+	<select id="JudgeColumnIdByProcessIdAndFlag" resultType="String">
+		select
+		columnId 
+		from t_info_content
+		where isShow = 'show' and infoId = #{infoId} and flag = #{flag} and columnId = #{columnId} 
+	</select>
 	
 	<!-- 修改资料库内容 -->
 	<update id="updateInfoContent">

@@ -65,6 +65,14 @@
 		order by createDate desc
 	</select>
 
+	<!-- 获取角色信息详情 -->
+	<select id="getRoleInfo" parameterType="int" resultType="role">
+		select
+		*
+		from t_role
+		where id = #{id}
+	</select>
+
 	<!-- 编辑角色信息 -->
 	<update id="updateRoleInfo">
 		update t_role
@@ -106,6 +114,14 @@
 			and name = #{name}
 		</if>
 		order by createDate desc
+	</select>
+	
+	<!-- 获取用户群组详情 -->
+	<select id="getUserGroupInfo" parameterType="int" resultType="userGroup">
+		select
+		*
+		from t_usergroup
+		where id = #{id}
 	</select>
 	
 	<!-- 编辑用户群组信息 -->

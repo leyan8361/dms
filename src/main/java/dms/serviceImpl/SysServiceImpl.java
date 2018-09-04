@@ -63,6 +63,11 @@ public class SysServiceImpl implements SysService {
 		return roleList;
 	}
 
+	public Role getRoleInfo(int id) {
+		
+		return sysDao.getRoleInfo(id);
+	}
+	
 	public int updateRoleInfo(int id, String name, String description) {
 
 		return sysDao.updateRoleInfo(id, name, description);
@@ -91,6 +96,11 @@ public class SysServiceImpl implements SysService {
 		return userGroupList;
 	}
 
+	public UserGroup getUserGroupInfo(int id) {
+		
+		return sysDao.getUserGroupInfo(id);
+	}
+	
 	public int updateUserGroupInfo(int id, String name, String description) {
 
 		return sysDao.updateUserGroupInfo(id, name, description);
