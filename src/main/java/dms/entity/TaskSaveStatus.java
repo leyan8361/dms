@@ -22,13 +22,16 @@ public class TaskSaveStatus {
 
 	}
 
-	// public TaskSaveStatus(int userId, int addStatus, int dealStatus, int
-	// transferStatus) {
-	// this.userId = userId;
-	// this.addStatus = addStatus;
-	// this.dealStatus = dealStatus;
-	// this.transferStatus = transferStatus;
-	// }
+	public TaskSaveStatus(int userId, int addStatus, int dealStatus, int transferStatus, int addId, int deadId,
+			int transferId) {
+		this.userId = userId;
+		this.addStatus = addStatus;
+		this.dealStatus = dealStatus;
+		this.transferStatus = transferStatus;
+		this.addId = addId;
+		this.deadId = deadId;
+		this.transferId = transferId;
+	}
 
 	public int getId() {
 		return id;

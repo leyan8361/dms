@@ -1,5 +1,6 @@
 package dms.serviceImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,12 @@ import dms.entity.Log;
 import dms.entity.Page;
 import dms.entity.PageFunction;
 import dms.entity.Role;
+import dms.entity.UserFunction;
 import dms.entity.UserGroup;
+import dms.entity.UserInfo;
 import dms.service.SysService;
 import dms.utils.Constants;
+import dms.utils.Utils;
 
 @Service("sysService")
 public class SysServiceImpl implements SysService {
@@ -64,10 +68,10 @@ public class SysServiceImpl implements SysService {
 	}
 
 	public Role getRoleInfo(int id) {
-		
+
 		return sysDao.getRoleInfo(id);
 	}
-	
+
 	public int updateRoleInfo(int id, String name, String description) {
 
 		return sysDao.updateRoleInfo(id, name, description);
@@ -97,10 +101,10 @@ public class SysServiceImpl implements SysService {
 	}
 
 	public UserGroup getUserGroupInfo(int id) {
-		
+
 		return sysDao.getUserGroupInfo(id);
 	}
-	
+
 	public int updateUserGroupInfo(int id, String name, String description) {
 
 		return sysDao.updateUserGroupInfo(id, name, description);
@@ -131,6 +135,7 @@ public class SysServiceImpl implements SysService {
 			JSONArray ja2 = new JSONArray();
 			List<PageFunction> lpf = page.getLpf();
 			jo.put("pageId", page.getId());
+			jo.put("pageName", page.getTitle());
 			for (PageFunction pf : lpf) {
 				JSONObject jo2 = new JSONObject();
 				jo2.put("functionId", pf.getId());
@@ -142,5 +147,112 @@ public class SysServiceImpl implements SysService {
 			ja.add(jo);
 		}
 		return ja;
+	}
+
+	public boolean addUserInfo(String userName, int roleId, String roleName, int userGroupId, String userGroupName,
+			JSONArray functionArray) {
+
+		UserInfo uf = new UserInfo(userName, roleId, roleName, userGroupId, userGroupName,
+				Utils.getNowDate("yyyy-MM-dd"), "");
+		uf.setPassword("123456");
+		sysDao.addUserInfo(uf);
+		int userId = uf.getId(); // 获取新增的用户的Id
+		List<UserFunction> luf = new ArrayList<UserFunction>();
+		if (functionArray != null) {
+			for (Object o : functionArray) {
+				JSONObject jo = (JSONObject) o;
+				int pageId = jo.getIntValue("pageId");
+				JSONArray functionInfo = jo.getJSONArray("functionInfo");
+				for (Object o2 : functionInfo) {
+					JSONObject jo2 = (JSONObject) o2;
+					String fid = jo2.getString("fid");
+					int functionId = jo2.getIntValue("functionId");
+					String functionName = jo2.getString("functionName");
+					luf.add(new UserFunction(userId, userName, pageId, functionId, fid, functionName));
+				}
+			}
+		}
+		if (!luf.isEmpty()) {
+			sysDao.addUserFunction(luf);
+		}
+		sysDao.addTaskSaveStatus(userId);
+		return true;
+	}
+
+	public PageInfo<UserInfo> getUserList(String userName, String roleId, String userGroupId, int currentPage) {
+
+		PageHelper.startPage(currentPage, Constants.pageSize);
+		List<UserInfo> list = sysDao.getUserList(userName, roleId, userGroupId);
+		PageInfo<UserInfo> pageInfo = new PageInfo<>(list);
+		return pageInfo;
+	}
+
+	public JSONObject getUserInfo(int id) {
+
+		JSONObject resObject = new JSONObject();
+		UserInfo uf = sysDao.getUserInfo(id);
+		List<Page> list = uf.getLp();
+		// System.out.println(JSON.toJSONString(uf));
+		// System.out.println(JSON.toJSONString(list));
+		resObject.put("id", uf.getId());
+		resObject.put("userName", uf.getUserName());
+		resObject.put("roleId", uf.getRoleId());
+		resObject.put("userGroupId", uf.getUserGroupId());
+		resObject.put("roleName", uf.getRoleName() == null ? "" : uf.getRoleName());
+		resObject.put("userGroupName", uf.getUserGroupName() == null ? "" : uf.getUserGroupName());
+		resObject.put("pageInfo", new JSONArray());
+		if (!list.isEmpty()) {
+			JSONArray ja = resObject.getJSONArray("pageInfo");
+			for (Page page : list) {
+				List<PageFunction> lpf = page.getLpf();
+				JSONObject jo = new JSONObject();
+				jo.put("pageId", page.getId());
+				jo.put("functionInfo", new JSONArray());
+				if (!lpf.isEmpty()) {
+					JSONArray ja2 = jo.getJSONArray("functionInfo");
+					for (PageFunction pf : lpf) {
+						JSONObject jo2 = new JSONObject();
+						jo2.put("functionId", pf.getId());
+						jo2.put("fid", pf.getFid());
+						jo2.put("functionName", pf.getFunctionName());
+						ja2.add(jo2);
+					}
+				}
+				ja.add(jo);
+			}
+		}
+		// resObject.put("roleName", value)
+		return resObject;
+	}
+
+	public boolean updateUserInfo(int userId, String userName, String roleId, String roleName, String userGroupId,
+			String userGroupName, JSONArray functionArray) {
+
+		sysDao.updateUserInfo(userId, userName, roleId, roleName, userGroupId, userGroupName);
+		sysDao.delUserFunction(userId);
+		List<UserFunction> luf = new ArrayList<UserFunction>();
+		if (!functionArray.isEmpty()) {
+			for (Object o : functionArray) {
+				JSONObject jo = (JSONObject) o;
+				int pageId = jo.getIntValue("pageId");
+				JSONArray functionInfo = jo.getJSONArray("functionInfo");
+				for (Object o2 : functionInfo) {
+					JSONObject jo2 = (JSONObject) o2;
+					String fid = jo2.getString("fid");
+					int functionId = jo2.getIntValue("functionId");
+					String functionName = jo2.getString("functionName");
+					luf.add(new UserFunction(userId, userName, pageId, functionId, fid, functionName));
+				}
+			}
+		}
+		if (!luf.isEmpty()) {
+			sysDao.addUserFunction(luf);
+		}
+		return true;
+	}
+	
+	public int delUser(int userId) {
+		
+		return sysDao.delUser(userId);
 	}
 }

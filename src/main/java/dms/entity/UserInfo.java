@@ -1,5 +1,7 @@
 package dms.entity;
 
+import java.util.List;
+
 /**
  * 用户信息
  * 
@@ -20,6 +22,7 @@ public class UserInfo {
 	private String createDate;
 	private String remark;
 	private int status; // 0启用/1停用;
+	private List<Page> lp;
 	private String isShow;
 
 	// 还需添加List<模块权限> 属性
@@ -133,6 +136,14 @@ public class UserInfo {
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+
+	public List<Page> getLp() {
+		return lp;
+	}
+
+	public void setLp(List<Page> lp) {
+		this.lp = lp;
 	}
 
 	public String getIsShow() {

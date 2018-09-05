@@ -14,6 +14,6 @@ public class SysTest extends BaseJunit4Test {
 	@Test
 	public void getPageFunctionList() {
 		
-		System.out.println(sysService.getPageFunctionList());
+		System.out.println(sysService.getUserInfo(8));
 	}
 }

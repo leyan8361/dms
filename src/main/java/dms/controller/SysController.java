@@ -21,6 +21,7 @@ import com.github.pagehelper.PageInfo;
 import dms.entity.Log;
 import dms.entity.Role;
 import dms.entity.UserGroup;
+import dms.entity.UserInfo;
 import dms.service.SysService;
 import dms.utils.Constants;
 import dms.utils.Utils;
@@ -396,7 +397,157 @@ public class SysController {
 	@RequestMapping(value = "getPageFunctionList", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String getPageFunctionList() {
 
+		Map<String, String> resMap = new HashMap<String, String>();
 		JSONArray ja = sysService.getPageFunctionList();
-		return JSON.toJSONString(ja);
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", JSON.toJSONString(ja));
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 新增用户
+	 * 
+	 * @param userName
+	 *            用户名
+	 * @param roleId
+	 *            角色Id
+	 * @param roleName
+	 *            角色名
+	 * @param userGroupId
+	 *            群组Id
+	 * @param userGroupName
+	 *            群组名
+	 * @param functionArray
+	 *            页面功能数组
+	 *            [{"pageId":"","functionInfo":[{"functionId":"","fid":"","functionName":""},...]},...]
+	 * @param token
+	 * @param req
+	 * @return
+	 */
+	@RequestMapping(value = "addUserInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String addUserInfo(@RequestParam("userName") String userName, @RequestParam("roleId") int roleId,
+			@RequestParam("roleName") String roleName, @RequestParam("userGroupId") int userGroupId,
+			@RequestParam("userGroupName") String userGroupName, @RequestParam("functionArray") String functionArray,
+			HttpServletRequest req) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		sysService.addUserInfo(userName, roleId, roleName, userGroupId, userGroupName,
+				JSONArray.parseArray(functionArray));
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", "添加成功");
+		JSONObject jo = (JSONObject) req.getAttribute("user");
+		sysService
+				.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+						String.valueOf(jo.get("userName")), "增加员工:" + userName));
+
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 获取用户列表
+	 * 
+	 * @param userName
+	 *            用户名
+	 * @param roleId
+	 *            角色Id
+	 * @param userGroupId
+	 *            群组Id
+	 * @param currentPage
+	 *            当前页码(最小为1)
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "getUserList", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String getUserList(@RequestParam("userName") String userName, @RequestParam("roleId") String roleId,
+			@RequestParam("userGroupId") String userGroupId, @RequestParam("currentPage") int currentPage) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		PageInfo<UserInfo> pageInfo = sysService.getUserList(userName, roleId, userGroupId, currentPage);
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", JSON.toJSONString(pageInfo.getList()));
+		resMap.put("totalNum", JSON.toJSONString(pageInfo.getTotal()));
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 获取用户详细信息
+	 * 
+	 * @param id
+	 *            用户Id
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "getUserInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String getUserInfo(@RequestParam("id") int id) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		JSONObject jo = sysService.getUserInfo(id);
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", JSON.toJSONString(jo));
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 修改用户信息
+	 * 
+	 * @param id
+	 *            用户Id
+	 * @param userName
+	 *            用户名
+	 * @param roleId
+	 *            角色Id
+	 * @param roleName
+	 *            角色名
+	 * @param userGroupId
+	 *            群组Id
+	 * @param userGroupName
+	 *            群组名
+	 * @param functionArray
+	 *            页面功能数组
+	 *            [{"pageId":"","functionInfo":[{"functionId":"","fid":"","functionName":""},...]},...]
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "updateUserInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String updateUserInfo(@RequestParam("id") int id, @RequestParam("userName") String userName,
+			@RequestParam("roleId") String roleId, @RequestParam("roleName") String roleName,
+			@RequestParam("userGroupId") String userGroupId, @RequestParam("userGroupName") String userGroupName,
+			@RequestParam("functionArray") String functionArray, HttpServletRequest req) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		sysService.updateUserInfo(id, userName, roleId, roleName, userGroupId, userGroupName,
+				JSONArray.parseArray(functionArray));
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", "修改成功");
+		JSONObject jo = (JSONObject) req.getAttribute("user");
+		sysService
+				.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+						String.valueOf(jo.get("userName")), "修改员工:" + userName + "的信息"));
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 删除用户
+	 * 
+	 * @param id
+	 *            用户Id
+	 * @param userName
+	 *            用户名
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "delUser", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String delUser(@RequestParam("id") int id, @RequestParam("userName") String userName,
+			HttpServletRequest req) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		sysService.delUser(id);
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", "删除成功");
+		JSONObject jo = (JSONObject) req.getAttribute("user");
+		sysService
+				.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+						String.valueOf(jo.get("userName")), "删除员工:" + userName + "的信息"));
+		return JSON.toJSONString(resMap);
 	}
 }

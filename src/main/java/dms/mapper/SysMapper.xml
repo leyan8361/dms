@@ -174,4 +174,98 @@
 			<result column="functionName" property="functionName" />
 		</collection>
 	</resultMap>
+	
+	<!-- 增加员工信息 -->
+	<insert id="addUserInfo" parameterType="userInfo" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		insert into
+		t_userinfo
+		(userName,password,roleId,roleName,userGroupId,userGroupName,createDate)
+		values
+		(#{userName},#{password},#{roleId},#{roleName},#{userGroupId},#{userGroupName},#{createDate})
+	</insert>
+	
+	<!-- 添加员工功能权限 -->
+	<insert id="addUserFunction" parameterType="userFunction">
+		insert into
+		t_user_function
+		(userId,userName,pageId,functionId,fid,functionName)
+		values
+		<foreach collection="list" item="uf" separator=",">
+			(#{uf.userId},#{uf.userName},#{uf.pageId},#{uf.functionId},#{uf.fid},#{uf.functionName})
+		</foreach>
+	</insert>
+	
+	<!-- 添加用户任务信息存储状态 -->
+	<insert id="addTaskSaveStatus" parameterType="int">
+		insert into 
+		t_task_save_status
+		(userId)
+		values
+		(#{userId})
+	</insert>
+	
+	<!-- 获取用户列表 -->
+	<select id="getUserList" resultType="userInfo">
+		select
+		id,userName,roleName,userGroupName
+		from t_userinfo
+		where isShow = 'show'
+		<if test="userName!=''">
+			and userName = #{userName}
+		</if>
+		<if test="roleId!=''">
+			and roleId = #{roleId}
+		</if>
+		<if test="userGroupId!=''">
+			and userGroupId = #{userGroupId}
+		</if>
+	</select>
+	
+	<!-- 获取用户详细信息 -->
+	<select id="getUserInfo" parameterType="int" resultMap="getUserInfoMap">
+		select
+		t1.id,t1.userName,t1.roleId,t1.roleName,t1.userGroupId,t1.userGroupName,t2.pageId,t2.functionId,t2.fid,t2.functionName
+		from
+		(select * from t_userinfo where isShow = 'show' and id = #{id}) t1
+		left join
+		(select * from t_user_function where isShow = 'show' and userId = #{id}) t2
+		on t1.id = t2.userId
+	</select>
+	
+	<resultMap type="userInfo" id="getUserInfoMap">
+		<id column="id" property="id" />
+		<result column="userName" property="userName" />
+		<result column="roleName" property="roleName" />
+		<result column="userGroupName" property="userGroupName" />
+		<collection property="lp" ofType="page">
+			<id column="pageId" property="id" />
+			<collection property="lpf" ofType="pageFunction">
+				<id column="functionId" property="id" />
+				<result column="fid" property="fid" />
+				<result column="functionName" property="functionName" />
+			</collection>
+		</collection>
+	</resultMap>
+	
+	<!-- 修改用户基本信息 -->
+	<update id="updateUserInfo">
+		update t_userinfo
+		set
+		userName = #{userName},roleId = #{roleId},roleName = #{roleName},userGroupId = #{userGroupId},userGroupName = #{userGroupName}
+		where id = #{userId}
+	</update>
+	
+	<!-- 删除用户功能权限 -->
+	<update id="delUserFunction" parameterType="int">
+		update t_user_function
+		set isShow = 'notShow'
+		where userId = #{userId}
+	</update>
+	
+	<!-- 删除用户 -->
+	<update id="delUser" parameterType="int">
+		update t_userinfo
+		set isShow = 'notShow'
+		where id = #{userId}
+	</update>
 </mapper>
