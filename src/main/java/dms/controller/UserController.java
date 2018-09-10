@@ -52,6 +52,7 @@ public class UserController {
 			resMap.put("token", token);
 			resMap.put("userName", userName);
 			resMap.put("userId", String.valueOf(ui.getId()));
+			resMap.put("roleName", ui.getRoleName() == null ? "" : ui.getRoleName());
 		}
 		return JSON.toJSONString(resMap);
 	}

@@ -26,7 +26,7 @@
 			and userName = #{userName}
 		</if>
 		<if test="content!=''">
-			operation = #{content}
+			and operation = #{content}
 		</if>
 		order by occurDate desc
 	</select>
