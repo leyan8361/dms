@@ -80,6 +80,11 @@
 			<mvc:exclude-mapping path="/attach/**" />
 			<bean class="dms.interceptor.RouteInterceptor" />
 		</mvc:interceptor>
+
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<bean class="dms.interceptor.AuthInterceptor" />
+		</mvc:interceptor>
 	</mvc:interceptors>
 
 	<!-- 避免IE执行AJAX时，返回JSON出现下载文件 -->

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import dms.dao.UserDao;
+import dms.entity.UserFunction;
 import dms.entity.UserInfo;
 import dms.service.UserService;
 import dms.utils.Utils;
@@ -22,5 +23,10 @@ public class UserServiceImpl implements UserService {
 	public int updateUserLastLoginTime(int userId) {
 
 		return userDao.updateUserLastLoginTime(userId, Utils.getNowDate("yyyy-MM-dd hh:mm:ss"));
+	}
+	
+	public UserFunction checkIfUserContainsFunction(int userId, String functionName) {
+		
+		return userDao.checkIfUserContainsFunction(userId, functionName);
 	}
 }

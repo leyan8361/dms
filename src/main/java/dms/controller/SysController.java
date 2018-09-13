@@ -18,6 +18,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 
+import dms.annotation.AuthAnnotation;
 import dms.entity.Log;
 import dms.entity.Role;
 import dms.entity.UserGroup;
@@ -72,6 +73,7 @@ public class SysController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "getLogList")
 	@RequestMapping(value = "getLogList", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String getLogList(@RequestParam("currentPage") int currentPage, @RequestParam("startDate") String startDate,
 			@RequestParam("endDate") String endDate, @RequestParam("userName") String userName,
@@ -95,6 +97,7 @@ public class SysController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "delLog")
 	@RequestMapping(value = "batchDelLog", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String batchDelLog(@RequestParam("delStr") String delStr, HttpServletRequest req) {
 
@@ -120,6 +123,7 @@ public class SysController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "addRole")
 	@RequestMapping(value = "addRole", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String addRole(@RequestParam("name") String name, @RequestParam("description") String description,
 			@RequestParam("userId") int userId, HttpServletRequest req) {
@@ -143,6 +147,7 @@ public class SysController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "getRoleList")
 	@RequestMapping(value = "getRoleList", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String getRoleList(@RequestParam("currentPage") int currentPage, @RequestParam("name") String name) {
 
@@ -184,6 +189,7 @@ public class SysController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "updateRole")
 	@RequestMapping(value = "updateRoleInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String updateRoleInfo(@RequestParam("id") int id, @RequestParam("name") String name,
 			@RequestParam("description") String description, HttpServletRequest req) {
@@ -207,6 +213,7 @@ public class SysController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "delRole")
 	@RequestMapping(value = "delRoleInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String delRoleInfo(@RequestParam("id") int id, @RequestParam("name") String name, HttpServletRequest req) {
 
@@ -253,6 +260,7 @@ public class SysController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "addGroup")
 	@RequestMapping(value = "addUserGroup", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String addUserGroup(@RequestParam("name") String name, @RequestParam("description") String description,
 			@RequestParam("userId") int userId, HttpServletRequest req) {
@@ -277,6 +285,7 @@ public class SysController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "getGroupList")
 	@RequestMapping(value = "getUserGroupList", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String getUserGroupList(@RequestParam("currentPage") int currentPage, @RequestParam("name") String name) {
 
@@ -318,6 +327,7 @@ public class SysController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "updateGroup")
 	@RequestMapping(value = "updateUserGroupInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String updateUserGroupInfo(@RequestParam("id") int id, @RequestParam("name") String name,
 			@RequestParam("description") String description, HttpServletRequest req) {
@@ -342,6 +352,7 @@ public class SysController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth="delGroup")
 	@RequestMapping(value = "delUserGroupInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String delUserGroupInfo(@RequestParam("id") int id, @RequestParam("name") String name,
 			HttpServletRequest req) {
@@ -424,6 +435,7 @@ public class SysController {
 	 * @param req
 	 * @return
 	 */
+	@AuthAnnotation(auth="addUser")
 	@RequestMapping(value = "addUserInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String addUserInfo(@RequestParam("userName") String userName, @RequestParam("roleId") int roleId,
 			@RequestParam("roleName") String roleName, @RequestParam("userGroupId") int userGroupId,
@@ -457,6 +469,7 @@ public class SysController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "getUserList")
 	@RequestMapping(value = "getUserList", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String getUserList(@RequestParam("userName") String userName, @RequestParam("roleId") String roleId,
 			@RequestParam("userGroupId") String userGroupId, @RequestParam("currentPage") int currentPage) {
@@ -508,6 +521,7 @@ public class SysController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth="updateUser")
 	@RequestMapping(value = "updateUserInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String updateUserInfo(@RequestParam("id") int id, @RequestParam("userName") String userName,
 			@RequestParam("roleId") String roleId, @RequestParam("roleName") String roleName,
@@ -536,6 +550,7 @@ public class SysController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth="delUser")
 	@RequestMapping(value = "delUser", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String delUser(@RequestParam("id") int id, @RequestParam("userName") String userName,
 			HttpServletRequest req) {

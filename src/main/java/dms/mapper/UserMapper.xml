@@ -20,4 +20,12 @@
 		where
 		id = #{userId}
 	</update>
+	
+	<!-- 校验用户是否存在某种权限 -->
+	<select id="checkIfUserContainsFunction" resultType="userFunction">
+		select
+		*
+		from t_user_function
+		where userId = #{userId} and functionName = #{functionName} and isShow = 'show'
+	</select>
 </mapper>

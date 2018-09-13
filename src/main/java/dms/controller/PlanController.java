@@ -20,6 +20,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 
+import dms.annotation.AuthAnnotation;
 import dms.entity.AccidentReport;
 import dms.entity.Info;
 import dms.entity.InfoColumn;
@@ -121,6 +122,7 @@ public class PlanController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "addPlan")
 	@RequestMapping(value = "addPlan", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String addPlan(@RequestParam("userId") int userId, @RequestParam("name") String name,
 			@RequestParam("lineId") int lineId, @RequestParam("lineNo") int lineNo,
@@ -156,6 +158,7 @@ public class PlanController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "getPlanList")
 	@RequestMapping(value = "getPLanList", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String getPLanList(@RequestParam("currentPage") int currentPage, @RequestParam("lineId") String lineId,
 			@RequestParam("stationId") String stationId, @RequestParam("name") String name, HttpServletRequest req) {
@@ -209,6 +212,7 @@ public class PlanController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "updatePlanInfo")
 	@RequestMapping(value = "updatePlanInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String updatePlanInfo(@RequestParam("id") int id, @RequestParam("name") String name,
 			@RequestParam("lineId") int lineId, @RequestParam("lineNo") int lineNo,
@@ -244,6 +248,7 @@ public class PlanController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "delPlan")
 	@RequestMapping(value = "delPlan", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String delPlan(@RequestParam("id") int id, @RequestParam("name") String name, HttpServletRequest req) {
 
@@ -267,6 +272,7 @@ public class PlanController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "addProcess")
 	@RequestMapping(value = "addProcess", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String addProcess(@RequestParam("name") String name, @RequestParam("columnArr") String columnArr,
 			HttpServletRequest req) {
@@ -291,6 +297,7 @@ public class PlanController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "getProcessList")
 	@RequestMapping(value = "getProcessList", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String getProcessList(@RequestParam("currentPage") int currentPage) {
 
@@ -334,6 +341,7 @@ public class PlanController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "updateProcess")
 	@RequestMapping(value = "updateProcessInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String updateProcessInfo(@RequestParam("id") int id, @RequestParam("name") String name,
 			@RequestParam("updateArr") String updateArr, @RequestParam("addArr") String addArr,
@@ -360,6 +368,7 @@ public class PlanController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "delProcess")
 	@RequestMapping(value = "delProcess", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String delProcess(@RequestParam("id") int id, @RequestParam("name") String name, HttpServletRequest req) {
 
@@ -424,6 +433,7 @@ public class PlanController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "updateProcess")
 	@RequestMapping(value = "addProcessContent", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String addProcessContent(@RequestParam("processId") int processId,
 			@RequestParam("processName") String processName, @RequestParam("contentStr") String contentStr,
@@ -462,6 +472,7 @@ public class PlanController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "updateProcess")
 	@RequestMapping(value = "updateProcessContent", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String updateProcessContent(@RequestParam("processId") int processId,
 			@RequestParam("processName") String processName, @RequestParam("flag") String flag,
@@ -497,6 +508,7 @@ public class PlanController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "updateProcess")
 	@RequestMapping(value = "delProcessContent", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String delProcessContent(@RequestParam("processId") int processId,
 			@RequestParam("processName") String processName, @RequestParam("flag") String flag,
@@ -547,6 +559,7 @@ public class PlanController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "addInfo")
 	@RequestMapping(value = "addInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String addInfo(@RequestParam("name") String name, @RequestParam("columnArr") String columnArr,
 			HttpServletRequest req) {
@@ -570,6 +583,7 @@ public class PlanController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "getInfoList")
 	@RequestMapping(value = "getInfoList", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String getInfoList(@RequestParam("currentPage") int currentPage) {
 
@@ -613,6 +627,7 @@ public class PlanController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "updateInfo")
 	@RequestMapping(value = "updateInfoInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String updateInfoInfo(@RequestParam("id") int id, @RequestParam("name") String name,
 			@RequestParam("updateArr") String updateArr, @RequestParam("addArr") String addArr,
@@ -639,6 +654,7 @@ public class PlanController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "delInfo")
 	@RequestMapping(value = "delInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String delInfo(@RequestParam("id") int id, @RequestParam("name") String name, HttpServletRequest req) {
 
@@ -685,6 +701,7 @@ public class PlanController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "updateInfo")
 	@RequestMapping(value = "addInfoContent", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String addInfoContent(@RequestParam("infoId") int infoId, @RequestParam("infoName") String infoName,
 			@RequestParam("contentStr") String contentStr, MultipartHttpServletRequest multiReq,
@@ -723,6 +740,7 @@ public class PlanController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "updateInfo")
 	@RequestMapping(value = "updateInfoContent", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String updateInfoContent(@RequestParam("infoId") int infoId, @RequestParam("infoName") String infoName,
 			@RequestParam("flag") String flag, @RequestParam("contentStr") String contentStr,
@@ -757,6 +775,7 @@ public class PlanController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "updateInfo")
 	@RequestMapping(value = "delInfoContent", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String delInfoContent(@RequestParam("infoId") int infoId, @RequestParam("infoName") String infoName,
 			@RequestParam("flag") String flag, HttpServletRequest req) {
@@ -874,6 +893,7 @@ public class PlanController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "addReport")
 	@RequestMapping(value = "addAccidentReport", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String addAccidentReport(@RequestParam("no") String no, @RequestParam("eventName") String eventName,
 			@RequestParam("eventAddress") String eventAddress, @RequestParam("occurDate") String occurDate,
@@ -917,6 +937,7 @@ public class PlanController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "getReport")
 	@RequestMapping(value = "getAccidentReportList", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String getAccidentReportList(@RequestParam("eventName") String eventName,
 			@RequestParam("eventAddress") String eventAddress, @RequestParam("rank") String rank,
@@ -1007,6 +1028,7 @@ public class PlanController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "updateReport")
 	@RequestMapping(value = "updateAccidentReportInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String updateAccidentReportInfo(@RequestParam("id") int id, @RequestParam("eventName") String eventName,
 			@RequestParam("eventAddress") String eventAddress, @RequestParam("occurDate") String occurDate,
@@ -1051,6 +1073,7 @@ public class PlanController {
 	 * @param token
 	 * @return
 	 */
+	@AuthAnnotation(auth = "delReport")
 	@RequestMapping(value = "delAccidentReportInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String delAccidentReportInfo(@RequestParam("id") int id, @RequestParam("eventName") String eventName,
 			HttpServletRequest req) {
