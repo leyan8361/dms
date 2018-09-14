@@ -54,6 +54,8 @@ public interface PlanDao {
 
 	public int updateProcessInfo(@Param("id") int id, @Param("name") String name);
 
+	public int delProcessColumn(@Param("delStr") String delStr);
+
 	public int updateProcessColumnInfo(@Param("id") int id, @Param("name") String name);
 
 	public int delProcess(int id);
@@ -64,7 +66,7 @@ public interface PlanDao {
 
 	public String JudgeColumnIdByProcess2IdAndFlag(@Param("processId") int processId, @Param("columnId") int columnId,
 			@Param("flag") String flag);
-	
+
 	public int updateProcessContent(@Param("processId") int processId, @Param("columnId") int columnId,
 			@Param("flag") String flag, @Param("content") String content);
 
@@ -81,6 +83,8 @@ public interface PlanDao {
 	public Info getInfoInfo(int id);
 
 	public int updateInfoInfo(@Param("id") int id, @Param("name") String name);
+
+	public int delInfoColumn(@Param("delStr") String delStr);
 
 	public int updateInfoColumnInfo(@Param("id") int id, @Param("name") String name);
 

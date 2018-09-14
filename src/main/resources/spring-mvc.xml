@@ -83,6 +83,8 @@
 
 		<mvc:interceptor>
 			<mvc:mapping path="/**" />
+			<mvc:exclude-mapping path="/error/**" />
+			<mvc:exclude-mapping path="/attach/**" />
 			<bean class="dms.interceptor.AuthInterceptor" />
 		</mvc:interceptor>
 	</mvc:interceptors>

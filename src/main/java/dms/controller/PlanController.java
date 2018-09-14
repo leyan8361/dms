@@ -338,6 +338,8 @@ public class PlanController {
 	 *            需修改的列信息 [{"id":"","name":""},{...},..] id:列Id,name:列名
 	 * @param addArr
 	 *            新增的列信息 [{"name":"","type":""},{..},..] name:列名,type:列类型
+	 * @param delStr
+	 *            删除的列id信息 如"1,2,3,4,5"
 	 * @param token
 	 * @return
 	 */
@@ -345,10 +347,14 @@ public class PlanController {
 	@RequestMapping(value = "updateProcessInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String updateProcessInfo(@RequestParam("id") int id, @RequestParam("name") String name,
 			@RequestParam("updateArr") String updateArr, @RequestParam("addArr") String addArr,
-			HttpServletRequest req) {
+			@RequestParam("delStr") String delStr, HttpServletRequest req) {
 
 		Map<String, String> resMap = new HashMap<String, String>();
-		planService.updateProcessInfo(id, name, JSONArray.parseArray(updateArr), JSONArray.parseArray(addArr));
+		int[] delArr = {};
+		if (!"".equals(delStr)) {
+			delArr = Utils.transStrToIntArr(delStr);
+		}
+		planService.updateProcessInfo(id, name, JSONArray.parseArray(updateArr), JSONArray.parseArray(addArr), delArr);
 		JSONObject jo = (JSONObject) req.getAttribute("user");
 		sysService
 				.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
@@ -624,6 +630,8 @@ public class PlanController {
 	 *            需修改的列信息 [{"id":"","name":""},{...},..] id:列Id,name:列名
 	 * @param addArr
 	 *            新增的列信息 [{"name":"","type":""},{..},..] name:列名,type:列类型
+	 * @param delStr
+	 *            删除的列id信息 如"1,2,3,4,5"
 	 * @param token
 	 * @return
 	 */
@@ -631,10 +639,14 @@ public class PlanController {
 	@RequestMapping(value = "updateInfoInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String updateInfoInfo(@RequestParam("id") int id, @RequestParam("name") String name,
 			@RequestParam("updateArr") String updateArr, @RequestParam("addArr") String addArr,
-			HttpServletRequest req) {
+			@RequestParam("delStr") String delStr, HttpServletRequest req) {
 
 		Map<String, String> resMap = new HashMap<String, String>();
-		planService.updateInfoInfo(id, name, JSONArray.parseArray(updateArr), JSONArray.parseArray(addArr));
+		int[] delArr = {};
+		if (!"".equals(delStr)) {
+			delArr = Utils.transStrToIntArr(delStr);
+		}
+		planService.updateInfoInfo(id, name, JSONArray.parseArray(updateArr), JSONArray.parseArray(addArr),delArr);
 		JSONObject jo = (JSONObject) req.getAttribute("user");
 		sysService
 				.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),

@@ -36,7 +36,7 @@ public interface PlanService {
 			int[] delArr, MultipartFile[] addAttach);
 
 	public int delPlan(int id);
-	
+
 	public JSONArray getPlanAttach(int id);
 
 	public int addProcess(String name, int userId, JSONArray columnArr);
@@ -45,7 +45,7 @@ public interface PlanService {
 
 	public Process getProcessInfo(int id);
 
-	public int updateProcessInfo(int id, String name, JSONArray updateArr, JSONArray addArr);
+	public int updateProcessInfo(int id, String name, JSONArray updateArr, JSONArray addArr, int[] delArr);
 
 	public int delProcess(int id);
 
@@ -67,7 +67,7 @@ public interface PlanService {
 
 	public Info getInfoInfo(int id);
 
-	public int updateInfoInfo(int id, String name, JSONArray updateArr, JSONArray addArr);
+	public int updateInfoInfo(int id, String name, JSONArray updateArr, JSONArray addArr,int[] delArr);
 
 	public int delInfo(int id);
 
@@ -100,6 +100,6 @@ public interface PlanService {
 			String relatedPerson, String rank, String eventSummary, String affect, String analysisAndReform,
 			String opinion, String analysisMember, String otherExplain, String fillDepart, String fillDate,
 			String fillPerson, String responsiblePerson, int[] delArr, MultipartFile[] attachArr);
-	
+
 	public int delAccidentReportInfo(int id);
 }

@@ -166,6 +166,13 @@
 		where id = #{id}
 	</update>
 	
+	<!-- 删除流程表列信息 -->
+	<update id="delProcessColumn" parameterType="String">
+		update t_process_column
+		set isShow = 'notShow'
+		where id ${delStr}
+	</update>
+	
 	<!-- 修改流程库表列信息 -->
 	<update id="updateProcessColumnInfo">
 		update t_process_column
@@ -278,6 +285,13 @@
 		update t_info
 		set name = #{name}
 		where id = #{id}
+	</update>
+	
+	<!-- 删除资料库列信息 -->
+	<update id="delInfoColumn" parameterType="String">
+		update t_info_column
+		set isShow = 'notShow'
+		where id ${delStr}
 	</update>
 	
 	<!-- 修改资料库列信息 -->

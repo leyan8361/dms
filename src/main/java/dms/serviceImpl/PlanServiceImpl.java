@@ -183,8 +183,25 @@ public class PlanServiceImpl implements PlanService {
 		return planDao.getProcessInfo(id);
 	}
 
-	public int updateProcessInfo(int id, String name, JSONArray updateArr, JSONArray addArr) {
+	public int updateProcessInfo(int id, String name, JSONArray updateArr, JSONArray addArr, int[] delArr) {
 
+		String delStr = "";
+		if (delArr.length == 0) {
+			delStr = " <0";
+		} else {
+			StringBuilder sb = new StringBuilder();
+			sb.append(" in (");
+			for (int i = 0; i < delArr.length; i++) {
+				if (i == 0) {
+					sb.append(delArr[i]);
+				} else {
+					sb.append("," + delArr[i]);
+				}
+			}
+			sb.append(")");
+			delStr = sb.toString();
+		}
+		planDao.delProcessColumn(delStr);
 		planDao.updateProcessInfo(id, name);
 		if (updateArr != null) {
 			for (Object o : updateArr) {
@@ -364,8 +381,25 @@ public class PlanServiceImpl implements PlanService {
 		return planDao.getInfoInfo(id);
 	}
 
-	public int updateInfoInfo(int id, String name, JSONArray updateArr, JSONArray addArr) {
+	public int updateInfoInfo(int id, String name, JSONArray updateArr, JSONArray addArr, int[] delArr) {
 
+		String delStr = "";
+		if (delArr.length == 0) {
+			delStr = " < 0";
+		} else {
+			StringBuilder sb = new StringBuilder();
+			sb.append(" in (");
+			for (int i = 0; i < delArr.length; i++) {
+				if (i == 0) {
+					sb.append(delArr[i]);
+				} else {
+					sb.append("," + delArr[i]);
+				}
+			}
+			sb.append(")");
+			delStr = sb.toString();
+		}
+		planDao.delInfoColumn(delStr);
 		planDao.updateInfoInfo(id, name);
 		if (updateArr != null) {
 			for (Object o : updateArr) {
