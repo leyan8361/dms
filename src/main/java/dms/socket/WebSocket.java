@@ -15,9 +15,12 @@ import javax.websocket.server.ServerEndpoint;
 import org.apache.ibatis.annotations.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.web.socket.server.standard.SpringConfigurator;
 
 //websocket连接URL地址和可被调用配置
+@Component("Ws")
 @ServerEndpoint(value = "/webSocket/{userId}", configurator = SpringConfigurator.class)
 public class WebSocket {
 	// 日志记录
@@ -142,4 +145,10 @@ public class WebSocket {
 		return false;
 	}
 
+	@Scheduled
+	public void test(){
+		
+		System.out.println("sss");
+	}
+	
 }
