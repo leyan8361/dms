@@ -34,6 +34,8 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		<typeAlias type="dms.entity.Page" alias="page" />
 		<typeAlias type="dms.entity.PageFunction" alias="pageFunction" />
 		<typeAlias type="dms.entity.UserFunction" alias="userFunction" />
+		<typeAlias type="dms.entity.MessageGroup" alias="messageGroup" />
+		<typeAlias type="dms.entity.MessageGroupDetail" alias="messageGroupDetail" />
 	</typeAliases>
 
 	<plugins>

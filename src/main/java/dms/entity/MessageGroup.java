@@ -1,5 +1,7 @@
 package dms.entity;
 
+import java.util.List;
+
 public class MessageGroup {
 
 	private int id;
@@ -8,6 +10,9 @@ public class MessageGroup {
 	private String createDate;
 	private int effectiveDays; // 临时群有效天数 (若是信息群 则为0)
 	private int type; // 0消息群/1临时群
+	private int count;
+	private List<MessageGroupDetail> lmgd;
+	private String isShow;
 
 	public MessageGroup() {
 
@@ -67,6 +72,30 @@ public class MessageGroup {
 
 	public void setType(int type) {
 		this.type = type;
+	}
+
+	public String getIsShow() {
+		return isShow;
+	}
+
+	public void setIsShow(String isShow) {
+		this.isShow = isShow;
+	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+
+	public List<MessageGroupDetail> getLmgd() {
+		return lmgd;
+	}
+
+	public void setLmgd(List<MessageGroupDetail> lmgd) {
+		this.lmgd = lmgd;
 	}
 
 }

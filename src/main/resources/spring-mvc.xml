@@ -70,6 +70,9 @@
 	<!-- 上传的资料库附件 -->
 	<mvc:resources mapping="/attach/infoAttach/**"
 		location="file:/application/shxinzhili/data/dms/infoAttach/" />
+	<!-- 前台需要的pdfjs文件 -->
+	<mvc:resources mapping="/attach/pdfjs/**"
+		location="file:/application/shxinzhili/data/dms/pdfjs/" />
 
 	<!-- springmvc 拦截器 -->
 	<mvc:interceptors>

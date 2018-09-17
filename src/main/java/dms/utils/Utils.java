@@ -5,8 +5,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -88,7 +90,7 @@ public class Utils {
 	 * @return
 	 */
 	public static JSONArray sortJSONArray(JSONArray array) {
-		
+
 		JSONArray sortedJsonArray = new JSONArray();
 		List<JSONObject> jsonValues = new ArrayList<JSONObject>();
 		for (int i = 0; i < array.size(); i++) {
@@ -124,7 +126,38 @@ public class Utils {
 		return sortedJsonArray;
 	}
 
+	/**
+	 * 校验日期是否过期
+	 * 
+	 * @param createDate
+	 *            创建日期
+	 * @param effectiveDays
+	 *            有效天数
+	 * @return
+	 * @throws ParseException 
+	 */
+	public static boolean judgeIsOverTime(String createDate, int effectiveDays) {
+
+		try {
+			Calendar c = Calendar.getInstance();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			c.add(Calendar.DATE,-effectiveDays);  // 算出n天前的日期
+			Date date = sdf.parse(createDate);
+			String date2Str = sdf.format(c.getTime());
+			Date date2 = sdf.parse(date2Str);
+			if(date.getTime()>=date2.getTime()) {
+				return true;
+			}else {
+				return false;
+			}
+		}catch(ParseException e) {
+			
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 	public static void main(String[] args) {
-		System.out.println(JSONObject.parse(""));
+		System.out.println(judgeIsOverTime("2018-09-12", 5));
 	}
 }
