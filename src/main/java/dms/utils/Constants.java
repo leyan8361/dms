@@ -12,6 +12,12 @@ public class Constants {
 	public static final String tokenOverTimeStatus = "3";
 	public static final String authError = "4";
 
+	// websocket传输数据的状态码
+	public static final String judgeStatus = "0"; // 用于校验对方是否在线
+	public static final String noticeDownStatus = "1"; // 通知客户端下线
+	public static final String onlineTip = "2"; // 上线消息提示
+	public static final String downlineTip = "3"; // 下线消息提示
+
 	// 页面中表格的数据行数
 	public static final int pageSize = 10;
 }

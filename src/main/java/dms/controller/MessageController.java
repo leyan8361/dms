@@ -69,10 +69,12 @@ public class MessageController {
 	 * @return
 	 */
 	@RequestMapping(value = "getChatList", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
-	public String getChatList() {
+	public String getChatList(HttpServletRequest req) {
 
 		Map<String, String> resMap = new HashMap<String, String>();
-		JSONObject jo = messageService.getChatList();
+		JSONObject user = (JSONObject) req.getAttribute("user");
+		int userId = user.getIntValue("userId");
+		JSONObject jo = messageService.getChatList(userId);
 		resMap.put("status", Constants.successStatus);
 		resMap.put("info", JSON.toJSONString(jo));
 		return JSON.toJSONString(resMap);

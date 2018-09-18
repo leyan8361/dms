@@ -8,5 +8,5 @@ public interface MessageService {
 	public boolean addMessageGroup(int creator, String groupName, int groupType, int effectiveDays,
 			JSONArray userArray);
 	
-	public JSONObject getChatList();
+	public JSONObject getChatList(int userId);
 }

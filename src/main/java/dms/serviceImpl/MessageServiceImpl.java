@@ -14,6 +14,7 @@ import dms.entity.MessageGroup;
 import dms.entity.MessageGroupDetail;
 import dms.entity.UserInfo;
 import dms.service.MessageService;
+import dms.socket.WebSocket;
 import dms.utils.Utils;
 
 @Service("messageService")
@@ -44,15 +45,15 @@ public class MessageServiceImpl implements MessageService {
 		return true;
 	}
 
-	public JSONObject getChatList() {
-
+	public JSONObject getChatList(int userId2) {
 		JSONObject resObj = new JSONObject();
 		List<UserInfo> list = messageDao.getAllUserInfo();
 		List<MessageGroup> list2 = messageDao.getAllMessageGroupInfo();
-		resObj.put("totalNum", list.size());
+		resObj.put("totalNum", list.size() - 1);
 		JSONArray messageGroupList = new JSONArray();
 		JSONArray tempGroupList = new JSONArray();
 		JSONArray userList = new JSONArray();
+		JSONArray onlineUserList = new JSONArray();
 		for (MessageGroup mg : list2) {
 			if (mg.getType() == 0) {
 				JSONObject jo = new JSONObject();
@@ -93,14 +94,24 @@ public class MessageServiceImpl implements MessageService {
 			}
 		}
 		for (UserInfo ui : list) {
-			JSONObject jo = new JSONObject();
-			jo.put("userId", ui.getId());
-			jo.put("userName", ui.getUserName());
-			userList.add(jo);
+			if (ui.getId() != userId2) {
+				JSONObject jo = new JSONObject();
+				jo.put("userId", ui.getId());
+				jo.put("userName", ui.getUserName());
+				userList.add(jo);
+			}
+		}
+		for (String userId : WebSocket.userSocket.keySet()) {
+			if (Integer.valueOf(userId) != userId2) {
+				JSONObject jo = new JSONObject();
+				jo.put("userId", userId);
+				onlineUserList.add(jo);
+			}
 		}
 		resObj.put("messageGroupList", messageGroupList);
 		resObj.put("tempGroupList", tempGroupList);
 		resObj.put("userList", userList);
+		resObj.put("onlineUserList", onlineUserList);
 		return resObj;
 	}
 }
