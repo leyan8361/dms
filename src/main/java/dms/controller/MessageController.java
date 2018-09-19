@@ -79,4 +79,60 @@ public class MessageController {
 		resMap.put("info", JSON.toJSONString(jo));
 		return JSON.toJSONString(resMap);
 	}
+
+	/**
+	 * 
+	 * @param groupId
+	 *            群组Id
+	 * @param groupName
+	 *            群组名
+	 * @param delStr
+	 *            删除的人员id信息 如"1,2,3,4,5"
+	 * @param userArray
+	 *            添加的人员信息 [{"userId":"","userName":""},{..},..]
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "updateMessageGroupInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String updateMessageGroupInfo(@RequestParam("groupId") int groupId,
+			@RequestParam("groupName") String groupName, @RequestParam("delStr") String delStr,
+			@RequestParam("userArray") String userArray, HttpServletRequest req) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		int[] delArr = {};
+		if (!"".equals(delStr)) {
+			delArr = Utils.transStrToIntArr(delStr);
+		}
+		messageService.updateMessageGroupInfo(groupId, groupName, delArr, JSONArray.parseArray(userArray));
+		JSONObject user = (JSONObject) req.getAttribute("user");
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), user.getIntValue("userId"),
+				user.getString("userName"), "修改了消息群组：" + groupName + "的信息"));
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", "success");
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 删除消息群
+	 * 
+	 * @param groupId
+	 *            消息群Id
+	 * @param groupName
+	 *            消息群名称
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "delMessageGroup", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String delMessageGroup(@RequestParam("groupId") int groupId, @RequestParam("groupName") String groupName,
+			HttpServletRequest req) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		messageService.delMessageGroup(groupId);
+		JSONObject user = (JSONObject) req.getAttribute("user");
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), user.getIntValue("userId"),
+				user.getString("userName"), "删除了消息群组：" + groupName));
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", "success");
+		return JSON.toJSONString(resMap);
+	}
 }

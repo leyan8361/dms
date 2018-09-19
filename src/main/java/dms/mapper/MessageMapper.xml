@@ -54,4 +54,24 @@
 		</collection>
 	</resultMap>
 	
+	<!-- 修改消息群内容 -->
+	<update id="updateMessageGroupInfo">
+		update t_message_group
+		set name = #{groupName}
+		where id = #{groupId}
+	</update>
+	
+	<!-- 删除消息群组人员 -->
+	<update id="delGroupUserInfo">
+		update t_message_group_detail
+		set isShow = 'notShow'
+		where groupId = #{groupId} and userId ${delStr}
+	</update>
+	
+	<!-- 删除消息群 -->
+	<update id="delMessageGroup" parameterType="int">
+		update t_message_group
+		set isShow = 'notShow'
+		where id = #{groupId}
+	</update>
 </mapper>

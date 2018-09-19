@@ -114,4 +114,44 @@ public class MessageServiceImpl implements MessageService {
 		resObj.put("onlineUserList", onlineUserList);
 		return resObj;
 	}
+
+	public boolean updateMessageGroupInfo(int groupId, String groupName, int[] delArr, JSONArray userArray) {
+
+		messageDao.updateMessageGroupInfo(groupId, groupName);
+		String delStr = "";
+		if (delArr.length == 0) {
+			delStr = " < 0";
+		} else {
+			StringBuilder sb = new StringBuilder();
+			sb.append(" in (");
+			for (int i = 0; i < delArr.length; i++) {
+				if (i == 0) {
+					sb.append(delArr[i]);
+				} else {
+					sb.append("," + delArr[i]);
+				}
+			}
+			sb.append(")");
+			delStr = sb.toString();
+		}
+		messageDao.delGroupUserInfo(groupId, delStr);
+		List<MessageGroupDetail> lmgd = new ArrayList<MessageGroupDetail>();
+		if (userArray != null) {
+			for (Object o : userArray) {
+				JSONObject jo = (JSONObject) o;
+				int userId = jo.getIntValue("userId");
+				String userName = jo.getString("userName");
+				lmgd.add(new MessageGroupDetail(groupId, userId, userName));
+			}
+		}
+		if (!lmgd.isEmpty()) {
+			messageDao.addMessageGroupDetail(lmgd);
+		}
+		return true;
+	}
+	
+	public int delMessageGroup(int groupId) {
+		
+		return messageDao.delMessageGroup(groupId);
+	}
 }

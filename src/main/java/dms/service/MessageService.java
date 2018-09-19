@@ -9,4 +9,8 @@ public interface MessageService {
 			JSONArray userArray);
 	
 	public JSONObject getChatList(int userId);
+	
+	public boolean updateMessageGroupInfo(int groupId,String groupName,int[] delArr,JSONArray userArray);
+	
+	public int delMessageGroup(int groupId);
 }

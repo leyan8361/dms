@@ -56,7 +56,7 @@ public class WebSocket {
 	 */
 	@OnOpen
 	public void onOpen(@PathParam("userId") String userId, Session session) throws IOException {
-
+		System.out.println("当前的flag :                                            " + flag);
 		if (userSocket.containsKey(userId)) {
 			JSONObject jo = new JSONObject();
 			jo.put("status", Constants.noticeDownStatus);
@@ -67,6 +67,7 @@ public class WebSocket {
 			onlineCount++;
 			logger.debug("当前用户id:{}登录", userId);
 			userSocket.put(userId, session);
+			flagMap.put(flag + "_" + userId, "校验信息");
 			for (String key : userSocket.keySet()) {
 				if (!key.equals(userId)) {
 					JSONObject jo = new JSONObject();
@@ -87,6 +88,7 @@ public class WebSocket {
 
 		userSocket.remove(userId, session);
 		onlineCount--;
+		logger.debug("用户id:{}下线", userId);
 		if (!userSocket.keySet().contains(userId)) {
 			for (String key : userSocket.keySet()) {
 				JSONObject jo = new JSONObject();
@@ -109,8 +111,32 @@ public class WebSocket {
 	public void onMessage(String message, Session session, @PathParam("userId") String userId) {
 
 		logger.debug("收到来自用户id为：{}的消息：{}", userId, message);
-		if (session == null)
-			logger.debug("session null");
+		// if (session == null)
+		// logger.debug("session null");
+		JSONObject jo = JSONObject.parseObject(message);
+		if (jo.getString("status").equals(Constants.judgeStatus)) {
+			// 校验对方是否在线(向对方发送数据)
+			flagMap.put(jo.getString("info"), "校验信息");
+		} else if (jo.getString("status").equals(Constants.judgeStatus2)) {
+			sendMessageToUser(userId, userSocket.get(userId), JSON.toJSONString(jo));
+			// 校验对方是否在线(从对方接收数据)
+			String tempUserId = jo.getString("info");
+			// 若当前用户组不包含发送数据过来的userId, 则视为断线重连, 将用户重新加入用户组中
+			if (!userSocket.containsKey(tempUserId)) {
+				onlineCount++;
+				logger.debug("当前用户id:{}登录", userId);
+				userSocket.put(userId, session);
+				flagMap.put(flag + "_" + userId, "校验信息");
+				for (String key : userSocket.keySet()) {
+					if (!key.equals(userId)) {
+						JSONObject jo2 = new JSONObject();
+						jo2.put("status", Constants.onlineTip);
+						jo2.put("info", userId);
+						sendMessageToUser(userId, userSocket.get(key), JSON.toJSONString(jo2));
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -149,26 +175,63 @@ public class WebSocket {
 
 	@Scheduled
 	public Boolean sendJudgeMessage() {
-//@PathParam("userId") String userId
-//		if ("".equals(flag)) {
+
+		if (flagMap.size() == 0) {
+			if (onlineCount != 0) {
+				// System.out.println("yi kai shi!!!");
+				flag = String.valueOf(System.currentTimeMillis());
+				for (String key : userSocket.keySet()) {
+					Session session = userSocket.get(key);
+					try {
+						JSONObject jo = new JSONObject();
+						jo.put("status", Constants.judgeStatus);
+						jo.put("info", flag);
+						session.getBasicRemote().sendText(JSON.toJSONString(jo));
+					} catch (IOException e) {
+						e.printStackTrace();
+						logger.debug(" 给用户id为：{}发送消息失败", key);
+						return false;
+					}
+				}
+			}
+		} else {
+			// System.out.println("di er ci!!!!!");
+			Set<String> set = new HashSet<String>();
+			for (String key : flagMap.keySet()) {
+				if (key.split("_")[0].equals(flag)) {
+					set.add(key.split("_")[1]);
+				}
+			}
+			for (String userId : userSocket.keySet()) {
+				if (!set.contains(userId)) {
+					userSocket.remove(userId);
+					onlineCount--;
+					logger.debug("用户Id：{}因为断网下线", userId);
+					if (!userSocket.keySet().contains(userId)) {
+						for (String key : userSocket.keySet()) {
+							JSONObject jo = new JSONObject();
+							jo.put("status", Constants.downlineTip);
+							jo.put("info", userId);
+							sendMessageToUser(userId, userSocket.get(key), JSON.toJSONString(jo));
+						}
+					}
+				}
+			}
+			flag = String.valueOf(System.currentTimeMillis());
 			for (String key : userSocket.keySet()) {
 				Session session = userSocket.get(key);
 				try {
 					JSONObject jo = new JSONObject();
 					jo.put("status", Constants.judgeStatus);
-					jo.put("info", String.valueOf(System.currentTimeMillis()));
+					jo.put("info", flag);
 					session.getBasicRemote().sendText(JSON.toJSONString(jo));
 				} catch (IOException e) {
 					e.printStackTrace();
 					logger.debug(" 给用户id为：{}发送消息失败", key);
 					return false;
 				}
-
 			}
-//		} else {
-//			Set<String> tempSet = new HashSet<String>();
-			// for(String key:flagMap)
-//		}
+		}
 		return true;
 	}
 

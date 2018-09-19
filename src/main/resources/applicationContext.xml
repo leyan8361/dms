@@ -35,7 +35,7 @@ http://www.springframework.org/schema/task
 	<bean id="Ws" class="dms.socket.WebSocket" />
 	<task:scheduled-tasks>
 		<task:scheduled ref="Ws" method="sendJudgeMessage"
-			cron="*/10 * * * * ?" />
+			cron="*/2 * * * * ?" />
 	</task:scheduled-tasks>
 
 </beans>
