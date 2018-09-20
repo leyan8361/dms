@@ -3,6 +3,7 @@ package dms.socket;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -40,6 +41,9 @@ public class WebSocket {
 	// 记录每个用户下多个终端的连接
 	public static Map<String, Session> userSocket = new HashMap<String, Session>();
 
+	// 记录下线状态的集合
+	public static Set<String> downLineSet = new HashSet<String>();
+
 	// 需要session来对用户发送数据, 获取连接特征userId
 	// private Session session;
 	// private String userId;
@@ -56,16 +60,21 @@ public class WebSocket {
 	 */
 	@OnOpen
 	public void onOpen(@PathParam("userId") String userId, Session session) throws IOException {
-		System.out.println("当前的flag :                                            " + flag);
+		// System.out.println("当前的flag : " + flag);
 		if (userSocket.containsKey(userId)) {
 			JSONObject jo = new JSONObject();
 			jo.put("status", Constants.noticeDownStatus);
 			jo.put("info", "你被挤下线了");
 			sendMessageToUser(userId, userSocket.get(userId), JSON.toJSONString(jo));
 			userSocket.put(userId, session);
-		} else {
+			// logger.debug("用户id:{}被顶掉,当前在线人数{}");
 			onlineCount++;
-			logger.debug("当前用户id:{}登录", userId);
+		} else {
+			if (downLineSet.contains(userId)) {
+				downLineSet.remove(userId);
+			}
+			onlineCount++;
+			logger.debug("当前用户id:{}登录,当前在线人数{}", userId, onlineCount);
 			userSocket.put(userId, session);
 			flagMap.put(flag + "_" + userId, "校验信息");
 			for (String key : userSocket.keySet()) {
@@ -86,16 +95,20 @@ public class WebSocket {
 	@OnClose
 	public void onClose(@PathParam("userId") String userId, Session session) {
 
-		userSocket.remove(userId, session);
-		onlineCount--;
-		logger.debug("用户id:{}下线", userId);
-		if (!userSocket.keySet().contains(userId)) {
-			for (String key : userSocket.keySet()) {
-				JSONObject jo = new JSONObject();
-				jo.put("status", Constants.downlineTip);
-				jo.put("info", userId);
-				sendMessageToUser(userId, userSocket.get(key), JSON.toJSONString(jo));
+		if (!downLineSet.contains(userId)) {
+			userSocket.remove(userId, session);
+			onlineCount--;
+			logger.debug("用户id:{}下线,当前在线人数为{}", userId, onlineCount);
+			downLineSet.add(userId);
+			if (!userSocket.keySet().contains(userId)) {
+				for (String key : userSocket.keySet()) {
+					JSONObject jo = new JSONObject();
+					jo.put("status", Constants.downlineTip);
+					jo.put("info", userId);
+					sendMessageToUser(userId, userSocket.get(key), JSON.toJSONString(jo));
+				}
 			}
+
 		}
 	}
 
@@ -110,7 +123,7 @@ public class WebSocket {
 	@OnMessage
 	public void onMessage(String message, Session session, @PathParam("userId") String userId) {
 
-		logger.debug("收到来自用户id为：{}的消息：{}", userId, message);
+		// logger.debug("收到来自用户id为：{}的消息：{}", userId, message);
 		// if (session == null)
 		// logger.debug("session null");
 		JSONObject jo = JSONObject.parseObject(message);
@@ -124,7 +137,7 @@ public class WebSocket {
 			// 若当前用户组不包含发送数据过来的userId, 则视为断线重连, 将用户重新加入用户组中
 			if (!userSocket.containsKey(tempUserId)) {
 				onlineCount++;
-				logger.debug("当前用户id:{}登录", userId);
+				logger.debug("将用户id:{}加入用户组,当前人数{}", userId, onlineCount);
 				userSocket.put(userId, session);
 				flagMap.put(flag + "_" + userId, "校验信息");
 				for (String key : userSocket.keySet()) {
@@ -173,6 +186,32 @@ public class WebSocket {
 		return true;
 	}
 
+	public static Boolean sendMessageToUser2(String userId, String message) {
+		try {
+			if (userSocket.containsKey(userId)) {
+				userSocket.get(userId).getBasicRemote().sendText(message);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	public static Boolean sendMessageToUser3(List<String> userIdList, String message) {
+		try {
+			for (String userId : userIdList) {
+				if (userSocket.containsKey(userId)) {
+					userSocket.get(userId).getBasicRemote().sendText(message);
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
 	@Scheduled
 	public Boolean sendJudgeMessage() {
 
@@ -189,7 +228,7 @@ public class WebSocket {
 						session.getBasicRemote().sendText(JSON.toJSONString(jo));
 					} catch (IOException e) {
 						e.printStackTrace();
-						logger.debug(" 给用户id为：{}发送消息失败", key);
+						// logger.debug(" 给用户id为：{}发送消息失败", key);
 						return false;
 					}
 				}
@@ -204,15 +243,18 @@ public class WebSocket {
 			}
 			for (String userId : userSocket.keySet()) {
 				if (!set.contains(userId)) {
-					userSocket.remove(userId);
-					onlineCount--;
-					logger.debug("用户Id：{}因为断网下线", userId);
-					if (!userSocket.keySet().contains(userId)) {
-						for (String key : userSocket.keySet()) {
-							JSONObject jo = new JSONObject();
-							jo.put("status", Constants.downlineTip);
-							jo.put("info", userId);
-							sendMessageToUser(userId, userSocket.get(key), JSON.toJSONString(jo));
+					if (!downLineSet.contains(userId)) {
+						userSocket.remove(userId);
+						onlineCount--;
+						logger.debug("用户Id：{}因为断网下线,当前用户数量{}", userId, onlineCount);
+						downLineSet.add(userId);
+						if (!userSocket.keySet().contains(userId)) {
+							for (String key : userSocket.keySet()) {
+								JSONObject jo = new JSONObject();
+								jo.put("status", Constants.downlineTip);
+								jo.put("info", userId);
+								sendMessageToUser(userId, userSocket.get(key), JSON.toJSONString(jo));
+							}
 						}
 					}
 				}
@@ -227,7 +269,7 @@ public class WebSocket {
 					session.getBasicRemote().sendText(JSON.toJSONString(jo));
 				} catch (IOException e) {
 					e.printStackTrace();
-					logger.debug(" 给用户id为：{}发送消息失败", key);
+					// logger.debug(" 给用户id为：{}发送消息失败", key);
 					return false;
 				}
 			}

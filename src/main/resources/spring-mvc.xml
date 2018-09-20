@@ -73,6 +73,9 @@
 	<!-- 前台需要的pdfjs文件 -->
 	<mvc:resources mapping="/attach/pdfjs/**"
 		location="file:/application/shxinzhili/data/dms/pdfjs/" />
+	<!-- 消息附件 -->
+	<mvc:resources mapping="/attach/messageAttach/**"
+		location="file:/application/shxinzhili/data/dms/messageAttach/" />
 
 	<!-- springmvc 拦截器 -->
 	<mvc:interceptors>

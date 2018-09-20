@@ -17,7 +17,9 @@ public class Constants {
 	public static final String noticeDownStatus = "1"; // 通知客户端下线
 	public static final String onlineTip = "2"; // 上线消息提示
 	public static final String downlineTip = "3"; // 下线消息提示
-	public static final String judgeStatus2  = "4"; // 客户端返回给服务端的上线信息
+	public static final String judgeStatus2 = "4"; // 客户端返回给服务端的上线信息
+	public static final String sendStatus = "5"; // 发送消息的状态
+	public static final String refreshStatus = "6"; // 通知页面刷新
 
 	// 页面中表格的数据行数
 	public static final int pageSize = 10;

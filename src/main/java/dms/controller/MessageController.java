@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -131,6 +132,33 @@ public class MessageController {
 		JSONObject user = (JSONObject) req.getAttribute("user");
 		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), user.getIntValue("userId"),
 				user.getString("userName"), "删除了消息群组：" + groupName));
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", "success");
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 发送消息
+	 * 
+	 * @param toId
+	 *            接受消息的用户Id或群组Id(若是发给所有人 则为0)
+	 * @param isGroupMessage
+	 *            是否为群组消息 0是 、 1否
+	 * @param content
+	 *            消息内容(若为文件类型则为"")
+	 * @param type
+	 *            是否是文字消息 0是、1否
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "sendMessage", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String sendMessage(@RequestParam("toId") int toId, @RequestParam("isGroupMessage") int isGroupMessage,
+			@RequestParam("content") String content, @RequestParam("type") int type, HttpServletRequest req,
+			MultipartHttpServletRequest mReq) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		JSONObject user = (JSONObject) req.getAttribute("user");
+		messageService.sendMessage(user.getIntValue("userId"),user.getString("userName"), toId, isGroupMessage, content, type, mReq);
 		resMap.put("status", Constants.successStatus);
 		resMap.put("info", "success");
 		return JSON.toJSONString(resMap);

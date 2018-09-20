@@ -4,7 +4,8 @@
 	debug="false">
 
 	<!-- 定义日志文件 输入位置 --><!-- 不需要事先创建 --> <!-- eclipse上运行项目 会生成在tomcat的系统盘更目录, tomcat下运行则会出现在C盘根目录 -->
-	<property name="log.base" value="/application/shxinzhili/logs/dms" />
+	<property name="log.base"
+		value="/application/shxinzhili/logs/dms" />
 	<!-- 日志最大的历史 30天 -->
 	<property name="maxHistory" value="30" />
 
@@ -138,7 +139,6 @@
 		<appender-ref ref="warn" />
 		<appender-ref ref="error" />
 	</logger>
-	
 	<logger name="dms.serviceImpl" level="DEBUG">
 		<appender-ref ref="debug" />
 		<appender-ref ref="info" />

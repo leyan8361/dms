@@ -74,4 +74,21 @@
 		set isShow = 'notShow'
 		where id = #{groupId}
 	</update>
+	
+	<!-- 发送消息 -->
+	<insert id="sendMessage" parameterType="message">
+		insert into
+		t_message
+		(fromId,toId,isGroupMessage,content,type,sendDate,fileSize)
+		values
+		(#{fromId},#{toId},#{isGroupMessage},#{content},#{type},#{sendDate},#{fileSize})
+	</insert>
+	
+	<!-- 获取消息群成员列表 -->
+	<select id="getGroupMembers" parameterType="int" resultType="String">
+		select 
+		userId 
+		from t_message_group_detail
+		where isShow = 'show' and groupId = #{groupId}
+	</select>
 </mapper>

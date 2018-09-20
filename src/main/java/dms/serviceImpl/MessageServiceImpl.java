@@ -1,20 +1,29 @@
 package dms.serviceImpl;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import dms.dao.MessageDao;
+import dms.entity.Message;
 import dms.entity.MessageGroup;
 import dms.entity.MessageGroupDetail;
 import dms.entity.UserInfo;
 import dms.service.MessageService;
 import dms.socket.WebSocket;
+import dms.utils.Constants;
+import dms.utils.FilePath;
 import dms.utils.Utils;
 
 @Service("messageService")
@@ -149,9 +158,66 @@ public class MessageServiceImpl implements MessageService {
 		}
 		return true;
 	}
-	
+
 	public int delMessageGroup(int groupId) {
-		
+
 		return messageDao.delMessageGroup(groupId);
+	}
+
+	public boolean sendMessage(int fromId, String userName, int toId, int isGroupMessage, String content, int type,
+			MultipartHttpServletRequest mReq) {
+
+		try {
+			String trueFileSize = "";
+			// 判断是文件还是消息
+			if (type != 0) {
+				MultipartFile file = mReq.getFileMap().get("file");
+				Long fileSize = file.getSize();
+				DecimalFormat df = new DecimalFormat("#.00");
+				trueFileSize = df.format((double) fileSize / 1048576) + "M";
+				content = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+				file.transferTo(new File(FilePath.messageAttachPath + content));
+			}
+			Message message = new Message(fromId, toId, isGroupMessage, content, type,
+					Utils.getNowDate("yyyy-MM-dd hh:mm:ss"), trueFileSize);
+			messageDao.sendMessage(message);
+			if (isGroupMessage == 1) {
+				JSONObject jo = new JSONObject();
+				jo.put("info", "用户：" + userName + " 向你发送了一条新信息");
+				jo.put("status", Constants.sendStatus);
+				WebSocket.sendMessageToUser2(String.valueOf(toId), JSON.toJSONString(jo));
+				JSONObject jo2 = new JSONObject();
+				jo2.put("status", Constants.refreshStatus);
+				jo2.put("type", "user");
+				jo2.put("id", fromId);
+				WebSocket.sendMessageToUser2(String.valueOf(toId), JSON.toJSONString(jo2));
+			} else {
+				if (toId != 0) {
+					List<String> userIdList = messageDao.getGroupMembers(toId);
+					JSONObject jo = new JSONObject();
+					jo.put("status", Constants.refreshStatus);
+					jo.put("type", "group");
+					jo.put("id", toId);
+					WebSocket.sendMessageToUser3(userIdList, JSON.toJSONString(jo));
+				} else {
+					List<String> userIdList = new ArrayList<String>();
+					List<UserInfo> list = messageDao.getAllUserInfo();
+					for (UserInfo userInfo : list) {
+						userIdList.add(String.valueOf(userInfo.getId()));
+					}
+					JSONObject jo = new JSONObject();
+					jo.put("status", Constants.refreshStatus);
+					jo.put("type", "group");
+					jo.put("id", 0);
+					WebSocket.sendMessageToUser3(userIdList, JSON.toJSONString(jo));
+				}
+			}
+
+			return true;
+		} catch (IOException e) {
+
+			e.printStackTrace();
+			return false;
+		}
 	}
 }

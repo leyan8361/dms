@@ -22,4 +22,7 @@ public class FilePath {
 
 	// 运营事故报告附件
 	public static String accidentReportAttachPath = root + "accidentReportAttach" + File.separator;
+
+	// 消息附件
+	public static String messageAttachPath = root + "messageAttach" + File.separator;
 }
