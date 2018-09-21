@@ -22,10 +22,10 @@ public interface MessageDao {
 	public int updateMessageGroupInfo(@Param("groupId") int groupId, @Param("groupName") String groupName);
 
 	public int delGroupUserInfo(@Param("groupId") int groupId, @Param("delStr") String delStr);
-	
+
 	public int delMessageGroup(int groupId);
-	
+
 	public int sendMessage(Message message);
-	
+
 	public List<String> getGroupMembers(int groupId);
 }

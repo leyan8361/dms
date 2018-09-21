@@ -58,31 +58,16 @@ public class MessageServiceImpl implements MessageService {
 		JSONObject resObj = new JSONObject();
 		List<UserInfo> list = messageDao.getAllUserInfo();
 		List<MessageGroup> list2 = messageDao.getAllMessageGroupInfo();
+//		List<MessageGroup> list2 = new ArrayList<>();
 		resObj.put("totalNum", list.size() - 1);
 		JSONArray messageGroupList = new JSONArray();
 		JSONArray tempGroupList = new JSONArray();
 		JSONArray userList = new JSONArray();
 		JSONArray onlineUserList = new JSONArray();
 		for (MessageGroup mg : list2) {
-			if (mg.getType() == 0) {
-				JSONObject jo = new JSONObject();
-				jo.put("groupId", mg.getId());
-				jo.put("groupName", mg.getName());
-				jo.put("count", mg.getCount());
-				JSONArray userArray = new JSONArray();
-				List<MessageGroupDetail> lmgd = mg.getLmgd();
-				if (!lmgd.isEmpty()) {
-					for (MessageGroupDetail messageGroupDetail : lmgd) {
-						JSONObject jo2 = new JSONObject();
-						jo2.put("userId", messageGroupDetail.getUserId());
-						jo2.put("userName", messageGroupDetail.getUserName());
-						userArray.add(jo2);
-					}
-				}
-				jo.put("userInfo", userArray);
-				messageGroupList.add(jo);
-			} else {
-				if (Utils.judgeIsOverTime(mg.getCreateDate(), mg.getEffectiveDays())) {
+			List<String> userIdList = messageDao.getGroupMembers(mg.getId());
+			if (userIdList.contains(String.valueOf(userId2))) {
+				if (mg.getType() == 0) {
 					JSONObject jo = new JSONObject();
 					jo.put("groupId", mg.getId());
 					jo.put("groupName", mg.getName());
@@ -98,7 +83,26 @@ public class MessageServiceImpl implements MessageService {
 						}
 					}
 					jo.put("userInfo", userArray);
-					tempGroupList.add(jo);
+					messageGroupList.add(jo);
+				} else {
+					if (Utils.judgeIsOverTime(mg.getCreateDate(), mg.getEffectiveDays())) {
+						JSONObject jo = new JSONObject();
+						jo.put("groupId", mg.getId());
+						jo.put("groupName", mg.getName());
+						jo.put("count", mg.getCount());
+						JSONArray userArray = new JSONArray();
+						List<MessageGroupDetail> lmgd = mg.getLmgd();
+						if (!lmgd.isEmpty()) {
+							for (MessageGroupDetail messageGroupDetail : lmgd) {
+								JSONObject jo2 = new JSONObject();
+								jo2.put("userId", messageGroupDetail.getUserId());
+								jo2.put("userName", messageGroupDetail.getUserName());
+								userArray.add(jo2);
+							}
+						}
+						jo.put("userInfo", userArray);
+						tempGroupList.add(jo);
+					}
 				}
 			}
 		}

@@ -37,5 +37,4 @@ http://www.springframework.org/schema/task
 		<task:scheduled ref="Ws" method="sendJudgeMessage"
 			cron="*/2 * * * * ?" />
 	</task:scheduled-tasks>
-
 </beans>

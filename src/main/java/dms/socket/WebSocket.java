@@ -65,6 +65,7 @@ public class WebSocket {
 			JSONObject jo = new JSONObject();
 			jo.put("status", Constants.noticeDownStatus);
 			jo.put("info", "你被挤下线了");
+			logger.debug("用户Id:{}被挤下线了", userId);
 			sendMessageToUser(userId, userSocket.get(userId), JSON.toJSONString(jo));
 			userSocket.put(userId, session);
 			// logger.debug("用户id:{}被顶掉,当前在线人数{}");
@@ -123,9 +124,7 @@ public class WebSocket {
 	@OnMessage
 	public void onMessage(String message, Session session, @PathParam("userId") String userId) {
 
-		// logger.debug("收到来自用户id为：{}的消息：{}", userId, message);
-		// if (session == null)
-		// logger.debug("session null");
+		// logger.debug("收到来自用户id为：{}的消息：{}", userId, message)
 		JSONObject jo = JSONObject.parseObject(message);
 		if (jo.getString("status").equals(Constants.judgeStatus)) {
 			// 校验对方是否在线(向对方发送数据)
@@ -162,8 +161,9 @@ public class WebSocket {
 	 */
 	@OnError
 	public void onError(Session session, @PathParam("userId") String userId, Throwable error) {
+		
 		logger.debug("用户id为：{}的连接发送错误", userId);
-		error.printStackTrace();
+		// error.printStackTrace();
 	}
 
 	/**
@@ -176,7 +176,7 @@ public class WebSocket {
 	 * @param @return
 	 *            发送成功返回true，反则返回false
 	 */
-	public static Boolean sendMessageToUser(String userId, Session session, String message) {
+	public static synchronized Boolean sendMessageToUser(String userId, Session session, String message) {
 		try {
 			session.getBasicRemote().sendText(message);
 		} catch (IOException e) {
@@ -186,7 +186,7 @@ public class WebSocket {
 		return true;
 	}
 
-	public static Boolean sendMessageToUser2(String userId, String message) {
+	public static synchronized Boolean sendMessageToUser2(String userId, String message) {
 		try {
 			if (userSocket.containsKey(userId)) {
 				userSocket.get(userId).getBasicRemote().sendText(message);
@@ -198,7 +198,7 @@ public class WebSocket {
 		return true;
 	}
 
-	public static Boolean sendMessageToUser3(List<String> userIdList, String message) {
+	public static synchronized Boolean sendMessageToUser3(List<String> userIdList, String message) {
 		try {
 			for (String userId : userIdList) {
 				if (userSocket.containsKey(userId)) {
