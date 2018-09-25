@@ -91,4 +91,31 @@
 		from t_message_group_detail
 		where isShow = 'show' and groupId = #{groupId}
 	</select>
+	
+	<!-- 获取消息群的信息 -->
+	<select id="getGroupMessage" parameterType="int" resultType="message">
+		select 
+		fromId,toId,content,type,sendDate,fileSize
+		from t_message
+		where fromId = #{userId} and toId = #{gorupId} and isShow = 'show' and isGroupMessage = 0
+		order by sendDate asc
+	</select>
+	
+	<!-- 获取接收到的消息列表 -->
+	 <select id="getFromMessageList" parameterType="int" resultType="message">
+		select 
+		fromId,toId,content,type,sendDate,fileSize
+		from t_message
+		where fromId = #{fromId} and toId = #{userId} and isShow = 'show' and isGroupMessage = 1
+		order by sendDate asc
+	</select> 
+	
+	<!-- 获取发送的消息列表 -->
+	 <select id="getToMessageList" parameterType="int" resultType="message">
+		select 
+		fromId,toId,content,type,sendDate,fileSize
+		from t_message
+		where fromId = #{userId} and toId = #{toId} and isShow = 'show' and isGroupMessage = 1
+		order by sendDate asc
+	</select> 
 </mapper>

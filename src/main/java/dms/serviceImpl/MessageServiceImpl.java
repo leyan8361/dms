@@ -32,7 +32,7 @@ public class MessageServiceImpl implements MessageService {
 	@Autowired
 	private MessageDao messageDao;
 
-	public boolean addMessageGroup(int creator, String groupName, int groupType, int effectiveDays,
+	public boolean addMessageGroup(int creator, String creatorName, String groupName, int groupType, int effectiveDays,
 			JSONArray userArray) {
 
 		MessageGroup mg = new MessageGroup(groupName, creator, Utils.getNowDate("yyyy-MM-dd"), effectiveDays,
@@ -40,12 +40,17 @@ public class MessageServiceImpl implements MessageService {
 		List<MessageGroupDetail> lmgd = new ArrayList<MessageGroupDetail>();
 		messageDao.addMessageGroup(mg);
 		int groupId = mg.getId();
+		lmgd.add(new MessageGroupDetail(groupId, creator, creatorName));
 		if (userArray != null) {
 			for (Object o : userArray) {
 				JSONObject jo = (JSONObject) o;
 				int userId = jo.getIntValue("userId");
 				String userName = jo.getString("userName");
 				lmgd.add(new MessageGroupDetail(groupId, userId, userName));
+				JSONObject jo2 = new JSONObject();
+				jo2.put("status", Constants.updateMessageGroupStatus);
+				jo2.put("info", "用户:" + creatorName + "将你加入了消息群组:" + groupName);
+				WebSocket.sendMessageToUser2(String.valueOf(userId), JSON.toJSONString(jo2));
 			}
 		}
 		if (!lmgd.isEmpty()) {
@@ -58,7 +63,7 @@ public class MessageServiceImpl implements MessageService {
 		JSONObject resObj = new JSONObject();
 		List<UserInfo> list = messageDao.getAllUserInfo();
 		List<MessageGroup> list2 = messageDao.getAllMessageGroupInfo();
-//		List<MessageGroup> list2 = new ArrayList<>();
+		// List<MessageGroup> list2 = new ArrayList<>();
 		resObj.put("totalNum", list.size() - 1);
 		JSONArray messageGroupList = new JSONArray();
 		JSONArray tempGroupList = new JSONArray();
@@ -128,7 +133,8 @@ public class MessageServiceImpl implements MessageService {
 		return resObj;
 	}
 
-	public boolean updateMessageGroupInfo(int groupId, String groupName, int[] delArr, JSONArray userArray) {
+	public boolean updateMessageGroupInfo(String reviseName, int groupId, String groupName, int[] delArr,
+			JSONArray userArray) {
 
 		messageDao.updateMessageGroupInfo(groupId, groupName);
 		String delStr = "";
@@ -143,6 +149,10 @@ public class MessageServiceImpl implements MessageService {
 				} else {
 					sb.append("," + delArr[i]);
 				}
+				JSONObject jo2 = new JSONObject();
+				jo2.put("status", Constants.updateMessageGroupStatus);
+				jo2.put("info", "用户:" + reviseName + "将你移除出了消息群组:" + groupName);
+				WebSocket.sendMessageToUser2(String.valueOf(delArr[i]), JSON.toJSONString(jo2));
 			}
 			sb.append(")");
 			delStr = sb.toString();
@@ -155,6 +165,10 @@ public class MessageServiceImpl implements MessageService {
 				int userId = jo.getIntValue("userId");
 				String userName = jo.getString("userName");
 				lmgd.add(new MessageGroupDetail(groupId, userId, userName));
+				JSONObject jo2 = new JSONObject();
+				jo2.put("status", Constants.updateMessageGroupStatus);
+				jo2.put("info", "用户:" + reviseName + "将你加入了消息群组:" + groupName);
+				WebSocket.sendMessageToUser2(String.valueOf(userId), JSON.toJSONString(jo2));
 			}
 		}
 		if (!lmgd.isEmpty()) {
@@ -163,8 +177,17 @@ public class MessageServiceImpl implements MessageService {
 		return true;
 	}
 
-	public int delMessageGroup(int groupId) {
+	public int delMessageGroup(String userId, String userName, int groupId, String groupName) {
 
+		List<String> userIdList = messageDao.getGroupMembers(groupId);
+		for (String s : userIdList) {
+			if (!s.equals(userId)) {
+				JSONObject jo2 = new JSONObject();
+				jo2.put("status", Constants.updateMessageGroupStatus);
+				jo2.put("info", "用户:" + userName + "将你移除出了消息群组:" + groupName);
+				WebSocket.sendMessageToUser2(s, JSON.toJSONString(jo2));
+			}
+		}
 		return messageDao.delMessageGroup(groupId);
 	}
 
@@ -223,5 +246,38 @@ public class MessageServiceImpl implements MessageService {
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+	public JSONArray getChatRecord(int userId, int aimId, int isGroupMessage) {
+
+		JSONArray resArr = new JSONArray();
+		// 判断是否是群消息
+		if (isGroupMessage == 0) {
+			List<Message> lm = messageDao.getGroupMessage(userId, aimId);
+			for (Message message : lm) {
+				JSONObject jo = new JSONObject();
+				jo.put("fromId", message.getFromId());
+				jo.put("toId", message.getToId());
+				jo.put("sendDate", message.getSendDate());
+				jo.put("content", message.getContent());
+				jo.put("fileSize", message.getFileSize());
+				resArr.add(jo);
+			}
+		} else {
+			List<Message> lm1 = messageDao.getFromMessageList(aimId, userId);
+			List<Message> lm2 = messageDao.getToMessageList(userId, aimId);
+			lm1.addAll(lm2);
+			lm1 = Utils.sortArrayList(lm1);
+			for (Message message : lm1) {
+				JSONObject jo = new JSONObject();
+				jo.put("fromId", message.getFromId());
+				jo.put("toId", message.getToId());
+				jo.put("sendDate", message.getSendDate());
+				jo.put("content", message.getContent());
+				jo.put("fileSize", message.getFileSize());
+				resArr.add(jo);
+			}
+		}
+		return resArr;
 	}
 }

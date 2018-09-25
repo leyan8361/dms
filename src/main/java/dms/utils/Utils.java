@@ -22,6 +22,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import dms.entity.Message;
+
 public class Utils {
 
 	public static void returnErrorMessage(String status, String message, HttpServletResponse res) {
@@ -134,27 +136,56 @@ public class Utils {
 	 * @param effectiveDays
 	 *            有效天数
 	 * @return
-	 * @throws ParseException 
+	 * @throws ParseException
 	 */
 	public static boolean judgeIsOverTime(String createDate, int effectiveDays) {
 
 		try {
 			Calendar c = Calendar.getInstance();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			c.add(Calendar.DATE,-effectiveDays);  // 算出n天前的日期
+			c.add(Calendar.DATE, -effectiveDays); // 算出n天前的日期
 			Date date = sdf.parse(createDate);
 			String date2Str = sdf.format(c.getTime());
 			Date date2 = sdf.parse(date2Str);
-			if(date.getTime()>=date2.getTime()) {
+			if (date.getTime() >= date2.getTime()) {
 				return true;
-			}else {
+			} else {
 				return false;
 			}
-		}catch(ParseException e) {
-			
+		} catch (ParseException e) {
+
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+	/**
+	 * arrayList排序
+	 * 
+	 * @param list
+	 * @return
+	 */
+	public static List<Message> sortArrayList(List<Message> list) {
+
+		Collections.sort(list, new Comparator<Message>() {
+
+			public int compare(Message m1, Message m2) {
+				String sendDate1 = m1.getSendDate();
+				String sendDate2 = m2.getSendDate();
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+				try {
+					if (sdf.parse(sendDate1).getTime() < sdf.parse(sendDate2).getTime()) {
+						return -1;
+					} else {
+						return 1;
+					}
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				return 1;
+			}
+		});
+		return list;
 	}
 
 	public static void main(String[] args) {

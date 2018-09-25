@@ -20,6 +20,7 @@ public class Constants {
 	public static final String judgeStatus2 = "4"; // 客户端返回给服务端的上线信息
 	public static final String sendStatus = "5"; // 发送消息的状态
 	public static final String refreshStatus = "6"; // 通知页面刷新
+	public static final String updateMessageGroupStatus = "7"; // 修改群组人员信息时发送消息通知
 
 	// 页面中表格的数据行数
 	public static final int pageSize = 10;

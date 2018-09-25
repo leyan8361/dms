@@ -60,6 +60,7 @@ public class WebSocket {
 	 */
 	@OnOpen
 	public void onOpen(@PathParam("userId") String userId, Session session) throws IOException {
+		logger.debug("用户Id:{}准备登陆啦！！！", userId);
 		// System.out.println("当前的flag : " + flag);
 		if (userSocket.containsKey(userId)) {
 			JSONObject jo = new JSONObject();
@@ -77,6 +78,7 @@ public class WebSocket {
 			onlineCount++;
 			logger.debug("当前用户id:{}登录,当前在线人数{}", userId, onlineCount);
 			userSocket.put(userId, session);
+			logger.debug("当前人员信息：" + JSON.toJSONString(userSocket.keySet()));
 			flagMap.put(flag + "_" + userId, "校验信息");
 			for (String key : userSocket.keySet()) {
 				if (!key.equals(userId)) {
@@ -96,20 +98,27 @@ public class WebSocket {
 	@OnClose
 	public void onClose(@PathParam("userId") String userId, Session session) {
 
-		if (!downLineSet.contains(userId)) {
-			userSocket.remove(userId, session);
+		if (session == userSocket.get(userId)) {
+			if (!downLineSet.contains(userId)) {
+				userSocket.remove(userId, session);
+				onlineCount--;
+				logger.debug("用户id:{}下线,当前在线人数为{}", userId, onlineCount);
+				logger.debug("当前人员信息：" + JSON.toJSONString(userSocket.keySet()));
+				downLineSet.add(userId);
+				if (!userSocket.keySet().contains(userId)) {
+					for (String key : userSocket.keySet()) {
+						JSONObject jo = new JSONObject();
+						jo.put("status", Constants.downlineTip);
+						jo.put("info", userId);
+						sendMessageToUser(userId, userSocket.get(key), JSON.toJSONString(jo));
+					}
+				}
+
+			}
+		} else {
 			onlineCount--;
 			logger.debug("用户id:{}下线,当前在线人数为{}", userId, onlineCount);
-			downLineSet.add(userId);
-			if (!userSocket.keySet().contains(userId)) {
-				for (String key : userSocket.keySet()) {
-					JSONObject jo = new JSONObject();
-					jo.put("status", Constants.downlineTip);
-					jo.put("info", userId);
-					sendMessageToUser(userId, userSocket.get(key), JSON.toJSONString(jo));
-				}
-			}
-
+			logger.debug("当前人员信息：" + JSON.toJSONString(userSocket.keySet()));
 		}
 	}
 
@@ -161,7 +170,7 @@ public class WebSocket {
 	 */
 	@OnError
 	public void onError(Session session, @PathParam("userId") String userId, Throwable error) {
-		
+
 		logger.debug("用户id为：{}的连接发送错误", userId);
 		// error.printStackTrace();
 	}

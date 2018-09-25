@@ -28,4 +28,10 @@ public interface MessageDao {
 	public int sendMessage(Message message);
 
 	public List<String> getGroupMembers(int groupId);
+
+	public List<Message> getGroupMessage(@Param("userId") int userId, @Param("groupId") int groupId);
+
+	public List<Message> getFromMessageList(@Param("fromId") int fromId, @Param("userId") int userId);
+
+	public List<Message> getToMessageList(@Param("userId") int userId, @Param("toId") int toId);
 }

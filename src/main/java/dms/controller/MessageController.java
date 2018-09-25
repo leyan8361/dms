@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -56,7 +57,8 @@ public class MessageController {
 		JSONObject jo = (JSONObject) req.getAttribute("user");
 		int userId = jo.getIntValue("userId");
 		String userName = jo.getString("userName");
-		messageService.addMessageGroup(userId, groupName, groupType, effectiveDays, JSONArray.parseArray(userArray));
+		messageService.addMessageGroup(userId, userName, groupName, groupType, effectiveDays,
+				JSONArray.parseArray(userArray));
 		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), userId, userName, "新增消息群:" + groupName));
 		resMap.put("status", Constants.successStatus);
 		resMap.put("info", "新增成功");
@@ -104,8 +106,9 @@ public class MessageController {
 		if (!"".equals(delStr)) {
 			delArr = Utils.transStrToIntArr(delStr);
 		}
-		messageService.updateMessageGroupInfo(groupId, groupName, delArr, JSONArray.parseArray(userArray));
 		JSONObject user = (JSONObject) req.getAttribute("user");
+		messageService.updateMessageGroupInfo(user.getString("userName"), groupId, groupName, delArr,
+				JSONArray.parseArray(userArray));
 		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), user.getIntValue("userId"),
 				user.getString("userName"), "修改了消息群组：" + groupName + "的信息"));
 		resMap.put("status", Constants.successStatus);
@@ -128,8 +131,8 @@ public class MessageController {
 			HttpServletRequest req) {
 
 		Map<String, String> resMap = new HashMap<String, String>();
-		messageService.delMessageGroup(groupId);
 		JSONObject user = (JSONObject) req.getAttribute("user");
+		messageService.delMessageGroup(user.getString("userId"), user.getString("userName"), groupId, groupName);
 		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), user.getIntValue("userId"),
 				user.getString("userName"), "删除了消息群组：" + groupName));
 		resMap.put("status", Constants.successStatus);
@@ -158,9 +161,32 @@ public class MessageController {
 
 		Map<String, String> resMap = new HashMap<String, String>();
 		JSONObject user = (JSONObject) req.getAttribute("user");
-		messageService.sendMessage(user.getIntValue("userId"),user.getString("userName"), toId, isGroupMessage, content, type, mReq);
+		messageService.sendMessage(user.getIntValue("userId"), user.getString("userName"), toId, isGroupMessage,
+				content, type, mReq);
 		resMap.put("status", Constants.successStatus);
 		resMap.put("info", "success");
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 获取聊天记录
+	 * 
+	 * @param aimId
+	 *            目标Id
+	 * @param isGroupMessage
+	 *            是否是群消息(0：是 、 1：否)
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "getChatRecord", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String getChatRecord(@RequestParam("aimId") int aimId, @RequestParam("isGroupMessage") int isGroupMessage,
+			HttpServletRequest req) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		JSONObject user = (JSONObject) req.getAttribute("user");
+		JSONArray ja = messageService.getChatRecord(user.getIntValue("userId"), aimId, isGroupMessage);
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", JSON.toJSONString(ja));
 		return JSON.toJSONString(resMap);
 	}
 }
