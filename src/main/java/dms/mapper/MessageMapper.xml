@@ -95,27 +95,27 @@
 	<!-- 获取消息群的信息 -->
 	<select id="getGroupMessage" parameterType="int" resultType="message">
 		select 
-		fromId,toId,content,type,sendDate,fileSize
-		from t_message
-		where fromId = #{userId} and toId = #{gorupId} and isShow = 'show' and isGroupMessage = 0
-		order by sendDate asc
+		t1.fromId,t1.toId,t1.content,t1.type,t1.sendDate,t1.fileSize,t2.userName as fromName
+		from t_message t1,t_userinfo t2
+		where t1.toId = #{groupId} and t1.isShow = 'show' and t1.isGroupMessage = 0 and t1.fromId = t2.id
+		order by t1.sendDate asc
 	</select>
 	
 	<!-- 获取接收到的消息列表 -->
 	 <select id="getFromMessageList" parameterType="int" resultType="message">
 		select 
-		fromId,toId,content,type,sendDate,fileSize
-		from t_message
-		where fromId = #{fromId} and toId = #{userId} and isShow = 'show' and isGroupMessage = 1
-		order by sendDate asc
+		t1.fromId,t1.toId,t1.content,t1.type,t1.sendDate,t1.fileSize,t2.userName as fromName,t3.userName as toName
+		from t_message t1,(select userName from t_userinfo where id = #{fromId}) t2,(select userName from t_userinfo where id = #{userId}) t3
+		where t1.fromId = #{fromId} and t1.toId = #{userId} and t1.isShow = 'show' and t1.isGroupMessage = 1
+		order by t1.sendDate asc
 	</select> 
 	
 	<!-- 获取发送的消息列表 -->
 	 <select id="getToMessageList" parameterType="int" resultType="message">
 		select 
-		fromId,toId,content,type,sendDate,fileSize
-		from t_message
-		where fromId = #{userId} and toId = #{toId} and isShow = 'show' and isGroupMessage = 1
-		order by sendDate asc
+		t1.fromId,t1.toId,t1.content,t1.type,t1.sendDate,t1.fileSize,t2.userName as fromName,t3.userName as toName
+		from t_message t1,(select userName from t_userinfo where id = #{userId}) t2,(select userName from t_userinfo where id = #{toId}) t3
+		where t1.fromId = #{userId} and t1.toId = #{toId} and t1.isShow = 'show' and t1.isGroupMessage = 1
+		order by t1.sendDate asc
 	</select> 
 </mapper>

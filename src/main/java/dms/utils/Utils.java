@@ -172,7 +172,7 @@ public class Utils {
 			public int compare(Message m1, Message m2) {
 				String sendDate1 = m1.getSendDate();
 				String sendDate2 = m2.getSendDate();
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				try {
 					if (sdf.parse(sendDate1).getTime() < sdf.parse(sendDate2).getTime()) {
 						return -1;
@@ -189,6 +189,7 @@ public class Utils {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(judgeIsOverTime("2018-09-12", 5));
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		System.out.println(sdf.format(new Date()));
 	}
 }

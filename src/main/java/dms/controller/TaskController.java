@@ -61,7 +61,7 @@ public class TaskController {
 	 * @param content
 	 *            任务内容
 	 * @param deadLine
-	 *            截止时间(yyyy-MM-dd hh:mm)
+	 *            截止时间(yyyy-MM-dd HH:mm)
 	 * @param attention
 	 *            注意事项
 	 * @param remark
@@ -141,7 +141,7 @@ public class TaskController {
 	 * @param content
 	 *            任务内容
 	 * @param deadLine
-	 *            截止时间(yyyy-MM-dd hh:mm)
+	 *            截止时间(yyyy-MM-dd HH:mm)
 	 * @param attention
 	 *            注意事项
 	 * @param remark
@@ -172,7 +172,7 @@ public class TaskController {
 			resMap.put("status", Constants.apiErrorStatus);
 			resMap.put("info", "发布失败");
 		}
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd HH:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
 				String.valueOf(jo.get("userName")), "发布了条新任务"));
 		return JSON.toJSONString(resMap);
 	}

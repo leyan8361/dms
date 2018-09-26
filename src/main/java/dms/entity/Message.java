@@ -4,7 +4,9 @@ public class Message {
 
 	private int id;
 	private int fromId; // 发送人Id
+	private String fromName;
 	private int toId; // 接受人Id或接受群组Id
+	private String toName;
 	private int isGroupMessage; // 是否为群组消息 0是 、 1否
 	private String content; // 消息内容 或者 附件地址
 	private int type; // 是否是文字消息 0是、1否
@@ -97,6 +99,22 @@ public class Message {
 
 	public void setIsShow(String isShow) {
 		this.isShow = isShow;
+	}
+
+	public String getFromName() {
+		return fromName;
+	}
+
+	public void setFromName(String fromName) {
+		this.fromName = fromName;
+	}
+
+	public String getToName() {
+		return toName;
+	}
+
+	public void setToName(String toName) {
+		this.toName = toName;
 	}
 
 }

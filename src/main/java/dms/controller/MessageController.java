@@ -6,7 +6,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -59,7 +58,7 @@ public class MessageController {
 		String userName = jo.getString("userName");
 		messageService.addMessageGroup(userId, userName, groupName, groupType, effectiveDays,
 				JSONArray.parseArray(userArray));
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), userId, userName, "新增消息群:" + groupName));
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd HH:mm"), userId, userName, "新增消息群:" + groupName));
 		resMap.put("status", Constants.successStatus);
 		resMap.put("info", "新增成功");
 		return JSON.toJSONString(resMap);
@@ -109,7 +108,7 @@ public class MessageController {
 		JSONObject user = (JSONObject) req.getAttribute("user");
 		messageService.updateMessageGroupInfo(user.getString("userName"), groupId, groupName, delArr,
 				JSONArray.parseArray(userArray));
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), user.getIntValue("userId"),
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd HH:mm"), user.getIntValue("userId"),
 				user.getString("userName"), "修改了消息群组：" + groupName + "的信息"));
 		resMap.put("status", Constants.successStatus);
 		resMap.put("info", "success");
@@ -133,7 +132,7 @@ public class MessageController {
 		Map<String, String> resMap = new HashMap<String, String>();
 		JSONObject user = (JSONObject) req.getAttribute("user");
 		messageService.delMessageGroup(user.getString("userId"), user.getString("userName"), groupId, groupName);
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd hh:mm"), user.getIntValue("userId"),
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd HH:mm"), user.getIntValue("userId"),
 				user.getString("userName"), "删除了消息群组：" + groupName));
 		resMap.put("status", Constants.successStatus);
 		resMap.put("info", "success");

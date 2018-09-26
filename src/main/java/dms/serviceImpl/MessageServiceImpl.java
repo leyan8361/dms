@@ -206,7 +206,7 @@ public class MessageServiceImpl implements MessageService {
 				file.transferTo(new File(FilePath.messageAttachPath + content));
 			}
 			Message message = new Message(fromId, toId, isGroupMessage, content, type,
-					Utils.getNowDate("yyyy-MM-dd hh:mm:ss"), trueFileSize);
+					Utils.getNowDate("yyyy-MM-dd HH:mm:ss"), trueFileSize);
 			messageDao.sendMessage(message);
 			if (isGroupMessage == 1) {
 				JSONObject jo = new JSONObject();
@@ -261,6 +261,8 @@ public class MessageServiceImpl implements MessageService {
 				jo.put("sendDate", message.getSendDate());
 				jo.put("content", message.getContent());
 				jo.put("fileSize", message.getFileSize());
+				jo.put("fromName", message.getFromName());
+				jo.put("toName", "");
 				resArr.add(jo);
 			}
 		} else {
@@ -275,6 +277,8 @@ public class MessageServiceImpl implements MessageService {
 				jo.put("sendDate", message.getSendDate());
 				jo.put("content", message.getContent());
 				jo.put("fileSize", message.getFileSize());
+				jo.put("fromName", message.getFromName());
+				jo.put("toName", message.getToName());
 				resArr.add(jo);
 			}
 		}
