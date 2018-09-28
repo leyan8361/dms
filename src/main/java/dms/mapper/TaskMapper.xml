@@ -127,14 +127,14 @@
 		from 
 		t_task t1,t_task_user t2
 		where t1.isShow = 'show' and isDone = 'no' and isTransfer = 'no'
-		and t2.taskId = t1.id and t2.userId = 1
+		and t2.taskId = t1.id and t2.userId = #{userId}
 		order by t1.id
 	</select>
 	
 	<!-- 获取任务的详细信息 -->
 	<select id="getTaskInfo" parameterType="int" resultMap="getTaskInfoMap">
 		select 
-		t1.id,t1.content,t1.deadLine,t1.attention,t1.remark,t2.path,t3.userId,t3.userName
+		t1.id,t1.content,t1.deadLine,t1.attention,t1.remark,t2.id as attachId,t2.path,t3.userId,t3.userName
 		from 
 		(select * from t_task where id = #{taskId} and isShow = 'show') t1 
 		LEFT JOIN t_task_attach t2 on t2.taskId = t1.id and t1.id = #{taskId} and t2.isShow = 'show'
@@ -147,12 +147,21 @@
 		<result column="deadLine" property="deadLine" />
 		<result column="attention" property="attention" />
 		<result column="remark" property="remark" />
-		<collection property="lta" ofType="taskAttach" column="id">
+		<collection property="lta" ofType="taskAttach">
+			<id column="attachId" property="id" />
 			<result column="path" property="path" />
 		</collection>
-		<collection property="ltu" ofType="taskUser" column="id" >
+		<collection property="ltu" ofType="taskUser">
 			<result column="userId" property="userId" />
 			<result column="userName" property="userName" />
 		</collection>
 	</resultMap>
+	
+	<!-- 判断任务是否已经被移交 -->
+	<select id="judgeIfTaskTransfer" parameterType="int" resultType="String">
+		select 
+		transferId
+		from t_task_transfer_status
+		where isShow = 'show' and taskId = #{taskId}
+	</select>
 </mapper>

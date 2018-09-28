@@ -29,4 +29,6 @@ public interface TaskService {
 	public PageInfo<Map<String,String>> getMyUnDoTaskList(int userId,int currentPage);
 	
 	public Task getTaskInfo(int taskId);
+	
+	public String judgeIfTaskTransfer(int taskId);
 }

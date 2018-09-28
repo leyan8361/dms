@@ -76,6 +76,9 @@
 	<!-- 消息附件 -->
 	<mvc:resources mapping="/attach/messageAttach/**"
 		location="file:/application/shxinzhili/data/dms/messageAttach/" />
+	<!-- 任务附件 -->
+	<mvc:resources mapping="/attach/taskAttach/**"
+		location="file:/application/shxinzhili/data/dms/taskAttach/" />
 
 	<!-- springmvc 拦截器 -->
 	<mvc:interceptors>

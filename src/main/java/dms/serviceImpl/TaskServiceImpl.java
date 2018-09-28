@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONArray;
@@ -88,9 +89,9 @@ public class TaskServiceImpl implements TaskService {
 
 		return taskDao.checkTaskSave(userId);
 	}
-	
+
 	public TaskSave getSaveTaskInfo(int taskSaveId) {
-		
+
 		return taskDao.getSaveTaskInfo(taskSaveId);
 	}
 
@@ -98,7 +99,8 @@ public class TaskServiceImpl implements TaskService {
 			String oriAttach, MultipartFile[] attachArr, JSONArray userInfo) {
 
 		try {
-			Task task = new Task(content, deadLine, 0, 0, attention, remark, creator, Utils.getNowDate("yyyy-MM-dd"));
+			Task task = new Task(content, deadLine, 0, 0, attention, remark, creator,
+					Utils.getNowDate("yyyy-MM-dd HH:mm"));
 			taskDao.addTaskInfo(task);
 			int taskId = task.getId();
 			List<TaskAttach> lta = new ArrayList<TaskAttach>();
@@ -131,6 +133,7 @@ public class TaskServiceImpl implements TaskService {
 		} catch (IOException e) {
 
 			logger.error(e.getMessage());
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 			return false;
 		}
 	}
@@ -142,9 +145,14 @@ public class TaskServiceImpl implements TaskService {
 		PageInfo<Map<String, String>> pageInfo = new PageInfo<>(list);
 		return pageInfo;
 	}
-	
+
 	public Task getTaskInfo(int taskId) {
-		
+
 		return taskDao.getTaskInfo(taskId);
+	}
+
+	public String judgeIfTaskTransfer(int taskId) {
+
+		return taskDao.judgeIfTaskTransfer(taskId);
 	}
 }

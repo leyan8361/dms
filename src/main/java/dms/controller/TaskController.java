@@ -125,7 +125,7 @@ public class TaskController {
 	 * @param token
 	 * @return
 	 */
-	@RequestMapping(value = "taskSaveId", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	@RequestMapping(value = "getSaveTaskInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String getSaveTaskInfo(@RequestParam("taskSaveId") int taskSaveId) {
 
 		Map<String, String> resMap = new HashMap<String, String>();
@@ -172,8 +172,9 @@ public class TaskController {
 			resMap.put("status", Constants.apiErrorStatus);
 			resMap.put("info", "发布失败");
 		}
-		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd HH:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
-				String.valueOf(jo.get("userName")), "发布了条新任务"));
+		sysService
+				.addLog(new Log(Utils.getNowDate("yyyy-MM-dd HH:mm"), Integer.valueOf(String.valueOf(jo.get("userId"))),
+						String.valueOf(jo.get("userName")), "发布了条新任务:" + content));
 		return JSON.toJSONString(resMap);
 	}
 
@@ -213,6 +214,25 @@ public class TaskController {
 		Task task = taskService.getTaskInfo(taskId);
 		resMap.put("status", Constants.successStatus);
 		resMap.put("info", JSON.toJSONString(task));
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 判断任务是否有被移交
+	 * 
+	 * @param taskId
+	 *            任务Id
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "judgeIfTaskTransfer", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String judgeIfTaskTransfer(@RequestParam("taskId") int taskId) {
+
+		// TODO 需要在任务被移交后将内容记录到t_task_transfer_status表中
+		Map<String, String> resMap = new HashMap<String, String>();
+		String transferId = taskService.judgeIfTaskTransfer(taskId);
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", transferId == null ? "" : transferId);
 		return JSON.toJSONString(resMap);
 	}
 }

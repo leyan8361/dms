@@ -40,4 +40,6 @@ public interface TaskDao {
 	public List<Map<String, String>> getMyUnDoTaskList(int userId);
 
 	public Task getTaskInfo(int taskId);
+	
+	public String judgeIfTaskTransfer(int taskId);
 }

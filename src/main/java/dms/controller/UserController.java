@@ -57,4 +57,25 @@ public class UserController {
 		return JSON.toJSONString(resMap);
 	}
 
+	// /**
+	// * ªÒ»°∞Ê±æ∫≈
+	// *
+	// * @return
+	// */
+	// @RequestMapping(value = "getVersion", method = RequestMethod.GET, produces =
+	// "text/json;charset=UTF-8")
+	// public String getVersion() {
+	//
+	// MavenXpp3Reader reader = new MavenXpp3Reader();
+	// File f = new File(UserController.class.getResource("/").getPath());
+	// String path = f.getParentFile().getParent();
+	// System.out.println(path);
+	// String myPom = path + File.separator + "pom.xml";
+	// try {
+	// Model model = reader.read(new FileReader(myPom));
+	// return model.getVersion();
+	// } catch (IOException | XmlPullParserException e) {
+	// return e.getMessage();
+	// }
+	// }
 }

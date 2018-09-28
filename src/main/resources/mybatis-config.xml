@@ -37,6 +37,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		<typeAlias type="dms.entity.Message" alias="message" />
 		<typeAlias type="dms.entity.MessageGroup" alias="messageGroup" />
 		<typeAlias type="dms.entity.MessageGroupDetail" alias="messageGroupDetail" />
+		<typeAlias type="dms.entity.TaskTransferStatus" alias="taskTransferStatus" />
 	</typeAliases>
 
 	<plugins>

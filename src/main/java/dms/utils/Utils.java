@@ -1,5 +1,7 @@
 package dms.utils;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,6 +19,10 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -189,7 +195,14 @@ public class Utils {
 	}
 
 	public static void main(String[] args) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		System.out.println(sdf.format(new Date()));
+		MavenXpp3Reader reader = new MavenXpp3Reader();
+		String myPom = System.getProperty("user.dir") + File.separator + "pom.xml"; 
+		try {
+			Model model = reader.read(new FileReader(myPom));
+			System.out.println(model.getVersion());
+		} catch (IOException | XmlPullParserException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 	}
 }
