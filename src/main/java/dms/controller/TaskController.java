@@ -22,6 +22,7 @@ import com.github.pagehelper.PageInfo;
 import dms.entity.Log;
 import dms.entity.Task;
 import dms.entity.TaskSave;
+import dms.entity.TaskTransferSaveStatus;
 import dms.entity.UserInfo;
 import dms.service.SysService;
 import dms.service.TaskService;
@@ -233,6 +234,29 @@ public class TaskController {
 		String transferId = taskService.judgeIfTaskTransfer(taskId);
 		resMap.put("status", Constants.successStatus);
 		resMap.put("info", transferId == null ? "" : transferId);
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 检查是否有保存的任务移交信息
+	 * 
+	 * @param taskId
+	 *            任务Id
+	 * @return
+	 */
+	@RequestMapping(value = "checkIfTaskTransferSave", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String checkIfTaskTransferSave(@RequestParam("taskId") int taskId) {
+
+		// TODO 任务移交后清除保存信息的记录
+		Map<String, String> resMap = new HashMap<String, String>();
+		TaskTransferSaveStatus ttss = taskService.checkIfTaskTransferSave(taskId);
+		if (ttss == null) {
+			resMap.put("status", Constants.apiErrorStatus);
+			resMap.put("info", "没有保存信息");
+		} else {
+			resMap.put("status", Constants.successStatus);
+			resMap.put("info", "有保存信息");
+		}
 		return JSON.toJSONString(resMap);
 	}
 }

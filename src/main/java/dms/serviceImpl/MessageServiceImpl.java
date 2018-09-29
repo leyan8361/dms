@@ -196,6 +196,7 @@ public class MessageServiceImpl implements MessageService {
 
 		try {
 			String trueFileSize = "";
+			String oriSendDate = Utils.getNowDate("yyyy-MM-dd HH:mm:ss");
 			// 判断是文件还是消息
 			if (type != 0) {
 				MultipartFile file = mReq.getFileMap().get("file");
@@ -205,7 +206,7 @@ public class MessageServiceImpl implements MessageService {
 				content = System.currentTimeMillis() + "_" + file.getOriginalFilename();
 				file.transferTo(new File(FilePath.messageAttachPath + content));
 			}
-			Message message = new Message(fromId, toId, isGroupMessage, content, type,
+			Message message = new Message(fromId, toId, isGroupMessage, content, type,oriSendDate,
 					Utils.getNowDate("yyyy-MM-dd HH:mm:ss"), trueFileSize);
 			messageDao.sendMessage(message);
 			if (isGroupMessage == 1) {

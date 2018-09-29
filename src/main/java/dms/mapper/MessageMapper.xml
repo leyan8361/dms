@@ -79,9 +79,9 @@
 	<insert id="sendMessage" parameterType="message">
 		insert into
 		t_message
-		(fromId,toId,isGroupMessage,content,type,sendDate,fileSize)
+		(fromId,toId,isGroupMessage,content,type,oriSendDate,sendDate,fileSize)
 		values
-		(#{fromId},#{toId},#{isGroupMessage},#{content},#{type},#{sendDate},#{fileSize})
+		(#{fromId},#{toId},#{isGroupMessage},#{content},#{type},#{oriSendDate},#{sendDate},#{fileSize})
 	</insert>
 	
 	<!-- 获取消息群成员列表 -->

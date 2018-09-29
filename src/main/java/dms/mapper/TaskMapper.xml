@@ -164,4 +164,37 @@
 		from t_task_transfer_status
 		where isShow = 'show' and taskId = #{taskId}
 	</select>
+	
+	<!-- 检查该任务是否存储过移交信息 -->
+	<select id="checkIfTaskTransferSave" parameterType="int" resultType="taskTransferSaveStatus">
+		select
+		*
+		from t_task_transfer_save_status
+		where isShow = 'show' and taskId = #{taskId}
+	</select>
+	
+	<!-- 添加任务移交保存的信息 -->
+	<insert id="addTaskTransferSaveInfo" parameterType="taskTransferSave" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		insert into
+		t_task_transfer_save
+		(taskId,content,deadLine,attention,remark)
+		values
+		(#{taskId},#{content},#{deadLine},#{attention},#{remark})
+	</insert>
+	
+	<!-- 添加移交任务保存的人员信息 -->
+	<insert id="addTaskTransferUserSave" parameterType="taskTransferUserSave">
+		insert into
+		t_task_transfer_user_save
+		(transferSaveId,userId,userName)
+		values
+		<foreach collection="list" item="ttus" separator=",">
+			(#{ttus.transferSaveId},#{ttus.userId},#{ttus.userName})
+		</foreach>
+	</insert>
+	
+	<!-- 添加移交任务保存的附件信息 -->
+	<insert id="addTaskTransferAttachSave" parameterType="taskTransferAttachSave">
+		
+	</insert>
 </mapper>

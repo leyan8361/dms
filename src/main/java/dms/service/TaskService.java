@@ -10,6 +10,7 @@ import com.github.pagehelper.PageInfo;
 
 import dms.entity.Task;
 import dms.entity.TaskSave;
+import dms.entity.TaskTransferSaveStatus;
 import dms.entity.UserInfo;
 
 public interface TaskService {
@@ -31,4 +32,6 @@ public interface TaskService {
 	public Task getTaskInfo(int taskId);
 	
 	public String judgeIfTaskTransfer(int taskId);
+	
+	public TaskTransferSaveStatus checkIfTaskTransferSave(int taskId);
 }

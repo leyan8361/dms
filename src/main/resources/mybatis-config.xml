@@ -38,6 +38,10 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		<typeAlias type="dms.entity.MessageGroup" alias="messageGroup" />
 		<typeAlias type="dms.entity.MessageGroupDetail" alias="messageGroupDetail" />
 		<typeAlias type="dms.entity.TaskTransferStatus" alias="taskTransferStatus" />
+		<typeAlias type="dms.entity.TaskTransferSaveStatus" alias="taskTransferSaveStatus" />
+		<typeAlias type="dms.entity.TaskTransferSave" alias="taskTransferSave" />
+		<typeAlias type="dms.entity.TaskTransferUserSave" alias="taskTransferUserSave" />
+		<typeAlias type="dms.entity.TaskTransferAttachSave" alias="taskTransferAttachSave" />
 	</typeAliases>
 
 	<plugins>

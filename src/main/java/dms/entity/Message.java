@@ -10,6 +10,7 @@ public class Message {
 	private int isGroupMessage; // 是否为群组消息 0是 、 1否
 	private String content; // 消息内容 或者 附件地址
 	private int type; // 是否是文字消息 0是、1否
+	private String oriSendDate;
 	private String sendDate; // 发送日期
 	private String fileSize; // 文件大小
 	private String isShow;
@@ -18,13 +19,14 @@ public class Message {
 
 	}
 
-	public Message(int fromId, int toId, int isGroupMessage, String content, int type, String sendDate,
-			String fileSize) {
+	public Message(int fromId, int toId, int isGroupMessage, String content, int type, String oriSendDate,
+			String sendDate, String fileSize) {
 		this.fromId = fromId;
 		this.toId = toId;
 		this.isGroupMessage = isGroupMessage;
 		this.content = content;
 		this.type = type;
+		this.oriSendDate = oriSendDate;
 		this.sendDate = sendDate;
 		this.fileSize = fileSize;
 	}
@@ -75,6 +77,14 @@ public class Message {
 
 	public void setType(int type) {
 		this.type = type;
+	}
+
+	public String getOriSendDate() {
+		return oriSendDate;
+	}
+
+	public void setOriSendDate(String oriSendDate) {
+		this.oriSendDate = oriSendDate;
 	}
 
 	public String getSendDate() {

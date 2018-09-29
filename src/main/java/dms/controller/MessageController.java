@@ -150,20 +150,22 @@ public class MessageController {
 	 *            消息内容(若为文件类型则为"")
 	 * @param type
 	 *            是否是文字消息 0是、1否
+	 * @param flag
+	 *            文件名信息(时间戳_文件名 若是普通信息则为"")
 	 * @param token
 	 * @return
 	 */
 	@RequestMapping(value = "sendMessage", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String sendMessage(@RequestParam("toId") int toId, @RequestParam("isGroupMessage") int isGroupMessage,
-			@RequestParam("content") String content, @RequestParam("type") int type, HttpServletRequest req,
-			MultipartHttpServletRequest mReq) {
+			@RequestParam("content") String content, @RequestParam("type") int type, @RequestParam("flag") String flag,
+			HttpServletRequest req, MultipartHttpServletRequest mReq) {
 
 		Map<String, String> resMap = new HashMap<String, String>();
 		JSONObject user = (JSONObject) req.getAttribute("user");
 		messageService.sendMessage(user.getIntValue("userId"), user.getString("userName"), toId, isGroupMessage,
 				content, type, mReq);
 		resMap.put("status", Constants.successStatus);
-		resMap.put("info", "success");
+		resMap.put("info", flag);
 		return JSON.toJSONString(resMap);
 	}
 

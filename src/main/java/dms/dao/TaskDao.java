@@ -10,6 +10,10 @@ import dms.entity.TaskAttach;
 import dms.entity.TaskSave;
 import dms.entity.TaskSaveAttach;
 import dms.entity.TaskSaveUser;
+import dms.entity.TaskTransferAttachSave;
+import dms.entity.TaskTransferSave;
+import dms.entity.TaskTransferSaveStatus;
+import dms.entity.TaskTransferUserSave;
 import dms.entity.TaskUser;
 import dms.entity.UserInfo;
 
@@ -42,4 +46,13 @@ public interface TaskDao {
 	public Task getTaskInfo(int taskId);
 	
 	public String judgeIfTaskTransfer(int taskId);
+	
+	public TaskTransferSaveStatus checkIfTaskTransferSave(int taskId);
+	
+	public int addTaskTransferSaveInfo(TaskTransferSave tts);
+	
+	public int addTaskTransferUserSave(List<TaskTransferUserSave> lttus);
+	
+	public int addTaskTransferAttachSave(List<TaskTransferAttachSave> lttas);
+	
 }

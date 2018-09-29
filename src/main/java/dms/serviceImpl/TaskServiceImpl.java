@@ -24,6 +24,7 @@ import dms.entity.TaskAttach;
 import dms.entity.TaskSave;
 import dms.entity.TaskSaveAttach;
 import dms.entity.TaskSaveUser;
+import dms.entity.TaskTransferSaveStatus;
 import dms.entity.TaskUser;
 import dms.entity.UserInfo;
 import dms.service.TaskService;
@@ -154,5 +155,10 @@ public class TaskServiceImpl implements TaskService {
 	public String judgeIfTaskTransfer(int taskId) {
 
 		return taskDao.judgeIfTaskTransfer(taskId);
+	}
+	
+	public TaskTransferSaveStatus checkIfTaskTransferSave(int taskId) {
+		
+		return taskDao.checkIfTaskTransferSave(taskId);
 	}
 }
