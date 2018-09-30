@@ -21,6 +21,7 @@ public class Constants {
 	public static final String sendStatus = "5"; // 发送消息的状态
 	public static final String refreshStatus = "6"; // 通知页面刷新
 	public static final String updateMessageGroupStatus = "7"; // 修改群组人员信息时发送消息通知
+	public static final String noticeFIleUploadStatus = "8"; // 通知客户端文件上传完毕
 
 	// 页面中表格的数据行数
 	public static final int pageSize = 10;

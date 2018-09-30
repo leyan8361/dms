@@ -20,6 +20,7 @@ import com.alibaba.fastjson.JSONObject;
 import dms.entity.Log;
 import dms.service.MessageService;
 import dms.service.SysService;
+import dms.socket.WebSocket;
 import dms.utils.Constants;
 import dms.utils.Utils;
 
@@ -164,6 +165,10 @@ public class MessageController {
 		JSONObject user = (JSONObject) req.getAttribute("user");
 		messageService.sendMessage(user.getIntValue("userId"), user.getString("userName"), toId, isGroupMessage,
 				content, type, mReq);
+		JSONObject jo2 = new JSONObject();
+		jo2.put("status", Constants.noticeFIleUploadStatus);
+		jo2.put("info", flag);
+		WebSocket.sendMessageToUser2(user.getString("userId"), JSON.toJSONString(jo2));
 		resMap.put("status", Constants.successStatus);
 		resMap.put("info", flag);
 		return JSON.toJSONString(resMap);
