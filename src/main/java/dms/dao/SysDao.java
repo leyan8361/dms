@@ -45,6 +45,8 @@ public interface SysDao {
 			@Param("description") String description);
 
 	public int delUserGroupInfo(int id);
+	
+	public int delUserOwnGroupInfo(int groupId);
 
 	public List<Role> getAllRoleInfo();
 

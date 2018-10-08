@@ -112,7 +112,9 @@ public class SysServiceImpl implements SysService {
 
 	public int delUserGroupInfo(int id) {
 
-		return sysDao.delUserGroupInfo(id);
+		sysDao.delUserGroupInfo(id);
+
+		return sysDao.delUserOwnGroupInfo(id);
 	}
 
 	public List<Role> getAllRoleInfo() {
@@ -250,9 +252,9 @@ public class SysServiceImpl implements SysService {
 		}
 		return true;
 	}
-	
+
 	public int delUser(int userId) {
-		
+
 		return sysDao.delUser(userId);
 	}
 }

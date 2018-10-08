@@ -24,7 +24,10 @@ import dms.entity.TaskAttach;
 import dms.entity.TaskSave;
 import dms.entity.TaskSaveAttach;
 import dms.entity.TaskSaveUser;
+import dms.entity.TaskTransferAttachSave;
+import dms.entity.TaskTransferSave;
 import dms.entity.TaskTransferSaveStatus;
+import dms.entity.TaskTransferUserSave;
 import dms.entity.TaskUser;
 import dms.entity.UserInfo;
 import dms.service.TaskService;
@@ -156,9 +159,56 @@ public class TaskServiceImpl implements TaskService {
 
 		return taskDao.judgeIfTaskTransfer(taskId);
 	}
-	
+
 	public TaskTransferSaveStatus checkIfTaskTransferSave(int taskId) {
-		
+
 		return taskDao.checkIfTaskTransferSave(taskId);
+	}
+
+	public boolean addTaskTransferSaveInfo(int taskId, String content, String deadLine, String attention, String remark,
+			String oriAttachStr, MultipartFile[] attachArr, JSONArray userInfo) {
+
+		try {
+			TaskTransferSave tts = new TaskTransferSave(taskId, content, deadLine, attention, remark);
+			taskDao.addTaskTransferSaveInfo(tts);
+			int transferSaveId = tts.getId();
+			List<TaskTransferUserSave> lttus = new ArrayList<TaskTransferUserSave>();
+			List<TaskTransferAttachSave> lttas = new ArrayList<TaskTransferAttachSave>();
+			if (userInfo != null) {
+				for (Object o : userInfo) {
+					JSONObject jo = (JSONObject) o;
+					lttus.add(new TaskTransferUserSave(transferSaveId, jo.getIntValue("userId"),
+							jo.getString("userName")));
+				}
+			}
+			if (!"".equals(oriAttachStr)) {
+				String[] oriAttachArr = oriAttachStr.split(",");
+				for (String s : oriAttachArr) {
+					lttas.add(new TaskTransferAttachSave(transferSaveId, s));
+				}
+			}
+			for (MultipartFile mf : attachArr) {
+				String name = mf.getOriginalFilename();
+				mf.transferTo(new File(FilePath.taskAttachPath + name));
+				lttas.add(new TaskTransferAttachSave(transferSaveId, name));
+			}
+			if (!lttus.isEmpty()) {
+				taskDao.addTaskTransferUserSave(lttus);
+			}
+			if (!lttas.isEmpty()) {
+				taskDao.addTaskTransferAttachSave(lttas);
+			}
+			taskDao.addTaskTransferSaveStatus(taskId,transferSaveId);
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public TaskTransferSave getTaskTransferSaveInfo(int transferSaveId) {
+		
+		TaskTransferSave tts = taskDao.getTaskTransferSaveInfo(transferSaveId);
+		return tts;
 	}
 }

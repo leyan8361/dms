@@ -10,6 +10,7 @@ import com.github.pagehelper.PageInfo;
 
 import dms.entity.Task;
 import dms.entity.TaskSave;
+import dms.entity.TaskTransferSave;
 import dms.entity.TaskTransferSaveStatus;
 import dms.entity.UserInfo;
 
@@ -21,17 +22,22 @@ public interface TaskService {
 			String oriAttach, MultipartFile[] attachArr, JSONArray userInfo);
 
 	public String checkTaskSave(int userId);
-	
+
 	public TaskSave getSaveTaskInfo(int taskSaveId);
 
 	public boolean addTaskInfo(String content, String deadLine, String attention, String remark, int creator,
 			String oriAttach, MultipartFile[] attachArr, JSONArray userInfo);
-	
-	public PageInfo<Map<String,String>> getMyUnDoTaskList(int userId,int currentPage);
-	
+
+	public PageInfo<Map<String, String>> getMyUnDoTaskList(int userId, int currentPage);
+
 	public Task getTaskInfo(int taskId);
-	
+
 	public String judgeIfTaskTransfer(int taskId);
-	
+
 	public TaskTransferSaveStatus checkIfTaskTransferSave(int taskId);
+
+	public boolean addTaskTransferSaveInfo(int taskId, String content, String deadLine, String attention, String remark,
+			String oriAttachStr, MultipartFile[] attachArr, JSONArray userInfo);
+	
+	public TaskTransferSave getTaskTransferSaveInfo(int transferSaveId);
 }

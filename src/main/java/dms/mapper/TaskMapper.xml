@@ -195,6 +195,49 @@
 	
 	<!-- 添加移交任务保存的附件信息 -->
 	<insert id="addTaskTransferAttachSave" parameterType="taskTransferAttachSave">
-		
+		insert into
+		t_task_transfer_attach_save
+		(transferSaveId,path)
+		values
+		<foreach collection="list" item="ttas" separator=",">
+			(#{ttas.transferSaveId},#{ttas.path})
+		</foreach>
 	</insert>
+	
+	<!-- 添加任务存储过移交信息的状态 -->
+	<insert id="addTaskTransferSaveStatus" parameterType="int">
+		insert into 
+		t_task_transfer_save_status
+		(taskId,transferSaveId)
+		values
+		(#{taskId},#{transferSaveId})
+	</insert>
+	
+	<!-- 获取存储的任务移交信息 -->
+	<select id="getTaskTransferSaveInfo" parameterType="int" resultMap="getTaskTransferSaveInfoMap">
+		select 
+		t1.content,t1.deadLine,t1.attention,t1.remark,t2.userId,t2.userName,t3.path
+		from 
+		(select * from t_task_transfer_save where isShow = 'show' and id = #{transferSaveId}) t1
+		left join 
+		(select * from t_task_transfer_user_save where isShow = 'show') t2
+		on t1.id = t2.transferSaveId
+		left join 
+		(select * from t_task_transfer_attach_save where isShow = 'show') t3
+		on t1.id = t2.transferSaveId
+	</select>
+	
+	<resultMap type="taskTransferSave" id="getTaskTransferSaveInfoMap">
+		<result column="content" property="content" />
+		<result column="deadLine" property="deadLine" />
+		<result column="attention" property="attention" />
+		<result column="remark" property="remark" />
+		<collection property="lttus" ofType="taskTransferUserSave">
+			<result column="userId" property="userId" />
+			<result column="userName" property="userName" />
+		</collection>
+		<collection property="lttas" ofType="taskTransferAttachSave">
+			<result column="path" property="path" />
+		</collection>
+	</resultMap>
 </mapper>

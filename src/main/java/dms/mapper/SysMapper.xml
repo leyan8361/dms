@@ -62,7 +62,7 @@
 		<if test="name!=''">
 			and name = #{name}
 		</if>
-		order by createDate desc
+		order by id desc
 	</select>
 
 	<!-- 获取角色信息详情 -->
@@ -113,7 +113,7 @@
 		<if test="name!=''">
 			and name = #{name}
 		</if>
-		order by createDate desc
+		order by id desc
 	</select>
 	
 	<!-- 获取用户群组详情 -->
@@ -136,6 +136,13 @@
 		update t_usergroup
 		set isShow = 'notShow'
 		where id = #{id}
+	</update>
+	
+	<!-- 删除用户本身的群组信息 -->
+	<update id="delUserOwnGroupInfo" parameterType="int">
+		update t_userinfo
+		set userGroupId = null,userGroupName = ''
+		where userGroupId = #{groupId}
 	</update>
 	
 	<!-- 获取角色下拉列表内容 -->

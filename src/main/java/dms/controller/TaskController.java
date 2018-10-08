@@ -22,6 +22,7 @@ import com.github.pagehelper.PageInfo;
 import dms.entity.Log;
 import dms.entity.Task;
 import dms.entity.TaskSave;
+import dms.entity.TaskTransferSave;
 import dms.entity.TaskTransferSaveStatus;
 import dms.entity.UserInfo;
 import dms.service.SysService;
@@ -255,8 +256,65 @@ public class TaskController {
 			resMap.put("info", "没有保存信息");
 		} else {
 			resMap.put("status", Constants.successStatus);
-			resMap.put("info", "有保存信息");
+			resMap.put("info", String.valueOf(ttss.getTransferSaveId()));
 		}
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 保存任务的移交信息
+	 * 
+	 * @param taskId
+	 *            任务Id
+	 * @param content
+	 *            内容
+	 * @param deadLine
+	 *            截止日期 yyyy-MM-dd HH:mm
+	 * @param attention
+	 *            注意事项
+	 * @param remark
+	 *            备注
+	 * @param oriAttachStr
+	 *            原先的附件名称字符串 "aaaa,bbbb"
+	 * @param attachArr
+	 *            附件数组
+	 * @param userInfo
+	 *            用户信息 [{"userId":"","userName":""},{...},...]
+	 * @return
+	 */
+	@RequestMapping(value = "addTaskTransferSaveInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String addTaskTransferSaveInfo(@RequestParam("taskId") int taskId, @RequestParam("content") String content,
+			@RequestParam("deadLine") String deadLine, @RequestParam("attention") String attention,
+			@RequestParam("remark") String remark, @RequestParam("oriAttachStr") String oriAttachStr,
+			@RequestParam("attachArr") MultipartFile[] attachArr, @RequestParam("userInfo") String userInfo) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		boolean res = taskService.addTaskTransferSaveInfo(taskId, content, deadLine, attention, remark, oriAttachStr,
+				attachArr, JSON.parseArray(userInfo));
+		if (res == true) {
+			resMap.put("status", Constants.successStatus);
+			resMap.put("info", "保存成功");
+		} else {
+			resMap.put("status", Constants.apiErrorStatus);
+			resMap.put("info", "保存失败");
+		}
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 获取存储的任务移交信息
+	 * 
+	 * @param transferSaveId
+	 *            任务移交Id
+	 * @return
+	 */
+	@RequestMapping(value = "getTaskTransferSaveInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String getTaskTransferSaveInfo(@RequestParam("transferSaveId") int transferSaveId) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		TaskTransferSave tts = taskService.getTaskTransferSaveInfo(transferSaveId);
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", JSON.toJSONString(tts));
 		return JSON.toJSONString(resMap);
 	}
 }

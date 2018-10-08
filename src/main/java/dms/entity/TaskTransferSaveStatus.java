@@ -10,16 +10,16 @@ public class TaskTransferSaveStatus {
 
 	private int id;
 	private int taskId;
+	private int transferSaveId;
 	private String isShow;
 
-	public TaskTransferSaveStatus(int taskId) {
-		this.taskId = taskId;
+	public TaskTransferSaveStatus() {
+
 	}
 
-	public TaskTransferSaveStatus(int id, int taskId, String isShow) {
-		this.id = id;
+	public TaskTransferSaveStatus(int taskId, int transferSaveId) {
 		this.taskId = taskId;
-		this.isShow = isShow;
+		this.transferSaveId = transferSaveId;
 	}
 
 	public int getId() {
@@ -36,6 +36,14 @@ public class TaskTransferSaveStatus {
 
 	public void setTaskId(int taskId) {
 		this.taskId = taskId;
+	}
+
+	public int getTransferSaveId() {
+		return transferSaveId;
+	}
+
+	public void setTransferSaveId(int transferSaveId) {
+		this.transferSaveId = transferSaveId;
 	}
 
 	public String getIsShow() {

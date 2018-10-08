@@ -44,15 +44,18 @@ public interface TaskDao {
 	public List<Map<String, String>> getMyUnDoTaskList(int userId);
 
 	public Task getTaskInfo(int taskId);
-	
+
 	public String judgeIfTaskTransfer(int taskId);
-	
+
 	public TaskTransferSaveStatus checkIfTaskTransferSave(int taskId);
-	
+
 	public int addTaskTransferSaveInfo(TaskTransferSave tts);
-	
+
 	public int addTaskTransferUserSave(List<TaskTransferUserSave> lttus);
-	
+
 	public int addTaskTransferAttachSave(List<TaskTransferAttachSave> lttas);
-	
+
+	public int addTaskTransferSaveStatus(@Param("taskId") int taskId, @Param("transferSaveId") int transferSaveId);
+
+	public TaskTransferSave getTaskTransferSaveInfo(int transferSaveId);
 }

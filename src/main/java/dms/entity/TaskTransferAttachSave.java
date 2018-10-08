@@ -4,14 +4,14 @@ public class TaskTransferAttachSave {
 
 	private int id;
 	private int transferSaveId;
-	private int path;
+	private String path;
 	private String isShow;
 
 	public TaskTransferAttachSave() {
 
 	}
 
-	public TaskTransferAttachSave(int transferSaveId, int path) {
+	public TaskTransferAttachSave(int transferSaveId, String path) {
 		this.transferSaveId = transferSaveId;
 		this.path = path;
 	}
@@ -32,11 +32,11 @@ public class TaskTransferAttachSave {
 		this.transferSaveId = transferSaveId;
 	}
 
-	public int getPath() {
+	public String getPath() {
 		return path;
 	}
 
-	public void setPath(int path) {
+	public void setPath(String path) {
 		this.path = path;
 	}
 
