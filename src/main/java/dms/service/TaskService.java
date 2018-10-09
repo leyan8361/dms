@@ -32,12 +32,15 @@ public interface TaskService {
 
 	public Task getTaskInfo(int taskId);
 
-	public String judgeIfTaskTransfer(int taskId);
+	public String judgeIfTaskTransfer(int taskId, int userId);
 
-	public TaskTransferSaveStatus checkIfTaskTransferSave(int taskId);
+	public TaskTransferSaveStatus checkIfTaskTransferSave(int taskId, int userId);
 
-	public boolean addTaskTransferSaveInfo(int taskId, String content, String deadLine, String attention, String remark,
-			String oriAttachStr, MultipartFile[] attachArr, JSONArray userInfo);
-	
+	public boolean addTaskTransferSaveInfo(int userId, int taskId, String content, String deadLine, String attention,
+			String remark, String oriAttachStr, MultipartFile[] attachArr, JSONArray userInfo);
+
 	public TaskTransferSave getTaskTransferSaveInfo(int transferSaveId);
+
+	public boolean transferTask(int userId, int taskId, String content, String deadLine, String attention,
+			String remark, String oriAttachStr, MultipartFile[] attachArr, JSONArray userInfo);
 }

@@ -6,6 +6,9 @@ public class TaskUser {
 	private int taskId;
 	private int userId;
 	private String userName;
+	private String isDone; // 每个人的isDone为yes时，任务即完成了
+	private String isTransfer; // 判断该员工是否有移交任务
+	private int sonId; // 移交的子任务Id
 	private String isShow;
 
 	public TaskUser() {
@@ -48,6 +51,30 @@ public class TaskUser {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public String getIsDone() {
+		return isDone;
+	}
+
+	public void setIsDone(String isDone) {
+		this.isDone = isDone;
+	}
+
+	public String getIsTransfer() {
+		return isTransfer;
+	}
+
+	public void setIsTransfer(String isTransfer) {
+		this.isTransfer = isTransfer;
+	}
+
+	public int getSonId() {
+		return sonId;
+	}
+
+	public void setSonId(int sonId) {
+		this.sonId = sonId;
 	}
 
 	public String getIsShow() {

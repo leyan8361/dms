@@ -126,7 +126,7 @@
 		t1.id,t1.content
 		from 
 		t_task t1,t_task_user t2
-		where t1.isShow = 'show' and isDone = 'no' and isTransfer = 'no'
+		where t1.isShow = 'show' and t2.isDone = 'no' and t1.isTransfer = 'no'
 		and t2.taskId = t1.id and t2.userId = #{userId}
 		order by t1.id
 	</select>
@@ -158,11 +158,11 @@
 	</resultMap>
 	
 	<!-- 判断任务是否已经被移交 -->
-	<select id="judgeIfTaskTransfer" parameterType="int" resultType="String">
+	<select id="judgeIfTaskTransfer" resultType="String">
 		select 
-		transferId
-		from t_task_transfer_status
-		where isShow = 'show' and taskId = #{taskId}
+		isTransfer
+		from t_task_user
+		where isShow = 'show' and taskId = #{taskId} and userId = #{userId}
 	</select>
 	
 	<!-- 检查该任务是否存储过移交信息 -->
@@ -170,16 +170,16 @@
 		select
 		*
 		from t_task_transfer_save_status
-		where isShow = 'show' and taskId = #{taskId}
+		where isShow = 'show' and taskId = #{taskId} and userId = #{userId}
 	</select>
 	
 	<!-- 添加任务移交保存的信息 -->
 	<insert id="addTaskTransferSaveInfo" parameterType="taskTransferSave" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
 		insert into
 		t_task_transfer_save
-		(taskId,content,deadLine,attention,remark)
+		(userId,taskId,content,deadLine,attention,remark)
 		values
-		(#{taskId},#{content},#{deadLine},#{attention},#{remark})
+		(#{userId},#{taskId},#{content},#{deadLine},#{attention},#{remark})
 	</insert>
 	
 	<!-- 添加移交任务保存的人员信息 -->
@@ -204,13 +204,49 @@
 		</foreach>
 	</insert>
 	
+	<!-- 获取用户之前移交记录的Id -->
+	<select id="getUserSaveTransferId" parameterType="int" resultType="String">
+		select 
+		id
+		from t_task_transfer_save
+		where userId = #{userId} and taskId = #{taskId} and isShow = 'show'
+	</select>
+	
+	<!-- 删除保存的移交信息 -->
+	<update id="delTaskTransferSave" parameterType="int">
+		update t_task_transfer_save
+		set isShow = 'notShow'
+		where id = #{transferSaveId}
+	</update>
+	
+	<!-- 删除保存的移交人员信息 -->
+	<update id="delTaskTransferUserSave" parameterType="int">
+		update t_task_transfer_user_save
+		set isShow = 'notShow'
+		where transferSaveId = #{transferSaveId}
+	</update>
+	
+	<!-- 删除保存的移交附件信息 -->
+	<update id="delTaskTransferAttachSave" parameterType="int">
+		update t_task_transfer_attach_save
+		set isShow = 'notShow'
+		where transferSaveId = #{transferSaveId} 
+	</update>
+	
+	<!-- 删除保存的移交信息记录状态 -->
+	<update id="delTaskTransferSaveStatus" parameterType="int">
+		update t_task_transfer_save_status
+		set isShow = 'notShow'
+		where transferSaveId = #{transferSaveId} 
+	</update>
+	
 	<!-- 添加任务存储过移交信息的状态 -->
 	<insert id="addTaskTransferSaveStatus" parameterType="int">
 		insert into 
 		t_task_transfer_save_status
-		(taskId,transferSaveId)
+		(taskId,transferSaveId,userId)
 		values
-		(#{taskId},#{transferSaveId})
+		(#{taskId},#{transferSaveId},#{userId})
 	</insert>
 	
 	<!-- 获取存储的任务移交信息 -->
@@ -240,4 +276,12 @@
 			<result column="path" property="path" />
 		</collection>
 	</resultMap>
+	
+	<!-- 获取任务级别 -->
+	<select id="getTaskLevel" parameterType="int" resultType="int">
+		select
+		level
+		from t_task
+		where id = #{taskId}
+	</select>
 </mapper>

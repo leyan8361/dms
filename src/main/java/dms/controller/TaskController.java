@@ -228,13 +228,13 @@ public class TaskController {
 	 * @return
 	 */
 	@RequestMapping(value = "judgeIfTaskTransfer", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
-	public String judgeIfTaskTransfer(@RequestParam("taskId") int taskId) {
+	public String judgeIfTaskTransfer(@RequestParam("taskId") int taskId, HttpServletRequest req) {
 
-		// TODO 需要在任务被移交后将内容记录到t_task_transfer_status表中
 		Map<String, String> resMap = new HashMap<String, String>();
-		String transferId = taskService.judgeIfTaskTransfer(taskId);
+		JSONObject jo = (JSONObject) req.getAttribute("user");
+		String isTransfer = taskService.judgeIfTaskTransfer(taskId, jo.getIntValue("userId"));
 		resMap.put("status", Constants.successStatus);
-		resMap.put("info", transferId == null ? "" : transferId);
+		resMap.put("info", isTransfer);
 		return JSON.toJSONString(resMap);
 	}
 
@@ -246,11 +246,12 @@ public class TaskController {
 	 * @return
 	 */
 	@RequestMapping(value = "checkIfTaskTransferSave", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
-	public String checkIfTaskTransferSave(@RequestParam("taskId") int taskId) {
+	public String checkIfTaskTransferSave(@RequestParam("taskId") int taskId, HttpServletRequest req) {
 
 		// TODO 任务移交后清除保存信息的记录
 		Map<String, String> resMap = new HashMap<String, String>();
-		TaskTransferSaveStatus ttss = taskService.checkIfTaskTransferSave(taskId);
+		JSONObject userInfo = (JSONObject) req.getAttribute("user");
+		TaskTransferSaveStatus ttss = taskService.checkIfTaskTransferSave(taskId, userInfo.getIntValue("userId"));
 		if (ttss == null) {
 			resMap.put("status", Constants.apiErrorStatus);
 			resMap.put("info", "没有保存信息");
@@ -286,11 +287,13 @@ public class TaskController {
 	public String addTaskTransferSaveInfo(@RequestParam("taskId") int taskId, @RequestParam("content") String content,
 			@RequestParam("deadLine") String deadLine, @RequestParam("attention") String attention,
 			@RequestParam("remark") String remark, @RequestParam("oriAttachStr") String oriAttachStr,
-			@RequestParam("attachArr") MultipartFile[] attachArr, @RequestParam("userInfo") String userInfo) {
+			@RequestParam("attachArr") MultipartFile[] attachArr, @RequestParam("userInfo") String userInfo,
+			HttpServletRequest req) {
 
 		Map<String, String> resMap = new HashMap<String, String>();
-		boolean res = taskService.addTaskTransferSaveInfo(taskId, content, deadLine, attention, remark, oriAttachStr,
-				attachArr, JSON.parseArray(userInfo));
+		JSONObject jo = (JSONObject) req.getAttribute("user");
+		boolean res = taskService.addTaskTransferSaveInfo(jo.getIntValue("userId"), taskId, content, deadLine,
+				attention, remark, oriAttachStr, attachArr, JSON.parseArray(userInfo));
 		if (res == true) {
 			resMap.put("status", Constants.successStatus);
 			resMap.put("info", "保存成功");
@@ -309,8 +312,9 @@ public class TaskController {
 	 * @return
 	 */
 	@RequestMapping(value = "getTaskTransferSaveInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
-	public String getTaskTransferSaveInfo(@RequestParam("transferSaveId") int transferSaveId) {
+	public String getTaskTransferSaveInfo(@RequestParam("transferSaveId") int transferSaveId, HttpServletRequest req) {
 
+		// TODO 移交任务后 需要修改t_task_user表中的isTransfer属性以及 sonId属性  还需要再t_task中加入子任务并关联parentId
 		Map<String, String> resMap = new HashMap<String, String>();
 		TaskTransferSave tts = taskService.getTaskTransferSaveInfo(transferSaveId);
 		resMap.put("status", Constants.successStatus);

@@ -45,17 +45,30 @@ public interface TaskDao {
 
 	public Task getTaskInfo(int taskId);
 
-	public String judgeIfTaskTransfer(int taskId);
+	public String judgeIfTaskTransfer(@Param("taskId") int taskId, @Param("userId") int userId);
 
-	public TaskTransferSaveStatus checkIfTaskTransferSave(int taskId);
+	public TaskTransferSaveStatus checkIfTaskTransferSave(@Param("taskId") int taskId, @Param("userId") int userId);
 
+	public String getUserSaveTransferId(@Param("taskId") int taskId, @Param("userId") int userId);
+
+	public int delTaskTransferSave(int transferSaveId);
+	
+	public int delTaskTransferUserSave(int transferSaveId);
+	
+	public int delTaskTransferAttachSave(int transferSaveId);
+	
+	public int delTaskTransferSaveStatus(int transferSaveId);
+	
 	public int addTaskTransferSaveInfo(TaskTransferSave tts);
 
 	public int addTaskTransferUserSave(List<TaskTransferUserSave> lttus);
 
 	public int addTaskTransferAttachSave(List<TaskTransferAttachSave> lttas);
 
-	public int addTaskTransferSaveStatus(@Param("taskId") int taskId, @Param("transferSaveId") int transferSaveId);
+	public int addTaskTransferSaveStatus(@Param("taskId") int taskId, @Param("transferSaveId") int transferSaveId,
+			@Param("userId") int userId);
 
 	public TaskTransferSave getTaskTransferSaveInfo(int transferSaveId);
+	
+	public int getTaskLevel(int taskId);
 }

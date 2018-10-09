@@ -5,6 +5,7 @@ import java.util.List;
 public class TaskTransferSave {
 
 	private int id;
+	private int userId; // “∆Ωª»À
 	private int taskId;
 	private String content;
 	private String deadLine;
@@ -18,7 +19,8 @@ public class TaskTransferSave {
 
 	}
 
-	public TaskTransferSave(int taskId, String content, String deadLine, String attention, String remark) {
+	public TaskTransferSave(int userId, int taskId, String content, String deadLine, String attention, String remark) {
+		this.userId = userId;
 		this.taskId = taskId;
 		this.content = content;
 		this.deadLine = deadLine;
@@ -32,6 +34,14 @@ public class TaskTransferSave {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 
 	public int getTaskId() {

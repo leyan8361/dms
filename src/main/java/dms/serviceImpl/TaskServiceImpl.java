@@ -155,21 +155,29 @@ public class TaskServiceImpl implements TaskService {
 		return taskDao.getTaskInfo(taskId);
 	}
 
-	public String judgeIfTaskTransfer(int taskId) {
+	public String judgeIfTaskTransfer(int taskId, int userId) {
 
-		return taskDao.judgeIfTaskTransfer(taskId);
+		return taskDao.judgeIfTaskTransfer(taskId, userId);
 	}
 
-	public TaskTransferSaveStatus checkIfTaskTransferSave(int taskId) {
+	public TaskTransferSaveStatus checkIfTaskTransferSave(int taskId, int userId) {
 
-		return taskDao.checkIfTaskTransferSave(taskId);
+		return taskDao.checkIfTaskTransferSave(taskId, userId);
 	}
 
-	public boolean addTaskTransferSaveInfo(int taskId, String content, String deadLine, String attention, String remark,
-			String oriAttachStr, MultipartFile[] attachArr, JSONArray userInfo) {
+	public boolean addTaskTransferSaveInfo(int userId, int taskId, String content, String deadLine, String attention,
+			String remark, String oriAttachStr, MultipartFile[] attachArr, JSONArray userInfo) {
 
 		try {
-			TaskTransferSave tts = new TaskTransferSave(taskId, content, deadLine, attention, remark);
+			String transferSaveIdTemp = taskDao.getUserSaveTransferId(taskId, userId);
+			// 若有存在保存的移交信息，则先删除之前的保存信息，在添加新的保存信息
+			if (transferSaveIdTemp != null) {
+				taskDao.delTaskTransferSave(Integer.valueOf(transferSaveIdTemp));
+				taskDao.delTaskTransferUserSave(Integer.valueOf(transferSaveIdTemp));
+				taskDao.delTaskTransferAttachSave(Integer.valueOf(transferSaveIdTemp));
+				taskDao.delTaskTransferSaveStatus(Integer.valueOf(transferSaveIdTemp));
+			}
+			TaskTransferSave tts = new TaskTransferSave(userId, taskId, content, deadLine, attention, remark);
 			taskDao.addTaskTransferSaveInfo(tts);
 			int transferSaveId = tts.getId();
 			List<TaskTransferUserSave> lttus = new ArrayList<TaskTransferUserSave>();
@@ -198,17 +206,40 @@ public class TaskServiceImpl implements TaskService {
 			if (!lttas.isEmpty()) {
 				taskDao.addTaskTransferAttachSave(lttas);
 			}
-			taskDao.addTaskTransferSaveStatus(taskId,transferSaveId);
+			taskDao.addTaskTransferSaveStatus(taskId, transferSaveId, userId);
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
 		}
 	}
-	
+
 	public TaskTransferSave getTaskTransferSaveInfo(int transferSaveId) {
-		
+
 		TaskTransferSave tts = taskDao.getTaskTransferSaveInfo(transferSaveId);
 		return tts;
+	}
+
+	public boolean transferTask(int userId, int taskId, String content, String deadLine, String attention,
+			String remark, String oriAttachStr, MultipartFile[] attachArr, JSONArray userInfo) {
+
+		// 1. 添加任务至t_task表中，并标明level和父任务Id
+		int parentLevel = taskDao.getTaskLevel(taskId);
+		int level = parentLevel + 1;
+		List<TaskAttach> lta = new ArrayList<TaskAttach>();
+		List<TaskUser> ltu = new ArrayList<TaskUser>();
+		Task task = new Task(content, deadLine, level, taskId, attention, remark, userId,
+				Utils.getNowDate("yyyy-MM-dd HH:mm"));
+		
+		if (!"".equals(oriAttachStr)) {
+			String[] oriAttachArr = oriAttachStr.split(",");
+			for (String s : oriAttachArr) {
+
+			}
+		}
+		// 2. 删除几张中间表中记录移交保存信息的数据
+		// 3. 在t_task_user表中 记录 任务的sonId
+
+		return true;
 	}
 }

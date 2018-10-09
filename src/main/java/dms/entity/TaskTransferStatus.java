@@ -1,5 +1,10 @@
 package dms.entity;
 
+/**
+ * 不需要了、
+ * @author ACER
+ *
+ */
 public class TaskTransferStatus {
 
 	private int id;

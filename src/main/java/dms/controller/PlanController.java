@@ -484,7 +484,7 @@ public class PlanController {
 			@RequestParam("processName") String processName, @RequestParam("flag") String flag,
 			@RequestParam("contentStr") String contentStr, MultipartHttpServletRequest multiReq,
 			HttpServletRequest req) {
-
+// TODO 未加入删除文件附件的操作
 		Map<String, String> resMap = new HashMap<String, String>();
 		boolean res = planService.updateProcessContent(processId, flag, JSONObject.parseObject(contentStr),
 				multiReq.getFileMap());
