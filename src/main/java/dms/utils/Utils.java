@@ -201,7 +201,6 @@ public class Utils {
 			Model model = reader.read(new FileReader(myPom));
 			System.out.println(model.getVersion());
 		} catch (IOException | XmlPullParserException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 	}

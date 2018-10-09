@@ -230,7 +230,6 @@ public class TaskServiceImpl implements TaskService {
 		List<TaskUser> ltu = new ArrayList<TaskUser>();
 		Task task = new Task(content, deadLine, level, taskId, attention, remark, userId,
 				Utils.getNowDate("yyyy-MM-dd HH:mm"));
-		
 		if (!"".equals(oriAttachStr)) {
 			String[] oriAttachArr = oriAttachStr.split(",");
 			for (String s : oriAttachArr) {
