@@ -3,8 +3,10 @@ package dms.serviceImpl;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -170,7 +172,6 @@ public class TaskServiceImpl implements TaskService {
 
 		try {
 			String transferSaveIdTemp = taskDao.getUserSaveTransferId(taskId, userId);
-			// 若有存在保存的移交信息，则先删除之前的保存信息，在添加新的保存信息
 			if (transferSaveIdTemp != null) {
 				taskDao.delTaskTransferSave(Integer.valueOf(transferSaveIdTemp));
 				taskDao.delTaskTransferUserSave(Integer.valueOf(transferSaveIdTemp));
@@ -220,25 +221,108 @@ public class TaskServiceImpl implements TaskService {
 		return tts;
 	}
 
-	public boolean transferTask(int userId, int taskId, String content, String deadLine, String attention,
+	public boolean addtransferTask(int userId, int taskId, String content, String deadLine, String attention,
 			String remark, String oriAttachStr, MultipartFile[] attachArr, JSONArray userInfo) {
 
-		// 1. 添加任务至t_task表中，并标明level和父任务Id
-		int parentLevel = taskDao.getTaskLevel(taskId);
-		int level = parentLevel + 1;
-		List<TaskAttach> lta = new ArrayList<TaskAttach>();
-		List<TaskUser> ltu = new ArrayList<TaskUser>();
-		Task task = new Task(content, deadLine, level, taskId, attention, remark, userId,
-				Utils.getNowDate("yyyy-MM-dd HH:mm"));
-		if (!"".equals(oriAttachStr)) {
-			String[] oriAttachArr = oriAttachStr.split(",");
-			for (String s : oriAttachArr) {
+		try {
 
+			// 1. 添加任务至t_task表中，并标明level和父任务Id
+			int parentLevel = taskDao.getTaskLevel(taskId);
+			int level = parentLevel + 1;
+			List<TaskAttach> lta = new ArrayList<TaskAttach>();
+			List<TaskUser> ltu = new ArrayList<TaskUser>();
+			Task task = new Task(content, deadLine, level, taskId, attention, remark, userId,
+					Utils.getNowDate("yyyy-MM-dd HH:mm"));
+			taskDao.addTaskInfo(task);
+			int sonId = task.getId(); // 获取 子任务Id
+			if (!"".equals(oriAttachStr)) {
+				String[] oriAttachArr = oriAttachStr.split(",");
+				for (String s : oriAttachArr) {
+					lta.add(new TaskAttach(sonId, s));
+				}
+			}
+			for (MultipartFile mp : attachArr) {
+				String name = System.currentTimeMillis() + "_" + mp.getOriginalFilename();
+				mp.transferTo(new File(FilePath.taskAttachPath + name));
+				lta.add(new TaskAttach(sonId, name));
+			}
+			if (userInfo != null) {
+				for (Object o : userInfo) {
+					JSONObject jo = (JSONObject) o;
+					ltu.add(new TaskUser(sonId, jo.getIntValue("userId"), jo.getString("userName")));
+				}
+			}
+			if (!lta.isEmpty()) {
+				taskDao.addTaskAttachInfo(lta);
+			}
+			if (!ltu.isEmpty()) {
+				taskDao.addTaskUserInfo(ltu);
+			}
+			// 2. 删除几张中间表中记录移交保存信息的数据
+			String transferSaveId = taskDao.checkIfTransferSaveRecordExist(taskId, userId);
+			if (transferSaveId != null) {
+				taskDao.delTaskTransferSave(Integer.valueOf(transferSaveId));
+				taskDao.delTaskTransferUserSave(Integer.valueOf(transferSaveId));
+				taskDao.delTaskTransferAttachSave(Integer.valueOf(transferSaveId));
+				taskDao.delTaskTransferSaveStatus(Integer.valueOf(transferSaveId));
+			}
+			// 3. 在t_task_user表中 记录 任务的sonId
+			taskDao.recordTaskSonId(taskId, userId, sonId);
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public Task getTransferInfo(int taskId, int userId) {
+
+		Integer sonId = taskDao.getSonId(taskId, userId);
+		Task task = taskDao.getTaskInfo(sonId);
+		return task;
+	}
+
+	public boolean cancelTransfer(int taskId, int userId) {
+
+		// 1. 获取所有的子任务Id
+		Integer sonId = taskDao.getSonId(taskId, userId);
+		Set<Integer> set = new HashSet<Integer>();
+		set.add(sonId);
+		recursionSonTaskInfo(set, sonId);
+		// 1. 删除t_task中移交的信息的记录
+		List<Integer> list = new ArrayList<Integer>();
+		for (Integer integer : set) {
+			list.add(integer);
+		}
+		StringBuilder sb = new StringBuilder();
+		sb.append(" in (");
+		for (int i = 0; i < list.size(); i++) {
+			if (i != list.size() - 1) {
+				sb.append(list.get(i)+",");
+			}else {
+				sb.append(list.get(i));
 			}
 		}
-		// 2. 删除几张中间表中记录移交保存信息的数据
-		// 3. 在t_task_user表中 记录 任务的sonId
-
+		sb.append(")");
+		taskDao.batchDelTaskInfo(sb.toString());
+		// 2. 删除t_task_user中isTransfer和sonId两个字段
+		taskDao.delTaskUserTransferInfo(taskId, userId);
 		return true;
+	}
+
+	/**
+	 * 递归获取子任务信息
+	 */
+	public void recursionSonTaskInfo(Set<Integer> set, int taskId) {
+
+		List<TaskUser> list = taskDao.getSonTaskInfo(taskId);
+		for (TaskUser tu : list) {
+			if (tu.getSonId() != 0) {
+				set.add(tu.getTaskId());
+				recursionSonTaskInfo(set, tu.getSonId());
+			} else {
+				set.add(tu.getTaskId());
+			}
+		}
 	}
 }

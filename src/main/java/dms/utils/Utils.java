@@ -1,7 +1,5 @@
 package dms.utils;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,19 +13,20 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import dms.dao.TaskDao;
 import dms.entity.Message;
 
 public class Utils {
@@ -195,13 +194,6 @@ public class Utils {
 	}
 
 	public static void main(String[] args) {
-		MavenXpp3Reader reader = new MavenXpp3Reader();
-		String myPom = System.getProperty("user.dir") + File.separator + "pom.xml"; 
-		try {
-			Model model = reader.read(new FileReader(myPom));
-			System.out.println(model.getVersion());
-		} catch (IOException | XmlPullParserException e) {
-			e.printStackTrace();
-		} 
+		
 	}
 }

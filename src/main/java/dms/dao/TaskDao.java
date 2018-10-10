@@ -52,13 +52,13 @@ public interface TaskDao {
 	public String getUserSaveTransferId(@Param("taskId") int taskId, @Param("userId") int userId);
 
 	public int delTaskTransferSave(int transferSaveId);
-	
+
 	public int delTaskTransferUserSave(int transferSaveId);
-	
+
 	public int delTaskTransferAttachSave(int transferSaveId);
-	
+
 	public int delTaskTransferSaveStatus(int transferSaveId);
-	
+
 	public int addTaskTransferSaveInfo(TaskTransferSave tts);
 
 	public int addTaskTransferUserSave(List<TaskTransferUserSave> lttus);
@@ -69,6 +69,18 @@ public interface TaskDao {
 			@Param("userId") int userId);
 
 	public TaskTransferSave getTaskTransferSaveInfo(int transferSaveId);
-	
+
 	public int getTaskLevel(int taskId);
+
+	public String checkIfTransferSaveRecordExist(@Param("taskId") int taskId, @Param("userId") int userId);
+
+	public int recordTaskSonId(@Param("taskId") int taskId, @Param("userId") int userId, @Param("sonId") int sonId);
+
+	public Integer getSonId(@Param("taskId") int taskId, @Param("userId") int userId);
+
+	public List<TaskUser> getSonTaskInfo(int taskId);
+
+	public int batchDelTaskInfo(@Param("idStr") String idStr);
+
+	public int delTaskUserTransferInfo(@Param("taskId") int taskId, @Param("userId") int userId);
 }

@@ -248,7 +248,6 @@ public class TaskController {
 	@RequestMapping(value = "checkIfTaskTransferSave", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String checkIfTaskTransferSave(@RequestParam("taskId") int taskId, HttpServletRequest req) {
 
-		// TODO 任务移交后清除保存信息的记录
 		Map<String, String> resMap = new HashMap<String, String>();
 		JSONObject userInfo = (JSONObject) req.getAttribute("user");
 		TaskTransferSaveStatus ttss = taskService.checkIfTaskTransferSave(taskId, userInfo.getIntValue("userId"));
@@ -314,11 +313,86 @@ public class TaskController {
 	@RequestMapping(value = "getTaskTransferSaveInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
 	public String getTaskTransferSaveInfo(@RequestParam("transferSaveId") int transferSaveId, HttpServletRequest req) {
 
-		// TODO 移交任务后 需要修改t_task_user表中的isTransfer属性以及 sonId属性  还需要再t_task中加入子任务并关联parentId
 		Map<String, String> resMap = new HashMap<String, String>();
 		TaskTransferSave tts = taskService.getTaskTransferSaveInfo(transferSaveId);
 		resMap.put("status", Constants.successStatus);
 		resMap.put("info", JSON.toJSONString(tts));
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 移交任务
+	 * 
+	 * @param taskId
+	 *            任务Id
+	 * @param content
+	 *            内容
+	 * @param deadLine
+	 *            截止日期 yyyy-MM-dd HH:mm
+	 * @param attention
+	 *            注意事项
+	 * @param remark
+	 *            备注
+	 * @param oriAttachStr
+	 *            原先的附件名称字符串 "aaaa,bbbb"
+	 * @param attachArr
+	 *            附件数组
+	 * @param userInfo
+	 *            用户信息 [{"userId":"","userName":""},{...},...]
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "transferTask", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String transferTask(@RequestParam("taskId") int taskId, @RequestParam("content") String content,
+			@RequestParam("deadLine") String deadLine, @RequestParam("attention") String attention,
+			@RequestParam("remark") String remark, @RequestParam("oriAttachStr") String oriAttachStr,
+			@RequestParam("attachArr") MultipartFile[] attachArr, @RequestParam("userInfo") String userInfo,
+			HttpServletRequest req) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		JSONObject jo = (JSONObject) req.getAttribute("user");
+		taskService.addtransferTask(jo.getIntValue("userId"), taskId, content, deadLine, attention, remark,
+				oriAttachStr, attachArr, JSONArray.parseArray(userInfo));
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", "移交成功");
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 获取移交的信息
+	 * 
+	 * @param taskId
+	 *            任务Id
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "getTransferInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String getTransferInfo(@RequestParam("taskId") int taskId, HttpServletRequest req) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		JSONObject jo = (JSONObject) req.getAttribute("user");
+		Task task = taskService.getTransferInfo(taskId, jo.getIntValue("userId"));
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", JSON.toJSONString(task));
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 取消任务移交
+	 * 
+	 * @param taskId
+	 *            任务Id
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "cancelTransfer", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String cancelTransfer(@RequestParam("taskId") int taskId, HttpServletRequest req) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		JSONObject jo = (JSONObject) req.getAttribute("user");
+		taskService.cancelTransfer(taskId, jo.getIntValue("userId"));
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", "移除数据");
 		return JSON.toJSONString(resMap);
 	}
 }

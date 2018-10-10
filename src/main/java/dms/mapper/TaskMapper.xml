@@ -284,4 +284,49 @@
 		from t_task
 		where id = #{taskId}
 	</select>
+	
+	<!-- 判断是否存在保存的移交信息 -->
+	<select id="checkIfTransferSaveRecordExist" parameterType="int" resultType="String">
+		select
+		transferSaveId
+		from t_task_transfer_save_status
+		where userId = #{userId} and taskId = #{taskId} and isShow = 'show' 
+	</select>
+
+	<!-- 记录任务的子任务Id -->
+	<update id="recordTaskSonId" parameterType="int">
+		update t_task_user
+		set sonId = #{sonId},isTransfer = 'yes'
+		where taskId = #{taskId} and userId = #{userId} and isShow = 'show'
+	</update>
+	
+	<!-- 获取移交的子任务Id -->
+	<select id="getSonId" parameterType="int" resultType="Integer">
+		select
+		sonId
+		from t_task_user
+		where userId = #{userId} and taskId = #{taskId}
+	</select>
+	
+	<!-- 获取移交的子任务的信息 -->
+	<select id="getSonTaskInfo" parameterType="int" resultType="taskUser">
+		select 
+		taskId,userId,sonId
+		from t_task_user
+		where isShow = 'show' and taskId = #{taskId}
+	</select>
+	
+	<!-- 批量删除任务信息 -->
+	<update id="batchDelTaskInfo" parameterType="String">
+		update t_task
+		set isShow = 'notShow'
+		where id ${idStr}
+	</update>
+	
+	<!-- 移除用户任务的移交状态 -->
+	<update id="delTaskUserTransferInfo" parameterType="int">
+		update t_task_user
+		set isTransfer = 'no',sonId = null
+		where taskId = #{taskId} and userId = #{userId} and isShow = 'show'
+	</update>
 </mapper>
