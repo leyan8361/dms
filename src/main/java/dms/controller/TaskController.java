@@ -395,4 +395,23 @@ public class TaskController {
 		resMap.put("info", "移除数据");
 		return JSON.toJSONString(resMap);
 	}
+
+	/**
+	 * 完成任务
+	 * 
+	 * @param taskId
+	 *            任务Id
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "finishTask", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String finishTask(@RequestParam("taskId") int taskId, HttpServletRequest req) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		JSONObject jo = (JSONObject) req.getAttribute("user");
+		taskService.finishTask(taskId, jo.getIntValue("userId"));
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", "success");
+		return JSON.toJSONString(resMap);
+	}
 }

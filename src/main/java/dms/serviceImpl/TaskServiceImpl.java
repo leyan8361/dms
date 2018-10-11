@@ -298,8 +298,8 @@ public class TaskServiceImpl implements TaskService {
 		sb.append(" in (");
 		for (int i = 0; i < list.size(); i++) {
 			if (i != list.size() - 1) {
-				sb.append(list.get(i)+",");
-			}else {
+				sb.append(list.get(i) + ",");
+			} else {
 				sb.append(list.get(i));
 			}
 		}
@@ -322,6 +322,30 @@ public class TaskServiceImpl implements TaskService {
 				recursionSonTaskInfo(set, tu.getSonId());
 			} else {
 				set.add(tu.getTaskId());
+			}
+		}
+	}
+
+	public boolean finishTask(int taskId, int userId) {
+
+		recursionFinishTask(taskId, userId);
+		return true;
+	}
+
+	/**
+	 * 递归完成任务
+	 */
+	public void recursionFinishTask(int taskId, int userId) {
+
+		// 在t_task_user表中完成对应taskId和userId的这条任务
+		taskDao.userFinishTask(taskId, userId);
+		// 获取该taskId对应的所有用户的完成情况
+		List<TaskUser> list = taskDao.checkIfAllUserFinish(taskId);
+		if (list.isEmpty()) {
+			// 若list为空，则说明该taskId对应的所有user都已完成，则t_task_user表中sonId为taskId的数据的isDone修改为yes
+			TaskUser tu = taskDao.getTaskUserInfoBySonId(taskId);
+			if (tu != null) {
+				recursionFinishTask(tu.getTaskId(), tu.getUserId());
 			}
 		}
 	}

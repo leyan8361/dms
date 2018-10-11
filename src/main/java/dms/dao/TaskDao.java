@@ -83,4 +83,10 @@ public interface TaskDao {
 	public int batchDelTaskInfo(@Param("idStr") String idStr);
 
 	public int delTaskUserTransferInfo(@Param("taskId") int taskId, @Param("userId") int userId);
+
+	public int userFinishTask(@Param("taskId") int taskId, @Param("userId") int userId);
+
+	public List<TaskUser> checkIfAllUserFinish(int taskId);
+
+	public TaskUser getTaskUserInfoBySonId(int sonId);
 }

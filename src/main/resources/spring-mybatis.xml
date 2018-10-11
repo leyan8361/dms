@@ -91,6 +91,8 @@
 				propagation="REQUIRED" read-only="false" rollback-for="Exception" />
 			<tx:method name="cancel*" isolation="DEFAULT"
 				propagation="REQUIRED" read-only="false" rollback-for="Exception" />
+			<tx:method name="finish*" isolation="DEFAULT"
+				propagation="REQUIRED" read-only="false" rollback-for="Exception" />
 		</tx:attributes>
 	</tx:advice>
 

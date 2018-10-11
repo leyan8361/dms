@@ -47,4 +47,6 @@ public interface TaskService {
 	public Task getTransferInfo(int taskId,int userId);
 	
 	public boolean cancelTransfer(int taskId, int userId);
+	
+	public boolean finishTask(int taskId,int userId);
 }

@@ -329,4 +329,27 @@
 		set isTransfer = 'no',sonId = null
 		where taskId = #{taskId} and userId = #{userId} and isShow = 'show'
 	</update>
+	
+	<!-- 用户完成任务 -->
+	<update id="userFinishTask" parameterType="int">
+		update t_task_user
+		set isDone = 'yes'
+		where taskId = #{taskId} and userId = #{userId} and isShow = 'show'
+	</update>
+	
+	<!-- 检查获得任务的所有人是否都完成了 -->
+	<select id="checkIfAllUserFinish" parameterType="int" resultType="taskUser">
+		select
+		*
+		from t_task_user
+		where taskId = #{taskId} and isShow = 'show' and isDone = 'no'
+	</select>
+	
+	<!-- 通过子Id获取任务信息 -->
+	<select id="getTaskUserInfoBySonId" parameterType="int" resultType="taskUser">
+		select
+		taskId,userId
+		from t_task_user
+		where isShow = 'show' and sonId = #{sonId}
+	</select>
 </mapper>
