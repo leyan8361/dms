@@ -88,5 +88,11 @@ public interface TaskDao {
 
 	public List<TaskUser> checkIfAllUserFinish(int taskId);
 
+	public int finishTask(int taskId);
+
 	public TaskUser getTaskUserInfoBySonId(int sonId);
+
+	public List<Task> getReleaseTaskList(@Param("userId") int userId, @Param("content") String content,
+			@Param("deadLine") String deadLine, @Param("deadLine2") String deadLine2, @Param("isDone") String isDone,
+			@Param("createDate") String createDate, @Param("createDate2") String createDate2);
 }

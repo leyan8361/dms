@@ -342,11 +342,22 @@ public class TaskServiceImpl implements TaskService {
 		// 获取该taskId对应的所有用户的完成情况
 		List<TaskUser> list = taskDao.checkIfAllUserFinish(taskId);
 		if (list.isEmpty()) {
+			taskDao.finishTask(taskId);
 			// 若list为空，则说明该taskId对应的所有user都已完成，则t_task_user表中sonId为taskId的数据的isDone修改为yes
 			TaskUser tu = taskDao.getTaskUserInfoBySonId(taskId);
 			if (tu != null) {
 				recursionFinishTask(tu.getTaskId(), tu.getUserId());
 			}
 		}
+	}
+
+	public PageInfo<Task> getReleaseTaskList(int currentPage, int userId, String content, String deadLine,
+			String deadLine2, String isDone, String createDate, String createDate2) {
+
+		PageHelper.startPage(currentPage, 10000);
+		List<Task> list = taskDao.getReleaseTaskList(userId, content, deadLine, deadLine2, isDone, createDate,
+				createDate2);
+		PageInfo<Task> planList = new PageInfo<>(list);
+		return planList;
 	}
 }

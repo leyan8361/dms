@@ -345,11 +345,38 @@
 		where taskId = #{taskId} and isShow = 'show' and isDone = 'no'
 	</select>
 	
+	<!-- 在t_task表中完成任务 设置isDone = yes -->
+	<update id="finishTask" parameterType="int">
+		update t_task
+		set isDone = 'yes'
+		where id = #{taskId} and isShow = 'show'
+	</update>
+	
 	<!-- 通过子Id获取任务信息 -->
 	<select id="getTaskUserInfoBySonId" parameterType="int" resultType="taskUser">
 		select
 		taskId,userId
 		from t_task_user
 		where isShow = 'show' and sonId = #{sonId}
+	</select>
+	
+	<!-- 获得用户发布的任务列表 -->
+	<select id="getReleaseTaskList" parameterType="int" resultType="task">
+		select
+		id,content,createDate,deadLine
+		from t_task
+		where creator = #{userId} and isShow = 'show'
+		<if test="content!=''">
+			and content = #{content}
+		</if>
+		<if test="createDate!=''">
+			and createDate &gt;= #{createDate} and createDate &lt;= #{createDate2}
+		</if>
+		<if test="isDone!=''">
+			and isDone = #{isDone}
+		</if>
+		<if test="deadLine!=''">
+			and deadLine &gt;= #{deadLine} and deadLine &lt;= #{deadLine2}
+		</if>
 	</select>
 </mapper>

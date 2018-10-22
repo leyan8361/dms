@@ -43,10 +43,13 @@ public interface TaskService {
 
 	public boolean addtransferTask(int userId, int taskId, String content, String deadLine, String attention,
 			String remark, String oriAttachStr, MultipartFile[] attachArr, JSONArray userInfo);
-	
-	public Task getTransferInfo(int taskId,int userId);
-	
+
+	public Task getTransferInfo(int taskId, int userId);
+
 	public boolean cancelTransfer(int taskId, int userId);
-	
-	public boolean finishTask(int taskId,int userId);
+
+	public boolean finishTask(int taskId, int userId);
+
+	public PageInfo<Task> getReleaseTaskList(int currentPage, int userId, String content, String deadLine,
+			String deadLine2, String isDone, String createDate, String createDate2);
 }

@@ -414,4 +414,45 @@ public class TaskController {
 		resMap.put("info", "success");
 		return JSON.toJSONString(resMap);
 	}
+
+	/**
+	 * 获取用户发布的任务列表
+	 * 
+	 * @param currentPage
+	 *            页码(从1开始)
+	 * @param content
+	 *            内容
+	 * @param deadLine
+	 *            截止时间(yyyy-MM-dd)
+	 * @param deadLine2
+	 *            截止时间2(yyyy-MM-dd)
+	 * @param createDate
+	 *            创建时间(yyyy-MM-dd)
+	 * @param createDate2
+	 *            创建时间2(yyyy-MM-dd)
+	 * @param isDone
+	 *            是否完成(yes/no)
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "getReleaseTaskList", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String getReleaseTaskList(@RequestParam("currentPage") int currentPage,
+			@RequestParam("content") String content, @RequestParam("deadLine") String deadLine,
+			@RequestParam("deadLine2") String deadLine2, @RequestParam("createDate") String createDate,
+			@RequestParam("createDate2") String createDate2, @RequestParam("isDone") String isDone,
+			HttpServletRequest req) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		String true_deadLine = "".equals(deadLine) ? deadLine : (deadLine + " 00:00");
+		String true_deadLine2 = "".equals(deadLine2) ? deadLine2 : (deadLine2 + " 23:00");
+		String true_createDate = "".equals(createDate) ? createDate : (createDate + " 00:00");
+		String true_createDate2 = "".equals(createDate2) ? createDate2 : (createDate2 + " 23:00");
+		JSONObject jo = (JSONObject) req.getAttribute("user");
+		PageInfo<Task> pageInfo = taskService.getReleaseTaskList(currentPage, jo.getIntValue("userId"), content,
+				true_deadLine, true_deadLine2, isDone, true_createDate, true_createDate2);
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", JSON.toJSONString(pageInfo.getList()));
+		resMap.put("totalNum", String.valueOf(pageInfo.getTotal()));
+		return JSON.toJSONString(resMap);
+	}
 }
