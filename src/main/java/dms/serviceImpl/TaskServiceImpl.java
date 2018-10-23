@@ -3,6 +3,8 @@ package dms.serviceImpl;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -359,5 +361,145 @@ public class TaskServiceImpl implements TaskService {
 				createDate2);
 		PageInfo<Task> planList = new PageInfo<>(list);
 		return planList;
+	}
+
+	public boolean updateTaskInfo(int taskId, String content, String deadLine, String attention, String remark,
+			String delAttachStr, MultipartFile[] attachArr) {
+
+		try {
+			List<TaskAttach> lta = new ArrayList<TaskAttach>();
+			taskDao.updateTaskInfo(taskId, content, deadLine, attention, remark);
+			String delStr = " < 0";
+			if (!"".equals(delAttachStr)) {
+				String[] delAttachArr = delAttachStr.split(",");
+				StringBuilder sb = new StringBuilder();
+				sb.append(" in (");
+				for (int i = 0; i < delAttachArr.length; i++) {
+					if (i != (delAttachArr.length - 1)) {
+						sb.append(delAttachArr[i] + " ,");
+					} else {
+						sb.append(delAttachArr[i]);
+					}
+				}
+				sb.append(")");
+				delStr = sb.toString();
+			}
+			taskDao.delTaskAttachInfo(delStr);
+			for (MultipartFile mf : attachArr) {
+				String name = System.currentTimeMillis() + "_" + mf.getOriginalFilename();
+				mf.transferTo(new File(FilePath.taskAttachPath + name));
+				lta.add(new TaskAttach(taskId, name));
+			}
+			if (!lta.isEmpty()) {
+				taskDao.addTaskAttachInfo(lta);
+			}
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public JSONArray getTaskProcess(int taskId) {
+
+		JSONArray res = new JSONArray();
+		// 记录任务Id以及任务level
+		JSONObject taskInfo = new JSONObject();
+		// 获取当前任务的级别
+		int level = taskDao.getTaskLevel(taskId);
+		// String creatorName = taskDao.getCreatorName(taskId);
+
+		List<Integer> list2 = new ArrayList<Integer>();
+
+		// int oriId = taskId;
+		recursionGetParentInfo(list2, taskId, level);
+		int oriId_temp;
+		if (!list2.isEmpty()) {
+			oriId_temp = list2.get(list2.size() - 1);
+		} else {
+			oriId_temp = taskId;
+		}
+
+		int level2 = taskDao.getTaskLevel(oriId_temp);
+		String creatorName2 = taskDao.getCreatorName(oriId_temp);
+		taskInfo.put("level", level2);
+		taskInfo.put("id", oriId_temp);
+		taskInfo.put("creatorName", creatorName2);
+		res.add(taskInfo);
+
+		recursionGetSonInfo(res, oriId_temp);
+		// 初始化返回的jsonarray
+		JSONArray res2 = new JSONArray();
+		for (Object object : res) {
+			JSONObject jo = (JSONObject) object;
+			JSONObject jo2 = new JSONObject();
+			jo2.put("level", jo.getIntValue("level"));
+			jo2.put("taskId", jo.getIntValue("id"));
+			jo2.put("creator", jo.getString("creatorName"));
+			jo2.put("userInfo", new JSONArray());
+			int taskId_tmp = jo.getIntValue("id");
+			List<TaskUser> list_tmp = taskDao.getUserAndIsDone(taskId_tmp);
+			for (TaskUser tu : list_tmp) {
+				JSONObject jo3 = new JSONObject();
+				jo3.put("userName", tu.getUserName());
+				jo3.put("isDone", tu.getIsDone());
+				jo2.getJSONArray("userInfo").add(jo3);
+			}
+			res2.add(jo2);
+		}
+		// 以下排序jsonArray
+		List<JSONObject> list = JSONArray.parseArray(res2.toJSONString(), JSONObject.class);
+		Collections.sort(list, new Comparator<JSONObject>() {
+
+			public int compare(JSONObject o1, JSONObject o2) {
+				int a = o1.getIntValue("level");
+				int b = o2.getIntValue("level");
+				if (a > b) {
+					return 1;
+				} else if (a == b) {
+					return 0;
+				} else
+					return -1;
+
+			}
+		});
+		JSONArray jsonArray = JSONArray.parseArray(list.toString());
+		return jsonArray;
+	}
+
+	// 递归查询父任务信息
+	public void recursionGetParentInfo(List<Integer> list, int taskId, int level) {
+
+		if (level != 0) {
+			int parentId = taskDao.getParentId(taskId);
+			int parentLevel = taskDao.getTaskLevel(parentId);
+			// String parentCreatorName = taskDao.getCreatorName(parentId);
+			list.add(parentId);
+			// JSONObject taskInfo = new JSONObject();
+			// taskInfo.put("level", parentLevel);
+			// taskInfo.put("id", parentId);
+			// taskInfo.put("creatorName", parentCreatorName);
+			// res.add(taskInfo);
+			recursionGetParentInfo(list, parentId, parentLevel);
+		}
+	}
+
+	// 递归查询子任务信息
+	public void recursionGetSonInfo(JSONArray res, int taskId) {
+
+		List<Task> ltask = taskDao.getSonTaskId(taskId);
+		if (!ltask.isEmpty()) {
+			for (Task task : ltask) {
+				int taskId_tmp = task.getId();
+				int level_tmp = task.getLevel();
+				String parentCreatorName = taskDao.getCreatorName(taskId_tmp);
+				JSONObject taskInfo = new JSONObject();
+				taskInfo.put("level", level_tmp);
+				taskInfo.put("id", taskId_tmp);
+				taskInfo.put("creatorName", parentCreatorName);
+				res.add(taskInfo);
+				recursionGetSonInfo(res, taskId_tmp);
+			}
+		}
 	}
 }

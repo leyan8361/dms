@@ -455,4 +455,57 @@ public class TaskController {
 		resMap.put("totalNum", String.valueOf(pageInfo.getTotal()));
 		return JSON.toJSONString(resMap);
 	}
+
+	/**
+	 * 修改任务信息
+	 * 
+	 * @param taskId
+	 *            任务Id
+	 * @param content
+	 *            任务内容
+	 * @param deadLine
+	 *            截止时间 (yyyy-MM-dd HH:mm)
+	 * @param attention
+	 *            注意事项
+	 * @param remark
+	 *            备注
+	 * @param delAttachStr
+	 *            删除附件的id字符串 (用逗号分隔,如:1,2,3)
+	 * @param attachArr
+	 *            上传的附件数组
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "updateTaskInfo", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String updateTaskInfo(@RequestParam("taskId") int taskId, @RequestParam("content") String content,
+			@RequestParam("deadLine") String deadLine, @RequestParam("attention") String attention,
+			@RequestParam("remark") String remark, @RequestParam("delAttachStr") String delAttachStr,
+			@RequestParam("attachArr") MultipartFile[] attachArr, HttpServletRequest req) {
+
+		Map<String, String> resMap = new HashMap<String, String>();
+		taskService.updateTaskInfo(taskId, content, deadLine, attention, remark, delAttachStr, attachArr);
+		JSONObject jo = (JSONObject) req.getAttribute("user");
+		sysService.addLog(new Log(Utils.getNowDate("yyyy-MM-dd HH:mm"), jo.getIntValue("userId"),
+				jo.getString("userName"), "修改了任务信息"));
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", "修改成功");
+		return JSON.toJSONString(resMap);
+	}
+
+	/**
+	 * 获取任务进度
+	 * 
+	 * @param taskId
+	 *            任务Id
+	 * @return
+	 */
+	@RequestMapping(value = "getTaskProcess", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	public String getTaskProcess(@RequestParam("taskId") int taskId) {
+
+		JSONArray ja = taskService.getTaskProcess(taskId);
+		Map<String, String> resMap = new HashMap<String, String>();
+		resMap.put("status", Constants.successStatus);
+		resMap.put("info", JSON.toJSONString(ja));
+		return JSON.toJSONString(resMap);
+	}
 }

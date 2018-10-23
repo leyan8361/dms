@@ -52,4 +52,9 @@ public interface TaskService {
 
 	public PageInfo<Task> getReleaseTaskList(int currentPage, int userId, String content, String deadLine,
 			String deadLine2, String isDone, String createDate, String createDate2);
+
+	public boolean updateTaskInfo(int taskId, String content, String deadLine, String attention, String remark,
+			String delAttachStr, MultipartFile[] attachArr);
+
+	public JSONArray getTaskProcess(int taskId);
 }

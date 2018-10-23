@@ -95,4 +95,17 @@ public interface TaskDao {
 	public List<Task> getReleaseTaskList(@Param("userId") int userId, @Param("content") String content,
 			@Param("deadLine") String deadLine, @Param("deadLine2") String deadLine2, @Param("isDone") String isDone,
 			@Param("createDate") String createDate, @Param("createDate2") String createDate2);
+
+	public int updateTaskInfo(@Param("taskId") int taskId, @Param("content") String content,
+			@Param("deadLine") String deadLine, @Param("attention") String attention, @Param("remark") String remark);
+
+	public int delTaskAttachInfo(@Param("delStr") String delStr);
+	
+	public int getParentId(int taskId);
+	
+	public List<Task> getSonTaskId(int taskId);
+	
+	public List<TaskUser> getUserAndIsDone(int taskId);
+	
+	public String getCreatorName(int taskId);
 }

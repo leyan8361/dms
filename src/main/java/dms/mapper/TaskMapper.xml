@@ -379,4 +379,50 @@
 			and deadLine &gt;= #{deadLine} and deadLine &lt;= #{deadLine2}
 		</if>
 	</select>
+	
+	<!-- 修改任务信息 -->
+	<update id="updateTaskInfo">
+		update t_task
+		set content = #{content},deadLine = #{deadLine},attention = #{attention},remark = #{remark}
+		where id = #{taskId} and isShow = 'show'
+	</update>
+	
+	<!-- 删除任务附件信息 -->
+	<update id="delTaskAttachInfo" parameterType="String">
+		update t_task_attach
+		set isShow = 'notShow'
+		where id ${delStr}
+	</update>
+	
+	<!-- 获取任务级别以及父任务Id -->
+	<select id="getParentId" parameterType="int" resultType="int">
+		select
+		parentId
+		from t_task
+		where isShow = 'show' and id = #{taskId}
+	</select>
+	
+	<!-- 获取子任务Id -->
+	<select id="getSonTaskId" parameterType="int" resultType="task">
+		select
+		id,level
+		from t_task
+		where isShow = 'show' and parentId = #{taskId}
+	</select>
+	
+	<!-- 获取任务参与人员和完成状况 -->
+	<select id="getUserAndIsDone" parameterType="int" resultType="taskUser">
+		select
+		userId,userName,isDone
+		from t_task_user
+		where isShow = 'show' and taskId = #{taskId}
+	</select>
+	
+	<!-- 获取任务创建人姓名 -->
+	<select id="getCreatorName" parameterType="String" resultType="String">
+		select
+		t2.userName
+		from t_task t1,t_userinfo t2
+		where t1.isShow = 'show' and t1.creator = t2.id and t1.id = #{taskId}
+	</select>
 </mapper>
