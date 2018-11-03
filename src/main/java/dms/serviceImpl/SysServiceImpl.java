@@ -79,7 +79,8 @@ public class SysServiceImpl implements SysService {
 
 	public int delRoleInfo(int id) {
 
-		return sysDao.delRoleInfo(id);
+		sysDao.delRoleInfo(id);
+		return sysDao.delUserOwnRoleInfo(id);
 	}
 
 	public UserGroup checkUserGroupName(String name) {

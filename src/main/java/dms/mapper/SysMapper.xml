@@ -89,6 +89,13 @@
 		where id = #{id}
 	</update>
 	
+	<!-- 删除用户本身的角色信息 -->
+	<update id="delUserOwnRoleInfo" parameterType="int">
+		update t_userinfo
+		set roleId = null,roleName = ''
+		where roleId = #{roleId}
+	</update>
+	
 	<!-- 校验群组名 -->
 	<select id="checkUserGroupName" parameterType="String" resultType="userGroup">
 		select * 

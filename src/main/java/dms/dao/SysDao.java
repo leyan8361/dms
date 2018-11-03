@@ -33,6 +33,8 @@ public interface SysDao {
 
 	public int delRoleInfo(int id);
 
+	public int delUserOwnRoleInfo(int role);
+	
 	public UserGroup checkUserGroupName(String name);
 
 	public int addUserGroup(UserGroup ug);
