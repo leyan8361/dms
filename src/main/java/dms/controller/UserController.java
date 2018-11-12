@@ -1,5 +1,8 @@
 package dms.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +20,7 @@ import dms.entity.UserInfo;
 import dms.service.UserService;
 import dms.utils.Constants;
 import dms.utils.JwtManager;
+import dms.utils.Utils;
 
 @CrossOrigin
 @RestController
@@ -34,15 +38,38 @@ public class UserController {
 	 * @param password
 	 *            密码
 	 * @return
+	 * @throws ParseException
 	 */
 	@RequestMapping(value = "checkLogin", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
-	public String checkLogin(@RequestParam("userName") String userName, @RequestParam("password") String password) {
+	public String checkLogin(@RequestParam("userName") String userName, @RequestParam("password") String password)
+			throws ParseException {
 
 		Map<String, String> resMap = new HashMap<String, String>();
 		UserInfo ui = userService.getUserInfo(userName, password);
 		if (ui == null) {
 			resMap.put("status", Constants.apiErrorStatus);
 			resMap.put("info", "用户名或密码错误");
+		} else if (ui.getLastDate() != null) {
+			// String nowDate = Utils.getNowDate("yyyy-MM-dd");
+			String lastDate = ui.getLastDate();
+			String nowDate = Utils.getNowDate("yyyy-MM-dd");
+			Date nowDate_tmp = new SimpleDateFormat("yyyy-MM-dd").parse(nowDate);
+			Date lastDate_tmp = new SimpleDateFormat("yyyy-MM-dd").parse(lastDate);
+			if (nowDate_tmp.getTime() > lastDate_tmp.getTime()) {
+				resMap.put("status", Constants.apiErrorStatus);
+				resMap.put("info", "用户到期");
+			} else {
+				userService.updateUserLastLoginTime(ui.getId());
+				String token = JwtManager.createToken(ui.getId(), ui.getUserName(), ui.getRoleId(), ui.getRoleName(),
+						ui.getUserGroupId(), ui.getUserGroupName());
+				resMap.put("status", Constants.successStatus);
+				resMap.put("info", "登陆成功");
+				resMap.put("token", token);
+				resMap.put("userName", userName);
+				resMap.put("userId", String.valueOf(ui.getId()));
+				resMap.put("roleName", ui.getRoleName() == null ? "" : ui.getRoleName());
+			}
+
 		} else {
 			userService.updateUserLastLoginTime(ui.getId());
 			String token = JwtManager.createToken(ui.getId(), ui.getUserName(), ui.getRoleId(), ui.getRoleName(),

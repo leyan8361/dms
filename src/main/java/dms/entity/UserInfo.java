@@ -8,6 +8,10 @@ import java.util.List;
  * @author ACER
  *
  */
+/**
+ * @author ACER
+ *
+ */
 public class UserInfo {
 
 	private int id;
@@ -23,6 +27,7 @@ public class UserInfo {
 	private String remark;
 	private int status; // 0启用/1停用;
 	private List<Page> lp;
+	private String lastDate; // 最后使用日期(yyyy-MM-dd)
 	private String isShow;
 
 	// 还需添加List<模块权限> 属性
@@ -152,6 +157,14 @@ public class UserInfo {
 
 	public void setIsShow(String isShow) {
 		this.isShow = isShow;
+	}
+
+	public String getLastDate() {
+		return lastDate;
+	}
+
+	public void setLastDate(String lastDate) {
+		this.lastDate = lastDate;
 	}
 
 }
