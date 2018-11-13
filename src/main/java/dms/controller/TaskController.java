@@ -89,10 +89,10 @@ public class TaskController {
 				remark, oriAttach, attachArr, JSONArray.parseArray(userInfo));
 		if (res == true) {
 			resMap.put("status", Constants.successStatus);
-			resMap.put("info", "添加成功");
+			resMap.put("info", "保存成功");
 		} else {
 			resMap.put("status", Constants.apiErrorStatus);
-			resMap.put("info", "添加失败");
+			resMap.put("info", "保存失败");
 		}
 		return JSON.toJSONString(resMap);
 	}
